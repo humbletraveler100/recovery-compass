@@ -116,7 +116,7 @@
     main {
       flex: 1;
       padding: 1.5rem 1.25rem;
-      max-width: 1200px;
+      max-width: 800px;
       width: 100%;
       margin: 0 auto;
     }
@@ -153,7 +153,74 @@
       gap: 1rem;
     }
 
-    /* Authentication Modal */
+    /* Form & Cards */
+    .card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.4rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background-color: var(--bg-main);
+      color: white;
+      font-size: 1rem;
+    }
+
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    /* Intensity Slider Display */
+    .range-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .intensity-badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.2rem 0.6rem;
+      border-radius: 12px;
+      font-weight: 700;
+    }
+
+    /* Logs List */
+    .log-item {
+      background: var(--bg-main);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .log-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Auth Modal */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -193,43 +260,6 @@
       font-size: 1.5rem;
       cursor: pointer;
     }
-
-    .modal-card h3 {
-      font-size: 1.5rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .modal-card p {
-      color: var(--text-muted);
-      font-size: 0.95rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .form-group {
-      margin-bottom: 1.25rem;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 0.4rem;
-      font-size: 0.9rem;
-      color: var(--text-muted);
-    }
-
-    .form-group input {
-      width: 100%;
-      padding: 0.75rem;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background-color: var(--bg-main);
-      color: white;
-      font-size: 1rem;
-    }
-
-    .form-group input:focus {
-      outline: none;
-      border-color: var(--accent);
-    }
   </style>
 </head>
 <body>
@@ -246,8 +276,9 @@
       <span>Recovery Compass</span>
     </div>
     <div class="nav-btns" id="navAuth">
-      <button class="btn btn-outline" onclick="openAuthModal('signin')">Sign In</button>
-      <button class="btn btn-primary" onclick="openAuthModal('signup')">Get Started</button>
+      <button class="btn btn-outline" id="signInBtn" onclick="openAuthModal('signin')">Sign In</button>
+      <button class="btn btn-primary" id="signUpBtn" onclick="openAuthModal('signup')">Get Started</button>
+      <button class="btn btn-outline" id="signOutBtn" onclick="handleSignOut()" style="display: none;">Sign Out</button>
     </div>
   </header>
 
@@ -265,10 +296,47 @@
       </div>
     </section>
 
-    <!-- Dashboard View (Placeholder) -->
+    <!-- Dashboard & Urge Log View -->
     <section id="dashboardView" class="view">
-      <h2>Your Recovery Dashboard</h2>
-      <p style="color: var(--text-muted); margin-top: 0.5rem;">Welcome to your secure space. Log urges, journals, and tools here.</p>
+      <h2 style="margin-bottom: 0.5rem;">Urge Tracker & Log</h2>
+      <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Track urges, recognize triggers, and log your coping strategies.</p>
+
+      <!-- Urge Log Form -->
+      <div class="card">
+        <h3 style="margin-bottom: 1rem;">Log a New Urge</h3>
+        <form onsubmit="handleUrgeSubmit(event)">
+          <div class="form-group">
+            <div class="range-header">
+              <label>Urge Intensity (1-10)</label>
+              <span class="intensity-badge" id="intensityVal">5</span>
+            </div>
+            <input type="range" id="intensity" min="1" max="10" value="5" oninput="document.getElementById('intensityVal').innerText = this.value">
+          </div>
+
+          <div class="form-group">
+            <label>Trigger / Context</label>
+            <input type="text" id="trigger" placeholder="e.g., Stress, specific place, social situation" required>
+          </div>
+
+          <div class="form-group">
+            <label>Coping Strategy Used</label>
+            <input type="text" id="coping" placeholder="e.g., Deep breathing, walked away, called a friend">
+          </div>
+
+          <div class="form-group">
+            <label>Notes & Reflections</label>
+            <textarea id="notes" rows="3" placeholder="How did you navigate it? How do you feel now?"></textarea>
+          </div>
+
+          <button type="submit" id="saveLogBtn" class="btn btn-primary" style="width: 100%;">Save Urge Log</button>
+        </form>
+      </div>
+
+      <!-- Past Logs Feed -->
+      <h3>Recent History</h3>
+      <div id="logsFeed" style="margin-top: 1rem;">
+        <p style="color: var(--text-muted);">Sign in to view your logged history.</p>
+      </div>
     </section>
   </main>
 
@@ -299,11 +367,18 @@
     const SUPABASE_ANON_KEY = 'sb_publishable_5gilGHK039UwMAZdjxMCyw_F3_n92y';
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+    let currentUser = null;
+
+    // View Navigation
     function navigateTo(viewId) {
       document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
       document.getElementById(viewId).classList.add('active');
+      if (viewId === 'dashboardView' && currentUser) {
+        fetchUrgeLogs();
+      }
     }
 
+    // Modal Control
     function openAuthModal(mode) {
       const modal = document.getElementById('authModal');
       const title = document.getElementById('authModalTitle');
@@ -327,10 +402,10 @@
 
     function closeAuthModal() {
       const modal = document.getElementById('authModal');
-      if (modal) modal.classList.add('active'); // Wait, remove active class!
       if (modal) modal.classList.remove('active');
     }
 
+    // Auth Submission
     async function handleAuthSubmit(e) {
       e.preventDefault();
       const email = document.getElementById('authEmail').value;
@@ -352,13 +427,126 @@
         }
 
         closeAuthModal();
-        alert(isSignUp ? "Account created successfully!" : "Successfully signed in!");
+        checkSession();
         navigateTo('dashboardView');
       } catch (err) {
         console.error("Auth error:", err);
         alert("An unexpected authentication error occurred.");
       }
     }
+
+    async function handleSignOut() {
+      await supabase.auth.signOut();
+      currentUser = null;
+      updateAuthUI();
+      navigateTo('landingView');
+    }
+
+    // Check & Update User Session State
+    async function checkSession() {
+      const { data: { session } } = await supabase.auth.getSession();
+      currentUser = session ? session.user : null;
+      updateAuthUI();
+      if (currentUser && document.getElementById('dashboardView').classList.contains('active')) {
+        fetchUrgeLogs();
+      }
+    }
+
+    function updateAuthUI() {
+      const signInBtn = document.getElementById('signInBtn');
+      const signUpBtn = document.getElementById('signUpBtn');
+      const signOutBtn = document.getElementById('signOutBtn');
+
+      if (currentUser) {
+        signInBtn.style.display = 'none';
+        signUpBtn.style.display = 'none';
+        signOutBtn.style.display = 'inline-flex';
+      } else {
+        signInBtn.style.display = 'inline-flex';
+        signUpBtn.style.display = 'inline-flex';
+        signOutBtn.style.display = 'none';
+      }
+    }
+
+    // Submit Urge Log to Supabase
+    async function handleUrgeSubmit(e) {
+      e.preventDefault();
+
+      if (!currentUser) {
+        alert("Please sign in or create an account to save your urge logs.");
+        openAuthModal('signin');
+        return;
+      }
+
+      const intensity = parseInt(document.getElementById('intensity').value);
+      const trigger = document.getElementById('trigger').value;
+      const coping = document.getElementById('coping').value;
+      const notes = document.getElementById('notes').value;
+
+      const { data, error } = await supabase
+        .from('urge_logs')
+        .insert([
+          {
+            user_id: currentUser.id,
+            intensity: intensity,
+            trigger: trigger,
+            coping_strategy: coping,
+            notes: notes
+          }
+        ]);
+
+      if (error) {
+        alert("Error saving urge log: " + error.message);
+      } else {
+        alert("Urge log saved successfully!");
+        document.getElementById('trigger').value = '';
+        document.getElementById('coping').value = '';
+        document.getElementById('notes').value = '';
+        document.getElementById('intensity').value = 5;
+        document.getElementById('intensityVal').innerText = 5;
+        fetchUrgeLogs();
+      }
+    }
+
+    // Fetch User Urge Logs
+    async function fetchUrgeLogs() {
+      const feed = document.getElementById('logsFeed');
+      if (!currentUser) {
+        feed.innerHTML = '<p style="color: var(--text-muted);">Sign in to view your logged history.</p>';
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from('urge_logs')
+        .select('*')
+        .eq('user_id', currentUser.id)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        feed.innerHTML = `<p style="color: #ef4444;">Failed to load logs: ${error.message}</p>`;
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        feed.innerHTML = '<p style="color: var(--text-muted);">No urge logs recorded yet.</p>';
+        return;
+      }
+
+      feed.innerHTML = data.map(log => `
+        <div class="log-item">
+          <div class="log-header">
+            <span><strong>Intensity:</strong> ${log.intensity}/10</span>
+            <span>${new Date(log.created_at).toLocaleDateString()} ${new Date(log.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+          </div>
+          <p><strong>Trigger:</strong> ${log.trigger || 'N/A'}</p>
+          ${log.coping_strategy ? `<p style="margin-top: 0.25rem;"><strong>Coping Strategy:</strong> ${log.coping_strategy}</p>` : ''}
+          ${log.notes ? `<p style="margin-top: 0.25rem; color: var(--text-muted); font-size: 0.9rem;">"${log.notes}"</p>` : ''}
+        </div>
+      `).join('');
+    }
+
+    // Run session check on page load
+    checkSession();
   </script>
 </body>
 </html>
