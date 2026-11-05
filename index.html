@@ -341,7 +341,7 @@
         <p>An adaptive recovery toolkit and AI companion meeting you wherever you are on your journey—grounded in evidence-based care, flexible frameworks, and complete confidentiality.</p>
         <div class="hero-actions">
           <button class="btn btn-primary" onclick="openAuthModal('signup')">Get Started Free</button>
-          <button class="btn btn-outline" onclick="navigateTo('dashboardView')">Explore Dashboard</button>
+          <button class="btn btn-outline" onclick="navigateTo('goalsView')">Explore Dashboard</button>
         </div>
       </div>
 
@@ -502,7 +502,7 @@
 
         <h3>Past Journal Entries</h3>
         <div id="journalFeed" style="margin-top: 1rem;">
-          <p style="color: var(--text-muted);">Sign in to view your private journal entries.</p>
+          <p style="color: var(--text-muted);">Sign in to save and view your private journal entries.</p>
         </div>
       </div>
     </section>
@@ -603,7 +603,6 @@
   </div>
 
   <script>
-    // Define global navigation first so buttons work immediately
     window.navigateTo = function(viewId) {
       console.log("Navigating to view:", viewId);
       const views = document.querySelectorAll('.view');
@@ -651,7 +650,6 @@
       if (modal) modal.classList.remove('active');
     };
 
-    // Safe Supabase client initialization
     window.supabaseClient = null;
     window.currentUser = null;
     try {
@@ -738,7 +736,7 @@
         signOutBtn.style.display = 'inline-flex';
       } else {
         signInBtn.style.display = 'inline-flex';
-        signUpBtn.style.display = 'inline-flex';
+        signInBtn.style.display = 'inline-flex';
         signOutBtn.style.display = 'none';
       }
     }
