@@ -116,7 +116,7 @@
     main {
       flex: 1;
       padding: 1.5rem 1.25rem;
-      max-width: 800px;
+      max-width: 1200px;
       width: 100%;
       margin: 0 auto;
     }
@@ -143,7 +143,7 @@
     .hero p {
       color: var(--text-muted);
       font-size: 1.1rem;
-      max-width: 600px;
+      max-width: 700px;
       margin: 0 auto 2rem auto;
     }
 
@@ -151,15 +151,66 @@
       display: flex;
       justify-content: center;
       gap: 1rem;
+      margin-bottom: 3rem;
     }
 
-    /* Form & Cards */
+    /* Grid Cards */
+    .grid-cards {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+      margin-top: 1.5rem;
+    }
+
+    @media (min-width: 640px) {
+      .grid-cards {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .grid-cards {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
     .card {
       background-color: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 1.5rem;
-      margin-bottom: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .card h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-main);
+    }
+
+    .card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .card-link {
+      color: var(--accent);
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+
+    .card-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Form & Dashboard Elements */
+    .dashboard-container {
+      max-width: 800px;
+      margin: 0 auto;
     }
 
     .form-group {
@@ -188,7 +239,6 @@
       border-color: var(--accent);
     }
 
-    /* Intensity Slider Display */
     .range-header {
       display: flex;
       justify-content: space-between;
@@ -203,7 +253,6 @@
       font-weight: 700;
     }
 
-    /* Logs List */
     .log-item {
       background: var(--bg-main);
       border: 1px solid var(--border);
@@ -288,54 +337,91 @@
     <section id="landingView" class="view active">
       <div class="hero">
         <h1>Your Personalized Path to Healing & Growth</h1>
-        <p>An adaptive recovery toolkit and companion meeting you wherever you are on your journey—grounded in evidence-based care and flexible frameworks.</p>
+        <p>An adaptive recovery toolkit and AI companion meeting you wherever you are on your journey—grounded in evidence-based care, flexible frameworks, and complete confidentiality.</p>
         <div class="hero-actions">
           <button class="btn btn-primary" onclick="openAuthModal('signup')">Get Started Free</button>
           <button class="btn btn-outline" onclick="navigateTo('dashboardView')">Explore Dashboard</button>
+        </div>
+      </div>
+
+      <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">Explore App Features & Toolkits</h2>
+      
+      <div class="grid-cards">
+        <div class="card">
+          <div>
+            <h3>AI Recovery Companion</h3>
+            <p>Adaptive, non-judgmental support available 24/7. Flexibly matches 12-Step, SMART Recovery, or mindful frameworks.</p>
+          </div>
+          <a href="#" onclick="navigateTo('dashboardView'); return false;" class="card-link">Open Companion &rarr;</a>
+        </div>
+
+        <div class="card">
+          <div>
+            <h3>Recovery Journal</h3>
+            <p>Private, reflective writing space with step prompts, thought records, and low-pressure daily tracking.</p>
+          </div>
+          <a href="#" onclick="navigateTo('dashboardView'); return false;" class="card-link">Open Journal &rarr;</a>
+        </div>
+
+        <div class="card">
+          <div>
+            <h3>Urge & Trigger Tracker</h3>
+            <p>Log intensity, identify patterns, and record coping strategies in real time using the DENTS framework.</p>
+          </div>
+          <a href="#" onclick="navigateTo('dashboardView'); return false;" class="card-link">Open Tracker &rarr;</a>
+        </div>
+
+        <div class="card">
+          <div>
+            <h3>Community & Meetings</h3>
+            <p>Connect with shared time, local gatherings, peer support networks, and community events.</p>
+          </div>
+          <a href="#" onclick="navigateTo('dashboardView'); return false;" class="card-link">Explore Community &rarr;</a>
         </div>
       </div>
     </section>
 
     <!-- Dashboard & Urge Log View -->
     <section id="dashboardView" class="view">
-      <h2 style="margin-bottom: 0.5rem;">Urge Tracker & Log</h2>
-      <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Track urges, recognize triggers, and log your coping strategies.</p>
+      <div class="dashboard-container">
+        <h2 style="margin-bottom: 0.5rem;">Urge Tracker & Log</h2>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Track urges, recognize triggers, and log your coping strategies.</p>
 
-      <!-- Urge Log Form -->
-      <div class="card">
-        <h3 style="margin-bottom: 1rem;">Log a New Urge</h3>
-        <form onsubmit="handleUrgeSubmit(event)">
-          <div class="form-group">
-            <div class="range-header">
-              <label>Urge Intensity (1-10)</label>
-              <span class="intensity-badge" id="intensityVal">5</span>
+        <!-- Urge Log Form -->
+        <div class="card" style="margin-bottom: 2rem;">
+          <h3 style="margin-bottom: 1rem;">Log a New Urge</h3>
+          <form onsubmit="handleUrgeSubmit(event)">
+            <div class="form-group">
+              <div class="range-header">
+                <label>Urge Intensity (1-10)</label>
+                <span class="intensity-badge" id="intensityVal">5</span>
+              </div>
+              <input type="range" id="intensity" min="1" max="10" value="5" oninput="document.getElementById('intensityVal').innerText = this.value">
             </div>
-            <input type="range" id="intensity" min="1" max="10" value="5" oninput="document.getElementById('intensityVal').innerText = this.value">
-          </div>
 
-          <div class="form-group">
-            <label>Trigger / Context</label>
-            <input type="text" id="trigger" placeholder="e.g., Stress, specific place, social situation" required>
-          </div>
+            <div class="form-group">
+              <label>Trigger / Context</label>
+              <input type="text" id="trigger" placeholder="e.g., Stress, specific place, social situation" required>
+            </div>
 
-          <div class="form-group">
-            <label>Coping Strategy Used</label>
-            <input type="text" id="coping" placeholder="e.g., Deep breathing, walked away, called a friend">
-          </div>
+            <div class="form-group">
+              <label>Coping Strategy Used</label>
+              <input type="text" id="coping" placeholder="e.g., Deep breathing, walked away, called a friend">
+            </div>
 
-          <div class="form-group">
-            <label>Notes & Reflections</label>
-            <textarea id="notes" rows="3" placeholder="How did you navigate it? How do you feel now?"></textarea>
-          </div>
+            <div class="form-group">
+              <label>Notes & Reflections</label>
+              <textarea id="notes" rows="3" placeholder="How did you navigate it? How do you feel now?"></textarea>
+            </div>
 
-          <button type="submit" id="saveLogBtn" class="btn btn-primary" style="width: 100%;">Save Urge Log</button>
-        </form>
-      </div>
+            <button type="submit" id="saveLogBtn" class="btn btn-primary" style="width: 100%;">Save Urge Log</button>
+          </form>
+        </div>
 
-      <!-- Past Logs Feed -->
-      <h3>Recent History</h3>
-      <div id="logsFeed" style="margin-top: 1rem;">
-        <p style="color: var(--text-muted);">Sign in to view your logged history.</p>
+        <h3>Recent History</h3>
+        <div id="logsFeed" style="margin-top: 1rem;">
+          <p style="color: var(--text-muted);">Sign in to view your logged history.</p>
+        </div>
       </div>
     </section>
   </main>
@@ -369,16 +455,15 @@
 
     let currentUser = null;
 
-    // View Navigation
     function navigateTo(viewId) {
       document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
       document.getElementById(viewId).classList.add('active');
+      window.scrollTo(0, 0);
       if (viewId === 'dashboardView' && currentUser) {
         fetchUrgeLogs();
       }
     }
 
-    // Modal Control
     function openAuthModal(mode) {
       const modal = document.getElementById('authModal');
       const title = document.getElementById('authModalTitle');
@@ -405,7 +490,6 @@
       if (modal) modal.classList.remove('active');
     }
 
-    // Auth Submission
     async function handleAuthSubmit(e) {
       e.preventDefault();
       const email = document.getElementById('authEmail').value;
@@ -442,7 +526,6 @@
       navigateTo('landingView');
     }
 
-    // Check & Update User Session State
     async function checkSession() {
       const { data: { session } } = await supabase.auth.getSession();
       currentUser = session ? session.user : null;
@@ -468,7 +551,6 @@
       }
     }
 
-    // Submit Urge Log to Supabase
     async function handleUrgeSubmit(e) {
       e.preventDefault();
 
@@ -483,17 +565,15 @@
       const coping = document.getElementById('coping').value;
       const notes = document.getElementById('notes').value;
 
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('urge_logs')
-        .insert([
-          {
-            user_id: currentUser.id,
-            intensity: intensity,
-            trigger: trigger,
-            coping_strategy: coping,
-            notes: notes
-          }
-        ]);
+        .insert([{
+          user_id: currentUser.id,
+          intensity: intensity,
+          trigger: trigger,
+          coping_strategy: coping,
+          notes: notes
+        }]);
 
       if (error) {
         alert("Error saving urge log: " + error.message);
@@ -508,7 +588,6 @@
       }
     }
 
-    // Fetch User Urge Logs
     async function fetchUrgeLogs() {
       const feed = document.getElementById('logsFeed');
       if (!currentUser) {
@@ -545,7 +624,6 @@
       `).join('');
     }
 
-    // Run session check on page load
     checkSession();
   </script>
 </body>
