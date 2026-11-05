@@ -196,23 +196,24 @@
       margin-bottom: 1.25rem;
     }
 
+    /* Solid Action Button for Each Card */
     .card-action-btn {
-      background: none;
-      border: none;
+      background-color: rgba(13, 148, 136, 0.15);
+      border: 1px solid var(--accent);
       color: var(--accent);
       font-weight: 600;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
       cursor: pointer;
-      text-align: left;
-      padding: 0;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
+      text-align: center;
+      transition: background-color 0.2s ease, color 0.2s ease;
+      width: 100%;
     }
 
     .card-action-btn:hover {
-      color: var(--accent-hover);
-      text-decoration: underline;
+      background-color: var(--accent);
+      color: #ffffff;
     }
 
     /* Container for Modules */
