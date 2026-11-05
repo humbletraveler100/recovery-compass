@@ -120,12 +120,13 @@
       margin: 0 auto;
     }
 
+    /* Strict View Visibility Rules */
     .view {
-      display: none !important;
+      display: none;
     }
 
     .view.active {
-      display: block !important;
+      display: block;
     }
 
     .hero {
@@ -614,18 +615,22 @@
     let currentUser = null;
 
     function navigateTo(viewId) {
-      console.log("Navigating to view:", viewId);
+      console.log("Switching view to:", viewId);
+      
+      // Hide all views
       const views = document.querySelectorAll('.view');
       views.forEach(v => {
         v.classList.remove('active');
       });
       
+      // Show target view
       const targetView = document.getElementById(viewId);
       if (targetView) {
         targetView.classList.add('active');
       } else {
-        console.error("Target view not found:", viewId);
+        console.error("View element not found for id:", viewId);
       }
+      
       window.scrollTo(0, 0);
 
       if (viewId === 'dashboardView' && currentUser) {
@@ -724,7 +729,7 @@
       } else {
         signInBtn.style.display = 'inline-flex';
         signInBtn.style.display = 'inline-flex';
-        signOutBtn.style.display = 'none';
+        signInBtn.style.display = 'none';
       }
     }
 
