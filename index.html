@@ -62,7 +62,6 @@
       align-items: center;
       gap: 0.75rem;
       cursor: pointer;
-      text-decoration: none;
     }
 
     .anchor-logo {
@@ -90,7 +89,6 @@
       cursor: pointer;
       border: 1px solid transparent;
       transition: all 0.2s ease;
-      text-decoration: none;
     }
 
     .btn-primary {
@@ -120,13 +118,12 @@
       margin: 0 auto;
     }
 
-    /* Strict View Visibility Rules */
     .view {
-      display: none;
+      display: none !important;
     }
 
     .view.active {
-      display: block;
+      display: block !important;
     }
 
     .hero {
@@ -204,8 +201,6 @@
       border-radius: 8px;
       cursor: pointer;
       text-align: center;
-      text-decoration: none;
-      display: block;
       width: 100%;
       transition: background-color 0.2s ease, color 0.2s ease;
     }
@@ -359,7 +354,7 @@
             <h3>AI Recovery Companion</h3>
             <p>Adaptive, non-judgmental support available 24/7. Flexibly matches 12-Step, SMART Recovery, or mindful frameworks.</p>
           </div>
-          <a href="javascript:void(0)" class="card-action-btn" onclick="navigateTo('aiView')">Open Companion &rarr;</a>
+          <button class="card-action-btn" onclick="navigateTo('aiView')">Open Companion &rarr;</button>
         </div>
 
         <div class="card">
@@ -368,7 +363,7 @@
             <h3>Recovery Journal</h3>
             <p>Private, reflective writing space with step prompts, thought records, and low-pressure daily tracking.</p>
           </div>
-          <a href="javascript:void(0)" class="card-action-btn" onclick="navigateTo('journalView')">Open Journal &rarr;</a>
+          <button class="card-action-btn" onclick="navigateTo('journalView')">Open Journal &rarr;</button>
         </div>
 
         <div class="card">
@@ -377,7 +372,7 @@
             <h3>Trigger & Craving Log</h3>
             <p>Log cravings in real time, review intensity patterns, and use the DENTS framework tools.</p>
           </div>
-          <a href="javascript:void(0)" class="card-action-btn" onclick="navigateTo('dashboardView')">Track Triggers &rarr;</a>
+          <button class="card-action-btn" onclick="navigateTo('dashboardView')">Track Triggers &rarr;</button>
         </div>
 
         <div class="card">
@@ -386,7 +381,7 @@
             <h3>Goals & Progress Tracker</h3>
             <p>Celebrate clean time milestones, daily habit streaks, and personal growth step-by-step.</p>
           </div>
-          <a href="javascript:void(0)" class="card-action-btn" onclick="navigateTo('goalsView')">View Progress &rarr;</a>
+          <button class="card-action-btn" onclick="navigateTo('goalsView')">View Progress &rarr;</button>
         </div>
 
         <div class="card">
@@ -395,7 +390,7 @@
             <h3>Nutrition & Wellness</h3>
             <p>Support mental stability with balanced nutrition, GABA-boosting foods, and proper sleep hygiene.</p>
           </div>
-          <a href="javascript:void(0)" class="card-action-btn" onclick="navigateTo('wellnessView')">Explore Wellness &rarr;</a>
+          <button class="card-action-btn" onclick="navigateTo('wellnessView')">Explore Wellness &rarr;</button>
         </div>
 
         <div class="card">
@@ -404,7 +399,7 @@
             <h3>Quotes & Inspiration</h3>
             <p>Curated daily reflections, motivational mantras, and encouraging words from lived experiences.</p>
           </div>
-          <a href="javascript:void(0)" class="card-action-btn" onclick="navigateTo('quotesView')">Get Inspired &rarr;</a>
+          <button class="card-action-btn" onclick="navigateTo('quotesView')">Get Inspired &rarr;</button>
         </div>
 
         <div class="card">
@@ -413,7 +408,7 @@
             <h3>Blog & Educational Reads</h3>
             <p>Articles on brain rewiring, post-acute withdrawal, coping mechanisms, and recovery science.</p>
           </div>
-          <a href="javascript:void(0)" class="card-action-btn" onclick="navigateTo('blogView')">Read Library &rarr;</a>
+          <button class="card-action-btn" onclick="navigateTo('blogView')">Read Library &rarr;</button>
         </div>
 
         <div class="card">
@@ -422,7 +417,7 @@
             <h3>Useful Links & Hotlines</h3>
             <p>Direct directories for support networks, 12-step groups, SMART recovery, and crisis resources.</p>
           </div>
-          <a href="javascript:void(0)" class="card-action-btn" onclick="navigateTo('linksView')">Access Links &rarr;</a>
+          <button class="card-action-btn" onclick="navigateTo('linksView')">Access Links &rarr;</button>
         </div>
       </div>
     </section>
@@ -507,7 +502,7 @@
 
         <h3>Past Journal Entries</h3>
         <div id="journalFeed" style="margin-top: 1rem;">
-          <p style="color: var(--text-muted);">Sign in to view your private journal entries.</p>
+          <p style="color: var(--text-muted);">Sign in to save and view your private journal entries.</p>
         </div>
       </div>
     </section>
@@ -608,40 +603,49 @@
   </div>
 
   <script>
-    const SUPABASE_URL = 'https://oriymofshnevqgfqthxj.supabase.co';
-    const SUPABASE_ANON_KEY = 'sb_publishable_5gilGHK039UwMAZdjxMCyw_F3_n92y';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // Safe Supabase client initialization using unique variable name
+    let supabaseClient = null;
+    try {
+      const SUPABASE_URL = 'https://oriymofshnevqgfqthxj.supabase.co';
+      const SUPABASE_ANON_KEY = 'sb_publishable_5gilGHK039UwMAZdjxMCyw_F3_n92y';
+      if (window.supabase && window.supabase.createClient) {
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      }
+    } catch (err) {
+      console.error("Supabase init error:", err);
+    }
 
     let currentUser = null;
 
-    function navigateTo(viewId) {
-      console.log("Switching view to:", viewId);
-      
-      // Hide all views
-      const views = document.querySelectorAll('.view');
-      views.forEach(v => {
-        v.classList.remove('active');
-      });
-      
-      // Show target view
-      const targetView = document.getElementById(viewId);
-      if (targetView) {
-        targetView.classList.add('active');
-      } else {
-        console.error("View element not found for id:", viewId);
-      }
-      
-      window.scrollTo(0, 0);
+    // Attach to window explicitly to prevent scope reference errors
+    window.navigateTo = function(viewId) {
+      console.log("Navigating to view:", viewId);
+      try {
+        const views = document.querySelectorAll('.view');
+        views.forEach(v => {
+          v.classList.remove('active');
+        });
+        
+        const targetView = document.getElementById(viewId);
+        if (targetView) {
+          targetView.classList.add('active');
+        } else {
+          console.error("Target view not found:", viewId);
+        }
+        window.scrollTo(0, 0);
 
-      if (viewId === 'dashboardView' && currentUser) {
-        fetchUrgeLogs();
+        if (viewId === 'dashboardView' && currentUser && supabaseClient) {
+          fetchUrgeLogs();
+        }
+        if (viewId === 'journalView' && currentUser && supabaseClient) {
+          fetchJournalEntries();
+        }
+      } catch (e) {
+        console.error("Navigation error:", e);
       }
-      if (viewId === 'journalView' && currentUser) {
-        fetchJournalEntries();
-      }
-    }
+    };
 
-    function openAuthModal(mode) {
+    window.openAuthModal = function(mode) {
       const modal = document.getElementById('authModal');
       const title = document.getElementById('authModalTitle');
       const subtitle = document.getElementById('authModalSubtitle');
@@ -660,15 +664,19 @@
       }
       
       modal.classList.add('active');
-    }
+    };
 
-    function closeAuthModal() {
+    window.closeAuthModal = function() {
       const modal = document.getElementById('authModal');
       if (modal) modal.classList.remove('active');
-    }
+    };
 
-    async function handleAuthSubmit(e) {
+    window.handleAuthSubmit = async function(e) {
       e.preventDefault();
+      if (!supabaseClient) {
+        alert("Database connection not initialized.");
+        return;
+      }
       const email = document.getElementById('authEmail').value;
       const password = document.getElementById('authPassword').value;
       const submitBtn = document.getElementById('authSubmitBtn');
@@ -677,9 +685,9 @@
       try {
         let response;
         if (isSignUp) {
-          response = await supabase.auth.signUp({ email, password });
+          response = await supabaseClient.auth.signUp({ email, password });
         } else {
-          response = await supabase.auth.signInWithPassword({ email, password });
+          response = await supabaseClient.auth.signInWithPassword({ email, password });
         }
 
         if (response.error) {
@@ -695,25 +703,32 @@
         console.error("Auth error:", err);
         alert("An unexpected authentication error occurred.");
       }
-    }
+    };
 
-    async function handleSignOut() {
-      await supabase.auth.signOut();
+    window.handleSignOut = async function() {
+      if (supabaseClient) {
+        await supabaseClient.auth.signOut();
+      }
       currentUser = null;
       updateAuthUI();
       navigateTo('landingView');
       alert("Signed out successfully.");
-    }
+    };
 
     async function checkSession() {
-      const { data: { session } } = await supabase.auth.getSession();
-      currentUser = session ? session.user : null;
-      updateAuthUI();
-      if (currentUser && document.getElementById('dashboardView').classList.contains('active')) {
-        fetchUrgeLogs();
-      }
-      if (currentUser && document.getElementById('journalView').classList.contains('active')) {
-        fetchJournalEntries();
+      if (!supabaseClient) return;
+      try {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        currentUser = session ? session.user : null;
+        updateAuthUI();
+        if (currentUser && document.getElementById('dashboardView').classList.contains('active')) {
+          fetchUrgeLogs();
+        }
+        if (currentUser && document.getElementById('journalView').classList.contains('active')) {
+          fetchJournalEntries();
+        }
+      } catch (e) {
+        console.error("Session check error:", e);
       }
     }
 
@@ -722,6 +737,8 @@
       const signUpBtn = document.getElementById('signUpBtn');
       const signOutBtn = document.getElementById('signOutBtn');
 
+      if (!signInBtn || !signUpBtn || !signOutBtn) return;
+
       if (currentUser) {
         signInBtn.style.display = 'none';
         signUpBtn.style.display = 'none';
@@ -729,14 +746,13 @@
       } else {
         signInBtn.style.display = 'inline-flex';
         signInBtn.style.display = 'inline-flex';
-        signInBtn.style.display = 'none';
+        signOutBtn.style.display = 'none';
       }
     }
 
-    async function handleUrgeSubmit(e) {
+    window.handleUrgeSubmit = async function(e) {
       e.preventDefault();
-
-      if (!currentUser) {
+      if (!currentUser || !supabaseClient) {
         alert("Please sign in or create an account to save your urge logs.");
         openAuthModal('signin');
         return;
@@ -747,7 +763,7 @@
       const coping = document.getElementById('coping').value;
       const notes = document.getElementById('notes').value;
 
-      const { error } = await supabase
+      const { error } = await supabaseClient
         .from('urge_logs')
         .insert([{
           user_id: currentUser.id,
@@ -768,16 +784,16 @@
         document.getElementById('intensityVal').innerText = 5;
         fetchUrgeLogs();
       }
-    }
+    };
 
     async function fetchUrgeLogs() {
       const feed = document.getElementById('logsFeed');
-      if (!currentUser) {
+      if (!currentUser || !supabaseClient) {
         feed.innerHTML = '<p style="color: var(--text-muted);">Sign in to view your logged history.</p>';
         return;
       }
 
-      const { data, error } = await supabase
+      const { data, error } = await supabaseClient
         .from('urge_logs')
         .select('*')
         .eq('user_id', currentUser.id)
@@ -806,7 +822,7 @@
       `).join('');
     }
 
-    function applyJournalPrompt(promptType) {
+    window.applyJournalPrompt = function(promptType) {
       const textarea = document.getElementById('journalContent');
       if (promptType === 'Thought Record') {
         textarea.placeholder = "1. Triggering Situation:\n2. Automatic Thoughts:\n3. Emotional Response:\n4. Balanced Alternative Thought:";
@@ -817,12 +833,11 @@
       } else {
         textarea.placeholder = "Write freely here...";
       }
-    }
+    };
 
-    async function handleJournalSubmit(e) {
+    window.handleJournalSubmit = async function(e) {
       e.preventDefault();
-
-      if (!currentUser) {
+      if (!currentUser || !supabaseClient) {
         alert("Please sign in or create an account to save your journal entries.");
         openAuthModal('signin');
         return;
@@ -832,7 +847,7 @@
       const title = document.getElementById('journalTitle').value;
       const content = document.getElementById('journalContent').value;
 
-      const { error } = await supabase
+      const { error } = await supabaseClient
         .from('journal_entries')
         .insert([{
           user_id: currentUser.id,
@@ -849,16 +864,16 @@
         document.getElementById('journalContent').value = '';
         fetchJournalEntries();
       }
-    }
+    };
 
     async function fetchJournalEntries() {
       const feed = document.getElementById('journalFeed');
-      if (!currentUser) {
+      if (!currentUser || !supabaseClient) {
         feed.innerHTML = '<p style="color: var(--text-muted);">Sign in to view your private journal entries.</p>';
         return;
       }
 
-      const { data, error } = await supabase
+      const { data, error } = await supabaseClient
         .from('journal_entries')
         .select('*')
         .eq('user_id', currentUser.id)
@@ -886,7 +901,9 @@
       `).join('');
     }
 
-    checkSession();
+    if (supabaseClient) {
+      checkSession();
+    }
   </script>
 </body>
 </html>
