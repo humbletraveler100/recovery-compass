@@ -502,7 +502,7 @@
 
         <h3>Past Journal Entries</h3>
         <div id="journalFeed" style="margin-top: 1rem;">
-          <p style="color: var(--text-muted);">Sign in to save and view your private journal entries.</p>
+          <p style="color: var(--text-muted);">Sign in to view your private journal entries.</p>
         </div>
       </div>
     </section>
@@ -603,45 +603,25 @@
   </div>
 
   <script>
-    // Safe Supabase client initialization using unique variable name
-    let supabaseClient = null;
-    try {
-      const SUPABASE_URL = 'https://oriymofshnevqgfqthxj.supabase.co';
-      const SUPABASE_ANON_KEY = 'sb_publishable_5gilGHK039UwMAZdjxMCyw_F3_n92y';
-      if (window.supabase && window.supabase.createClient) {
-        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-      }
-    } catch (err) {
-      console.error("Supabase init error:", err);
-    }
-
-    let currentUser = null;
-
-    // Attach to window explicitly to prevent scope reference errors
+    // Define global navigation first so buttons work immediately
     window.navigateTo = function(viewId) {
       console.log("Navigating to view:", viewId);
-      try {
-        const views = document.querySelectorAll('.view');
-        views.forEach(v => {
-          v.classList.remove('active');
-        });
-        
-        const targetView = document.getElementById(viewId);
-        if (targetView) {
-          targetView.classList.add('active');
-        } else {
-          console.error("Target view not found:", viewId);
-        }
-        window.scrollTo(0, 0);
+      const views = document.querySelectorAll('.view');
+      views.forEach(function(v) {
+        v.classList.remove('active');
+      });
+      
+      const targetView = document.getElementById(viewId);
+      if (targetView) {
+        targetView.classList.add('active');
+      }
+      window.scrollTo(0, 0);
 
-        if (viewId === 'dashboardView' && currentUser && supabaseClient) {
-          fetchUrgeLogs();
-        }
-        if (viewId === 'journalView' && currentUser && supabaseClient) {
-          fetchJournalEntries();
-        }
-      } catch (e) {
-        console.error("Navigation error:", e);
+      if (viewId === 'dashboardView' && window.currentUser && window.supabaseClient) {
+        fetchUrgeLogs();
+      }
+      if (viewId === 'journalView' && window.currentUser && window.supabaseClient) {
+        fetchJournalEntries();
       }
     };
 
@@ -671,9 +651,22 @@
       if (modal) modal.classList.remove('active');
     };
 
+    // Safe Supabase client initialization
+    window.supabaseClient = null;
+    window.currentUser = null;
+    try {
+      const SUPABASE_URL = 'https://oriymofshnevqgfqthxj.supabase.co';
+      const SUPABASE_ANON_KEY = 'sb_publishable_5gilGHK039UwMAZdjxMCyw_F3_n92y';
+      if (window.supabase && window.supabase.createClient) {
+        window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      }
+    } catch (err) {
+      console.error("Supabase init error:", err);
+    }
+
     window.handleAuthSubmit = async function(e) {
       e.preventDefault();
-      if (!supabaseClient) {
+      if (!window.supabaseClient) {
         alert("Database connection not initialized.");
         return;
       }
@@ -685,9 +678,9 @@
       try {
         let response;
         if (isSignUp) {
-          response = await supabaseClient.auth.signUp({ email, password });
+          response = await window.supabaseClient.auth.signUp({ email, password });
         } else {
-          response = await supabaseClient.auth.signInWithPassword({ email, password });
+          response = await window.supabaseClient.auth.signInWithPassword({ email, password });
         }
 
         if (response.error) {
@@ -706,25 +699,25 @@
     };
 
     window.handleSignOut = async function() {
-      if (supabaseClient) {
-        await supabaseClient.auth.signOut();
+      if (window.supabaseClient) {
+        await window.supabaseClient.auth.signOut();
       }
-      currentUser = null;
+      window.currentUser = null;
       updateAuthUI();
       navigateTo('landingView');
       alert("Signed out successfully.");
     };
 
     async function checkSession() {
-      if (!supabaseClient) return;
+      if (!window.supabaseClient) return;
       try {
-        const { data: { session } } = await supabaseClient.auth.getSession();
-        currentUser = session ? session.user : null;
+        const { data: { session } } = await window.supabaseClient.auth.getSession();
+        window.currentUser = session ? session.user : null;
         updateAuthUI();
-        if (currentUser && document.getElementById('dashboardView').classList.contains('active')) {
+        if (window.currentUser && document.getElementById('dashboardView').classList.contains('active')) {
           fetchUrgeLogs();
         }
-        if (currentUser && document.getElementById('journalView').classList.contains('active')) {
+        if (window.currentUser && document.getElementById('journalView').classList.contains('active')) {
           fetchJournalEntries();
         }
       } catch (e) {
@@ -739,20 +732,20 @@
 
       if (!signInBtn || !signUpBtn || !signOutBtn) return;
 
-      if (currentUser) {
+      if (window.currentUser) {
         signInBtn.style.display = 'none';
         signUpBtn.style.display = 'none';
         signOutBtn.style.display = 'inline-flex';
       } else {
         signInBtn.style.display = 'inline-flex';
-        signInBtn.style.display = 'inline-flex';
+        signUpBtn.style.display = 'inline-flex';
         signOutBtn.style.display = 'none';
       }
     }
 
     window.handleUrgeSubmit = async function(e) {
       e.preventDefault();
-      if (!currentUser || !supabaseClient) {
+      if (!window.currentUser || !window.supabaseClient) {
         alert("Please sign in or create an account to save your urge logs.");
         openAuthModal('signin');
         return;
@@ -763,10 +756,10 @@
       const coping = document.getElementById('coping').value;
       const notes = document.getElementById('notes').value;
 
-      const { error } = await supabaseClient
+      const { error } = await window.supabaseClient
         .from('urge_logs')
         .insert([{
-          user_id: currentUser.id,
+          user_id: window.currentUser.id,
           intensity: intensity,
           trigger: trigger,
           coping_strategy: coping,
@@ -788,15 +781,15 @@
 
     async function fetchUrgeLogs() {
       const feed = document.getElementById('logsFeed');
-      if (!currentUser || !supabaseClient) {
+      if (!window.currentUser || !window.supabaseClient) {
         feed.innerHTML = '<p style="color: var(--text-muted);">Sign in to view your logged history.</p>';
         return;
       }
 
-      const { data, error } = await supabaseClient
+      const { data, error } = await window.supabaseClient
         .from('urge_logs')
         .select('*')
-        .eq('user_id', currentUser.id)
+        .eq('user_id', window.currentUser.id)
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -837,7 +830,7 @@
 
     window.handleJournalSubmit = async function(e) {
       e.preventDefault();
-      if (!currentUser || !supabaseClient) {
+      if (!window.currentUser || !window.supabaseClient) {
         alert("Please sign in or create an account to save your journal entries.");
         openAuthModal('signin');
         return;
@@ -847,10 +840,10 @@
       const title = document.getElementById('journalTitle').value;
       const content = document.getElementById('journalContent').value;
 
-      const { error } = await supabaseClient
+      const { error } = await window.supabaseClient
         .from('journal_entries')
         .insert([{
-          user_id: currentUser.id,
+          user_id: window.currentUser.id,
           prompt_type: prompt_type,
           title: title,
           content: content
@@ -868,15 +861,15 @@
 
     async function fetchJournalEntries() {
       const feed = document.getElementById('journalFeed');
-      if (!currentUser || !supabaseClient) {
+      if (!window.currentUser || !window.supabaseClient) {
         feed.innerHTML = '<p style="color: var(--text-muted);">Sign in to view your private journal entries.</p>';
         return;
       }
 
-      const { data, error } = await supabaseClient
+      const { data, error } = await window.supabaseClient
         .from('journal_entries')
         .select('*')
-        .eq('user_id', currentUser.id)
+        .eq('user_id', window.currentUser.id)
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -901,7 +894,7 @@
       `).join('');
     }
 
-    if (supabaseClient) {
+    if (window.supabaseClient) {
       checkSession();
     }
   </script>
