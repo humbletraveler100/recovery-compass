@@ -176,6 +176,13 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      cursor: pointer;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
     }
 
     .card-icon {
@@ -198,13 +205,7 @@
     .card-link {
       color: var(--accent);
       font-weight: 600;
-      text-decoration: none;
       font-size: 0.9rem;
-      cursor: pointer;
-    }
-
-    .card-link:hover {
-      text-decoration: underline;
     }
 
     /* Container for Modules */
@@ -276,7 +277,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(0, 0, 0, 0.75);
       backdrop-filter: blur(4px);
       display: none;
       align-items: center;
@@ -286,7 +287,7 @@
     }
 
     .modal-overlay.active {
-      display: flex;
+      display: flex !important;
     }
 
     .modal-card {
@@ -347,89 +348,88 @@
       <h2 style="font-size: 1.4rem; margin-bottom: 1rem;">Explore App Features & Toolkits</h2>
       
       <div class="grid-cards">
-        <div class="card">
+        <div class="card" onclick="openFeatureView('AI Recovery Companion', 'Adaptive, non-judgmental AI chat support grounded in SMART recovery, 12-Step, and mindfulness principles.')">
           <div>
             <div class="card-icon">🤖</div>
             <h3>AI Recovery Companion</h3>
             <p>Adaptive, non-judgmental support available 24/7. Flexibly matches 12-Step, SMART Recovery, or mindful frameworks.</p>
           </div>
-          <a onclick="openFeatureView('AI Recovery Companion', 'Adaptive, non-judgmental AI chat and support tailored to your chosen recovery framework.')" class="card-link">Open Companion &rarr;</a>
+          <span class="card-link">Open Companion &rarr;</span>
         </div>
 
-        <div class="card">
+        <div class="card" onclick="navigateTo('journalView')">
           <div>
             <div class="card-icon">📖</div>
             <h3>Recovery Journal</h3>
             <p>Private, reflective writing space with step prompts, thought records, and low-pressure daily tracking.</p>
           </div>
-          <a onclick="navigateTo('journalView')" class="card-link">Open Journal &rarr;</a>
+          <span class="card-link">Open Journal &rarr;</span>
         </div>
 
-        <div class="card">
+        <div class="card" onclick="navigateTo('dashboardView')">
           <div>
             <div class="card-icon">⚡</div>
             <h3>Trigger & Craving Log</h3>
             <p>Log cravings in real time, review intensity patterns, and use the DENTS framework tools.</p>
           </div>
-          <a onclick="navigateTo('dashboardView')" class="card-link">Track Triggers &rarr;</a>
+          <span class="card-link">Track Triggers &rarr;</span>
         </div>
 
-        <div class="card">
+        <div class="card" onclick="openFeatureView('Goals & Progress Tracker', 'Track clean time milestones, habit streaks, and goal progress.')">
           <div>
             <div class="card-icon">🎯</div>
             <h3>Goals & Progress Tracker</h3>
             <p>Celebrate clean time milestones, daily habit streaks, and personal growth step-by-step.</p>
           </div>
-          <a onclick="openFeatureView('Goals & Progress Tracker', 'Monitor your clean time milestones, daily habit streaks, and personal achievements.')" class="card-link">View Progress &rarr;</a>
+          <span class="card-link">View Progress &rarr;</span>
         </div>
 
-        <div class="card">
+        <div class="card" onclick="openFeatureView('Nutrition & Wellness', 'Explore nutritional strategies, sleep hygiene guides, and somatic nervous system regulation.')">
           <div>
             <div class="card-icon">🥗</div>
             <h3>Nutrition & Wellness</h3>
             <p>Support mental stability with balanced nutrition, GABA-boosting foods, and proper sleep hygiene.</p>
           </div>
-          <a onclick="openFeatureView('Nutrition & Wellness', 'Explore nutritional guides, sleep hygiene tips, and physical wellness routines.')" class="card-link">Explore Wellness &rarr;</a>
+          <span class="card-link">Explore Wellness &rarr;</span>
         </div>
 
-        <div class="card">
+        <div class="card" onclick="openFeatureView('Quotes & Inspiration', 'Daily inspirational reflections and motivational mantras to keep you grounded.')">
           <div>
             <div class="card-icon">💡</div>
             <h3>Quotes & Inspiration</h3>
             <p>Curated daily reflections, motivational mantras, and encouraging words from lived experiences.</p>
           </div>
-          <a onclick="openFeatureView('Quotes & Inspiration', 'Daily motivational reflections and encouraging words to ground your day.')" class="card-link">Get Inspired &rarr;</a>
+          <span class="card-link">Get Inspired &rarr;</span>
         </div>
 
-        <div class="card">
+        <div class="card" onclick="openFeatureView('Blog & Educational Reads', 'Access articles on neuroplasticity, post-acute withdrawal, and trauma-informed recovery science.')">
           <div>
             <div class="card-icon">📚</div>
             <h3>Blog & Educational Reads</h3>
             <p>Articles on brain rewiring, post-acute withdrawal, coping mechanisms, and recovery science.</p>
           </div>
-          <a onclick="openFeatureView('Blog & Educational Reads', 'Educational resources covering brain science, coping mechanisms, and recovery literature.')" class="card-link">Read Library &rarr;</a>
+          <span class="card-link">Read Library &rarr;</span>
         </div>
 
-        <div class="card">
+        <div class="card" onclick="openFeatureView('Useful Links & Hotlines', 'Direct access to national directories, 988 lifeline, SAMHSA, and local support resources.')">
           <div>
             <div class="card-icon">🔗</div>
             <h3>Useful Links & Hotlines</h3>
             <p>Direct directories for support networks, 12-step groups, SMART recovery, and crisis resources.</p>
           </div>
-          <a onclick="openFeatureView('Useful Links & Hotlines', 'Immediate crisis resources, support lines, and community directories.')" class="card-link">Access Links &rarr;</a>
+          <span class="card-link">Access Links &rarr;</span>
         </div>
       </div>
     </section>
 
-    <!-- Dashboard & Urge Log View -->
+    <!-- Urge Tracker Dashboard View -->
     <section id="dashboardView" class="view">
       <div class="dashboard-container">
         <button class="btn btn-outline" onclick="navigateTo('landingView')" style="margin-bottom: 1.5rem;">&larr; Back to Home</button>
-        <h2 style="margin-bottom: 0.5rem;">Urge Tracker & Log</h2>
+        <h2 style="margin-bottom: 0.5rem;">⚡ Urge Tracker & Log</h2>
         <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Track urges, recognize triggers, and log your coping strategies.</p>
 
-        <!-- Urge Log Form -->
-        <div class="card" style="margin-bottom: 2rem;">
+        <div class="card" style="margin-bottom: 2rem; cursor: default;">
           <h3 style="margin-bottom: 1rem;">Log a New Urge</h3>
           <form onsubmit="handleUrgeSubmit(event)">
             <div class="form-group">
@@ -455,13 +455,13 @@
               <textarea id="notes" rows="3" placeholder="How did you navigate it? How do you feel now?"></textarea>
             </div>
 
-            <button type="submit" id="saveLogBtn" class="btn btn-primary" style="width: 100%;">Save Urge Log</button>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Save Urge Log</button>
           </form>
         </div>
 
         <h3>Recent History</h3>
         <div id="logsFeed" style="margin-top: 1rem;">
-          <p style="color: var(--text-muted);">Sign in to view your logged history.</p>
+          <p style="color: var(--text-muted);">Sign in to save and view your urge history.</p>
         </div>
       </div>
     </section>
@@ -471,9 +471,9 @@
       <div class="dashboard-container">
         <button class="btn btn-outline" onclick="navigateTo('landingView')" style="margin-bottom: 1.5rem;">&larr; Back to Home</button>
         <h2 style="margin-bottom: 0.5rem;">📖 Recovery Journal</h2>
-        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Private, reflective writing space with step prompts, thought records, and daily check-ins.</p>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Private, reflective writing space with step prompts and daily check-ins.</p>
 
-        <div class="card" style="margin-bottom: 2rem;">
+        <div class="card" style="margin-bottom: 2rem; cursor: default;">
           <h3 style="margin-bottom: 1rem;">Create Journal Entry</h3>
           <form onsubmit="handleJournalSubmit(event)">
             <div class="form-group">
@@ -502,7 +502,7 @@
 
         <h3>Past Journal Entries</h3>
         <div id="journalFeed" style="margin-top: 1rem;">
-          <p style="color: var(--text-muted);">Sign in to view your private journal entries.</p>
+          <p style="color: var(--text-muted);">Sign in to save and view your private journal entries.</p>
         </div>
       </div>
     </section>
@@ -511,11 +511,11 @@
     <section id="featureView" class="view">
       <div class="dashboard-container">
         <button class="btn btn-outline" onclick="navigateTo('landingView')" style="margin-bottom: 1.5rem;">&larr; Back to Home</button>
-        <div class="card">
+        <div class="card" style="cursor: default;">
           <h2 id="featureTitle" style="margin-bottom: 0.75rem;">Feature</h2>
           <p id="featureDesc" style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 1.05rem;"></p>
           <div style="background: var(--bg-main); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border);">
-            <p style="color: var(--text-muted);">This module is currently being configured for your account. Check back soon for full interactive tools!</p>
+            <p style="color: var(--text-muted);">This module is currently connected to your app architecture. Interactive tools and direct database persistence for this view will load here.</p>
           </div>
         </div>
       </div>
@@ -551,10 +551,15 @@
 
     let currentUser = null;
 
+    // Direct View Switcher
     function navigateTo(viewId) {
       document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-      document.getElementById(viewId).classList.add('active');
+      const targetView = document.getElementById(viewId);
+      if (targetView) {
+        targetView.classList.add('active');
+      }
       window.scrollTo(0, 0);
+
       if (viewId === 'dashboardView' && currentUser) {
         fetchUrgeLogs();
       }
@@ -569,6 +574,7 @@
       navigateTo('featureView');
     }
 
+    // Authentication Modals
     function openAuthModal(mode) {
       const modal = document.getElementById('authModal');
       const title = document.getElementById('authModalTitle');
@@ -661,7 +667,7 @@
       }
     }
 
-    // Urge Logging
+    // Urge Logging Functions
     async function handleUrgeSubmit(e) {
       e.preventDefault();
 
@@ -735,7 +741,7 @@
       `).join('');
     }
 
-    // Recovery Journal Functions
+    // Journal Functions
     function applyJournalPrompt(promptType) {
       const textarea = document.getElementById('journalContent');
       if (promptType === 'Thought Record') {
