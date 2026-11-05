@@ -196,7 +196,6 @@
       margin-bottom: 1.25rem;
     }
 
-    /* Solid Action Button for Each Card */
     .card-action-btn {
       background-color: rgba(13, 148, 136, 0.15);
       border: 1px solid var(--accent);
@@ -362,7 +361,7 @@
             <h3>AI Recovery Companion</h3>
             <p>Adaptive, non-judgmental support available 24/7. Flexibly matches 12-Step, SMART Recovery, or mindful frameworks.</p>
           </div>
-          <button class="card-action-btn" onclick="openFeatureView('AI Recovery Companion', 'Adaptive, non-judgmental AI chat support grounded in SMART recovery, 12-Step, and mindfulness principles.')">Open Companion &rarr;</button>
+          <button class="card-action-btn" onclick="navigateTo('aiView')">Open Companion &rarr;</button>
         </div>
 
         <div class="card">
@@ -389,7 +388,7 @@
             <h3>Goals & Progress Tracker</h3>
             <p>Celebrate clean time milestones, daily habit streaks, and personal growth step-by-step.</p>
           </div>
-          <button class="card-action-btn" onclick="openFeatureView('Goals & Progress Tracker', 'Track clean time milestones, habit streaks, and goal progress.')">View Progress &rarr;</button>
+          <button class="card-action-btn" onclick="navigateTo('goalsView')">View Progress &rarr;</button>
         </div>
 
         <div class="card">
@@ -398,7 +397,7 @@
             <h3>Nutrition & Wellness</h3>
             <p>Support mental stability with balanced nutrition, GABA-boosting foods, and proper sleep hygiene.</p>
           </div>
-          <button class="card-action-btn" onclick="openFeatureView('Nutrition & Wellness', 'Explore nutritional strategies, sleep hygiene guides, and somatic nervous system regulation.')">Explore Wellness &rarr;</button>
+          <button class="card-action-btn" onclick="navigateTo('wellnessView')">Explore Wellness &rarr;</button>
         </div>
 
         <div class="card">
@@ -407,7 +406,7 @@
             <h3>Quotes & Inspiration</h3>
             <p>Curated daily reflections, motivational mantras, and encouraging words from lived experiences.</p>
           </div>
-          <button class="card-action-btn" onclick="openFeatureView('Quotes & Inspiration', 'Daily inspirational reflections and motivational mantras to keep you grounded.')">Get Inspired &rarr;</button>
+          <button class="card-action-btn" onclick="navigateTo('quotesView')">Get Inspired &rarr;</button>
         </div>
 
         <div class="card">
@@ -416,7 +415,7 @@
             <h3>Blog & Educational Reads</h3>
             <p>Articles on brain rewiring, post-acute withdrawal, coping mechanisms, and recovery science.</p>
           </div>
-          <button class="card-action-btn" onclick="openFeatureView('Blog & Educational Reads', 'Access articles on neuroplasticity, post-acute withdrawal, and trauma-informed recovery science.')">Read Library &rarr;</button>
+          <button class="card-action-btn" onclick="navigateTo('blogView')">Read Library &rarr;</button>
         </div>
 
         <div class="card">
@@ -425,7 +424,7 @@
             <h3>Useful Links & Hotlines</h3>
             <p>Direct directories for support networks, 12-step groups, SMART recovery, and crisis resources.</p>
           </div>
-          <button class="card-action-btn" onclick="openFeatureView('Useful Links & Hotlines', 'Direct access to national directories, 988 lifeline, SAMHSA, and local support resources.')">Access Links &rarr;</button>
+          <button class="card-action-btn" onclick="navigateTo('linksView')">Access Links &rarr;</button>
         </div>
       </div>
     </section>
@@ -515,16 +514,122 @@
       </div>
     </section>
 
-    <!-- Generic Feature View -->
-    <section id="featureView" class="view">
+    <!-- AI Companion View -->
+    <section id="aiView" class="view">
       <div class="dashboard-container">
         <button class="btn btn-outline" onclick="navigateTo('landingView')" style="margin-bottom: 1.5rem;">&larr; Back to Home</button>
+        <h2 style="margin-bottom: 0.5rem;">🤖 AI Recovery Companion</h2>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Your 24/7 supportive guide grounded in evidence-based care and flexible frameworks.</p>
         <div class="card">
-          <h2 id="featureTitle" style="margin-bottom: 0.75rem;">Feature</h2>
-          <p id="featureDesc" style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 1.05rem;"></p>
-          <div style="background: var(--bg-main); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border);">
-            <p style="color: var(--text-muted);">This module view is active! Interactive tools and database integration for this section are ready to be built out right here.</p>
+          <h3 style="margin-bottom: 0.75rem;">Choose Your Framework Focus</h3>
+          <p style="color: var(--text-muted); margin-bottom: 1rem;">Select the approach that resonates most with your current journey:</p>
+          <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+            <button class="btn btn-outline" onclick="alert('Framework set to: 12-Step & Peer Support')">12-Step Support</button>
+            <button class="btn btn-outline" onclick="alert('Framework set to: SMART Recovery & CBT')">SMART Recovery</button>
+            <button class="btn btn-outline" onclick="alert('Framework set to: Mindfulness & Somatic Care')">Mindfulness</button>
           </div>
+          <div style="background: var(--bg-main); padding: 1.25rem; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 1rem;">
+            <p style="color: var(--text-main); font-size: 0.95rem;">"Hello! I'm here to support you without judgment. How are you feeling in this exact moment, and what can we work through together?"</p>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <input type="text" placeholder="Type your thoughts or ask for coping guidance..." style="flex: 1; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-main); color: white;">
+            <button class="btn btn-primary" onclick="alert('Companion message received. Take a deep breath—you are doing great.')">Send</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Goals & Progress Tracker View -->
+    <section id="goalsView" class="view">
+      <div class="dashboard-container">
+        <button class="btn btn-outline" onclick="navigateTo('landingView')" style="margin-bottom: 1.5rem;">&larr; Back to Home</button>
+        <h2 style="margin-bottom: 0.5rem;">🎯 Goals & Progress Tracker</h2>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Celebrate clean time milestones, daily habit streaks, and personal growth.</p>
+        <div class="card" style="margin-bottom: 1.5rem;">
+          <h3>Milestone Counter</h3>
+          <p style="color: var(--text-muted); margin: 0.5rem 0 1rem 0;">Track your days of healing, strength, and intentional growth.</p>
+          <div style="display: flex; justify-content: space-around; background: var(--bg-main); padding: 1.25rem; border-radius: 12px; border: 1px solid var(--border); text-align: center;">
+            <div>
+              <h2 style="color: var(--accent); font-size: 2rem;">--</h2>
+              <p style="font-size: 0.85rem; color: var(--text-muted);">Days Strong</p>
+            </div>
+            <div>
+              <h2 style="color: var(--accent); font-size: 2rem;">0</h2>
+              <p style="font-size: 0.85rem; color: var(--text-muted);">Urges Navigated</p>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Set a New Recovery Goal</h3>
+          <div class="form-group" style="margin-top: 1rem;">
+            <label>Goal Description</label>
+            <input type="text" placeholder="e.g., Practice daily 10-minute meditation, attend weekly meeting...">
+          </div>
+          <button class="btn btn-primary" style="width: 100%;" onclick="alert('Goal added successfully!')">Save Goal</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Nutrition & Wellness View -->
+    <section id="wellnessView" class="view">
+      <div class="dashboard-container">
+        <button class="btn btn-outline" onclick="navigateTo('landingView')" style="margin-bottom: 1.5rem;">&larr; Back to Home</button>
+        <h2 style="margin-bottom: 0.5rem;">🥗 Nutrition & Wellness</h2>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Support mental stability with balanced nutrition, GABA-boosting foods, and proper sleep hygiene.</p>
+        <div class="card" style="margin-bottom: 1.5rem;">
+          <h3>GABA & Mood-Supporting Foods</h3>
+          <p style="color: var(--text-muted); margin-top: 0.5rem;">In early recovery, stabilizing neurotransmitters is vital. Focus on whole foods rich in magnesium, B-vitamins, and amino acids like fermented foods, leafy greens, almonds, and oats.</p>
+        </div>
+        <div class="card">
+          <h3>Sleep Hygiene Checklist</h3>
+          <p style="color: var(--text-muted); margin-top: 0.5rem;">• Keep bedroom temperature cool (60-67°F)<br>• Turn off screens 60 minutes before bed<br>• Maintain consistent wake and sleep times</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quotes & Inspiration View -->
+    <section id="quotesView" class="view">
+      <div class="dashboard-container">
+        <button class="btn btn-outline" onclick="navigateTo('landingView')" style="margin-bottom: 1.5rem;">&larr; Back to Home</button>
+        <h2 style="margin-bottom: 0.5rem;">💡 Quotes & Inspiration</h2>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Daily reflections and motivational mantras to keep you grounded.</p>
+        <div class="card" style="text-align: center; padding: 2.5rem 1.5rem;">
+          <p style="font-size: 1.25rem; font-style: italic; color: var(--text-main); margin-bottom: 1rem;">"You don't have to see the whole staircase, just take the first step."</p>
+          <p style="color: var(--accent); font-weight: 600; margin-bottom: 1.5rem;">— Martin Luther King Jr.</p>
+          <button class="btn btn-primary" onclick="alert('Loading another inspiring reflection...')">Generate New Quote</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Blog & Educational Reads View -->
+    <section id="blogView" class="view">
+      <div class="dashboard-container">
+        <button class="btn btn-outline" onclick="navigateTo('landingView')" style="margin-bottom: 1.5rem;">&larr; Back to Home</button>
+        <h2 style="margin-bottom: 0.5rem;">📚 Blog & Educational Reads</h2>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Articles on brain rewiring, post-acute withdrawal, and recovery science.</p>
+        <div class="card" style="margin-bottom: 1.5rem;">
+          <h3>Understanding Post-Acute Withdrawal Syndrome (PAWS)</h3>
+          <p style="color: var(--text-muted); margin: 0.5rem 0 1rem 0;">PAWS is a set of symptoms that can occur after acute withdrawal. Learn how neuroplasticity and time allow the brain's chemistry to rebalance.</p>
+          <button class="btn btn-outline" onclick="alert('Full article reader coming soon!')">Read Full Article</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Useful Links & Hotlines View -->
+    <section id="linksView" class="view">
+      <div class="dashboard-container">
+        <button class="btn btn-outline" onclick="navigateTo('landingView')" style="margin-bottom: 1.5rem;">&larr; Back to Home</button>
+        <h2 style="margin-bottom: 0.5rem;">🔗 Useful Links & Hotlines</h2>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Immediate directories for support networks, crisis hotlines, and recovery resources.</p>
+        <div class="card" style="margin-bottom: 1rem;">
+          <h3>🚨 988 Suicide & Crisis Lifeline</h3>
+          <p style="color: var(--text-muted); margin: 0.25rem 0 0.75rem 0;">Free, confidential support available 24/7 for people in distress.</p>
+          <a href="tel:988" class="btn btn-primary">Call or Text 988</a>
+        </div>
+        <div class="card" style="margin-bottom: 1rem;">
+          <h3>📞 SAMHSA National Helpline</h3>
+          <p style="color: var(--text-muted); margin: 0.25rem 0 0.75rem 0;">Treatment referral and information service (1-800-662-4357).</p>
+          <a href="tel:18006624357" class="btn btn-outline">Call 1-800-662-4357</a>
         </div>
       </div>
     </section>
@@ -573,12 +678,6 @@
       if (viewId === 'journalView' && currentUser) {
         fetchJournalEntries();
       }
-    }
-
-    function openFeatureView(title, description) {
-      document.getElementById('featureTitle').innerText = title;
-      document.getElementById('featureDesc').innerText = description;
-      navigateTo('featureView');
     }
 
     function openAuthModal(mode) {
@@ -668,7 +767,7 @@
         signOutBtn.style.display = 'inline-flex';
       } else {
         signInBtn.style.display = 'inline-flex';
-        signUpBtn.style.display = 'inline-flex';
+        signInBtn.style.display = 'inline-flex';
         signOutBtn.style.display = 'none';
       }
     }
