@@ -90,6 +90,7 @@
       cursor: pointer;
       border: 1px solid transparent;
       transition: all 0.2s ease;
+      text-decoration: none;
     }
 
     .btn-primary {
@@ -198,12 +199,14 @@
       color: var(--accent);
       font-weight: 600;
       font-size: 0.9rem;
-      padding: 0.5rem 1rem;
+      padding: 0.6rem 1rem;
       border-radius: 8px;
       cursor: pointer;
       text-align: center;
-      transition: background-color 0.2s ease, color 0.2s ease;
+      text-decoration: none;
+      display: block;
       width: 100%;
+      transition: background-color 0.2s ease, color 0.2s ease;
     }
 
     .card-action-btn:hover {
@@ -355,7 +358,7 @@
             <h3>AI Recovery Companion</h3>
             <p>Adaptive, non-judgmental support available 24/7. Flexibly matches 12-Step, SMART Recovery, or mindful frameworks.</p>
           </div>
-          <button class="card-action-btn" onclick="navigateTo('aiView')">Open Companion &rarr;</button>
+          <a href="javascript:void(0)" class="card-action-btn" onclick="navigateTo('aiView')">Open Companion &rarr;</a>
         </div>
 
         <div class="card">
@@ -364,7 +367,7 @@
             <h3>Recovery Journal</h3>
             <p>Private, reflective writing space with step prompts, thought records, and low-pressure daily tracking.</p>
           </div>
-          <button class="card-action-btn" onclick="navigateTo('journalView')">Open Journal &rarr;</button>
+          <a href="javascript:void(0)" class="card-action-btn" onclick="navigateTo('journalView')">Open Journal &rarr;</a>
         </div>
 
         <div class="card">
@@ -373,7 +376,7 @@
             <h3>Trigger & Craving Log</h3>
             <p>Log cravings in real time, review intensity patterns, and use the DENTS framework tools.</p>
           </div>
-          <button class="card-action-btn" onclick="navigateTo('dashboardView')">Track Triggers &rarr;</button>
+          <a href="javascript:void(0)" class="card-action-btn" onclick="navigateTo('dashboardView')">Track Triggers &rarr;</a>
         </div>
 
         <div class="card">
@@ -382,7 +385,7 @@
             <h3>Goals & Progress Tracker</h3>
             <p>Celebrate clean time milestones, daily habit streaks, and personal growth step-by-step.</p>
           </div>
-          <button class="card-action-btn" onclick="navigateTo('goalsView')">View Progress &rarr;</button>
+          <a href="javascript:void(0)" class="card-action-btn" onclick="navigateTo('goalsView')">View Progress &rarr;</a>
         </div>
 
         <div class="card">
@@ -391,7 +394,7 @@
             <h3>Nutrition & Wellness</h3>
             <p>Support mental stability with balanced nutrition, GABA-boosting foods, and proper sleep hygiene.</p>
           </div>
-          <button class="card-action-btn" onclick="navigateTo('wellnessView')">Explore Wellness &rarr;</button>
+          <a href="javascript:void(0)" class="card-action-btn" onclick="navigateTo('wellnessView')">Explore Wellness &rarr;</a>
         </div>
 
         <div class="card">
@@ -400,7 +403,7 @@
             <h3>Quotes & Inspiration</h3>
             <p>Curated daily reflections, motivational mantras, and encouraging words from lived experiences.</p>
           </div>
-          <button class="card-action-btn" onclick="navigateTo('quotesView')">Get Inspired &rarr;</button>
+          <a href="javascript:void(0)" class="card-action-btn" onclick="navigateTo('quotesView')">Get Inspired &rarr;</a>
         </div>
 
         <div class="card">
@@ -409,7 +412,7 @@
             <h3>Blog & Educational Reads</h3>
             <p>Articles on brain rewiring, post-acute withdrawal, coping mechanisms, and recovery science.</p>
           </div>
-          <button class="card-action-btn" onclick="navigateTo('blogView')">Read Library &rarr;</button>
+          <a href="javascript:void(0)" class="card-action-btn" onclick="navigateTo('blogView')">Read Library &rarr;</a>
         </div>
 
         <div class="card">
@@ -418,7 +421,7 @@
             <h3>Useful Links & Hotlines</h3>
             <p>Direct directories for support networks, 12-step groups, SMART recovery, and crisis resources.</p>
           </div>
-          <button class="card-action-btn" onclick="navigateTo('linksView')">Access Links &rarr;</button>
+          <a href="javascript:void(0)" class="card-action-btn" onclick="navigateTo('linksView')">Access Links &rarr;</a>
         </div>
       </div>
     </section>
@@ -611,15 +614,17 @@
     let currentUser = null;
 
     function navigateTo(viewId) {
-      console.log("Navigating to:", viewId);
-      document.querySelectorAll('.view').forEach(v => {
+      console.log("Navigating to view:", viewId);
+      const views = document.querySelectorAll('.view');
+      views.forEach(v => {
         v.classList.remove('active');
       });
+      
       const targetView = document.getElementById(viewId);
       if (targetView) {
         targetView.classList.add('active');
       } else {
-        console.error("View not found:", viewId);
+        console.error("Target view not found:", viewId);
       }
       window.scrollTo(0, 0);
 
