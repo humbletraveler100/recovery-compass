@@ -154,7 +154,7 @@
       margin-bottom: 2.5rem;
     }
 
-    /* Grid Cards Layout */
+    /* 8 Grid Cards Layout */
     .grid-cards {
       display: grid;
       grid-template-columns: 1fr;
@@ -207,7 +207,7 @@
       text-decoration: underline;
     }
 
-    /* Dashboard & Feature Containers */
+    /* Container for Modules */
     .dashboard-container {
       max-width: 800px;
       margin: 0 auto;
@@ -362,7 +362,7 @@
             <h3>Recovery Journal</h3>
             <p>Private, reflective writing space with step prompts, thought records, and low-pressure daily tracking.</p>
           </div>
-          <a onclick="openFeatureView('Recovery Journal', 'Your secure space for daily reflections, thought records, and personal journaling.')" class="card-link">Open Journal &rarr;</a>
+          <a onclick="navigateTo('journalView')" class="card-link">Open Journal &rarr;</a>
         </div>
 
         <div class="card">
@@ -466,6 +466,47 @@
       </div>
     </section>
 
+    <!-- Recovery Journal View -->
+    <section id="journalView" class="view">
+      <div class="dashboard-container">
+        <button class="btn btn-outline" onclick="navigateTo('landingView')" style="margin-bottom: 1.5rem;">&larr; Back to Home</button>
+        <h2 style="margin-bottom: 0.5rem;">📖 Recovery Journal</h2>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Private, reflective writing space with step prompts, thought records, and daily check-ins.</p>
+
+        <div class="card" style="margin-bottom: 2rem;">
+          <h3 style="margin-bottom: 1rem;">Create Journal Entry</h3>
+          <form onsubmit="handleJournalSubmit(event)">
+            <div class="form-group">
+              <label>Entry Prompt / Focus</label>
+              <select id="journalPrompt" onchange="applyJournalPrompt(this.value)">
+                <option value="Daily Reflection">Daily Reflection (Free Writing)</option>
+                <option value="Thought Record">CBT Thought Record (Situation vs Response)</option>
+                <option value="Gratitude Check">Gratitude & Grounding Check</option>
+                <option value="Step Work">Step Work & Self-Inventory</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Entry Title</label>
+              <input type="text" id="journalTitle" placeholder="e.g., Morning Mindset, Evening Check-in..." required>
+            </div>
+
+            <div class="form-group">
+              <label>Reflections & Notes</label>
+              <textarea id="journalContent" rows="6" placeholder="Write freely here..." required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Save Entry to Journal</button>
+          </form>
+        </div>
+
+        <h3>Past Journal Entries</h3>
+        <div id="journalFeed" style="margin-top: 1rem;">
+          <p style="color: var(--text-muted);">Sign in to view your private journal entries.</p>
+        </div>
+      </div>
+    </section>
+
     <!-- Generic Feature View -->
     <section id="featureView" class="view">
       <div class="dashboard-container">
@@ -516,6 +557,9 @@
       window.scrollTo(0, 0);
       if (viewId === 'dashboardView' && currentUser) {
         fetchUrgeLogs();
+      }
+      if (viewId === 'journalView' && currentUser) {
+        fetchJournalEntries();
       }
     }
 
@@ -596,6 +640,9 @@
       if (currentUser && document.getElementById('dashboardView').classList.contains('active')) {
         fetchUrgeLogs();
       }
+      if (currentUser && document.getElementById('journalView').classList.contains('active')) {
+        fetchJournalEntries();
+      }
     }
 
     function updateAuthUI() {
@@ -614,6 +661,7 @@
       }
     }
 
+    // Urge Logging
     async function handleUrgeSubmit(e) {
       e.preventDefault();
 
@@ -683,6 +731,87 @@
           <p><strong>Trigger:</strong> ${log.trigger || 'N/A'}</p>
           ${log.coping_strategy ? `<p style="margin-top: 0.25rem;"><strong>Coping Strategy:</strong> ${log.coping_strategy}</p>` : ''}
           ${log.notes ? `<p style="margin-top: 0.25rem; color: var(--text-muted); font-size: 0.9rem;">"${log.notes}"</p>` : ''}
+        </div>
+      `).join('');
+    }
+
+    // Recovery Journal Functions
+    function applyJournalPrompt(promptType) {
+      const textarea = document.getElementById('journalContent');
+      if (promptType === 'Thought Record') {
+        textarea.placeholder = "1. Triggering Situation:\n2. Automatic Thoughts:\n3. Emotional Response:\n4. Balanced Alternative Thought:";
+      } else if (promptType === 'Gratitude Check') {
+        textarea.placeholder = "1. Three things I am grateful for today:\n2. One healthy choice I made today:\n3. How I supported my well-being:";
+      } else if (promptType === 'Step Work') {
+        textarea.placeholder = "1. What situation tested my acceptance today?\n2. Where did I act out of habit vs intention?\n3. What step can I take tomorrow?";
+      } else {
+        textarea.placeholder = "Write freely here...";
+      }
+    }
+
+    async function handleJournalSubmit(e) {
+      e.preventDefault();
+
+      if (!currentUser) {
+        alert("Please sign in or create an account to save your journal entries.");
+        openAuthModal('signin');
+        return;
+      }
+
+      const prompt_type = document.getElementById('journalPrompt').value;
+      const title = document.getElementById('journalTitle').value;
+      const content = document.getElementById('journalContent').value;
+
+      const { error } = await supabase
+        .from('journal_entries')
+        .insert([{
+          user_id: currentUser.id,
+          prompt_type: prompt_type,
+          title: title,
+          content: content
+        }]);
+
+      if (error) {
+        alert("Error saving journal entry: " + error.message);
+      } else {
+        alert("Journal entry saved successfully!");
+        document.getElementById('journalTitle').value = '';
+        document.getElementById('journalContent').value = '';
+        fetchJournalEntries();
+      }
+    }
+
+    async function fetchJournalEntries() {
+      const feed = document.getElementById('journalFeed');
+      if (!currentUser) {
+        feed.innerHTML = '<p style="color: var(--text-muted);">Sign in to view your private journal entries.</p>';
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from('journal_entries')
+        .select('*')
+        .eq('user_id', currentUser.id)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        feed.innerHTML = `<p style="color: #ef4444;">Failed to load journal: ${error.message}</p>`;
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        feed.innerHTML = '<p style="color: var(--text-muted);">No journal entries saved yet.</p>';
+        return;
+      }
+
+      feed.innerHTML = data.map(entry => `
+        <div class="log-item">
+          <div class="log-header">
+            <span><strong>${entry.prompt_type || 'Journal Entry'}</strong></span>
+            <span>${new Date(entry.created_at).toLocaleDateString()} ${new Date(entry.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+          </div>
+          <h4 style="color: var(--text-main); margin-bottom: 0.4rem;">${entry.title}</h4>
+          <p style="color: var(--text-muted); font-size: 0.95rem; white-space: pre-wrap;">${entry.content}</p>
         </div>
       `).join('');
     }
