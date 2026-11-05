@@ -341,11 +341,11 @@
         <p>An adaptive recovery toolkit and AI companion meeting you wherever you are on your journey—grounded in evidence-based care, flexible frameworks, and complete confidentiality.</p>
         <div class="hero-actions">
           <button class="btn btn-primary" onclick="openAuthModal('signup')">Get Started Free</button>
-          <button class="btn btn-outline" onclick="navigateTo('goalsView')">Explore Dashboard</button>
+          <button class="btn btn-outline" onclick="scrollToFeatures()">Explore Dashboard</button>
         </div>
       </div>
 
-      <h2 style="font-size: 1.4rem; margin-bottom: 1rem;">Explore App Features & Toolkits</h2>
+      <h2 id="featuresHeading" style="font-size: 1.4rem; margin-bottom: 1rem;">Explore App Features & Toolkits</h2>
       
       <div class="grid-cards">
         <div class="card">
@@ -621,6 +621,14 @@
       }
       if (viewId === 'journalView' && window.currentUser && window.supabaseClient) {
         fetchJournalEntries();
+      }
+    };
+
+    window.scrollToFeatures = function() {
+      navigateTo('landingView');
+      const heading = document.getElementById('featuresHeading');
+      if (heading) {
+        heading.scrollIntoView({ behavior: 'smooth' });
       }
     };
 
