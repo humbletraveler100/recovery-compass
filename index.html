@@ -131,7 +131,7 @@
 
     .hero {
       text-align: center;
-      padding: 3rem 1rem;
+      padding: 2.5rem 1rem;
     }
 
     .hero h1 {
@@ -142,33 +142,27 @@
 
     .hero p {
       color: var(--text-muted);
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       max-width: 700px;
-      margin: 0 auto 2rem auto;
+      margin: 0 auto 1.5rem auto;
     }
 
     .hero-actions {
       display: flex;
       justify-content: center;
       gap: 1rem;
-      margin-bottom: 3rem;
+      margin-bottom: 2.5rem;
     }
 
-    /* Grid Cards */
+    /* 8 Grid Cards Layout */
     .grid-cards {
       display: grid;
       grid-template-columns: 1fr;
       gap: 1.25rem;
-      margin-top: 1.5rem;
+      margin-top: 1rem;
     }
 
     @media (min-width: 640px) {
-      .grid-cards {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (min-width: 1024px) {
       .grid-cards {
         grid-template-columns: repeat(2, 1fr);
       }
@@ -184,15 +178,20 @@
       justify-content: space-between;
     }
 
+    .card-icon {
+      font-size: 2rem;
+      margin-bottom: 0.75rem;
+    }
+
     .card h3 {
-      font-size: 1.25rem;
+      font-size: 1.2rem;
       margin-bottom: 0.5rem;
       color: var(--text-main);
     }
 
     .card p {
       color: var(--text-muted);
-      font-size: 0.95rem;
+      font-size: 0.925rem;
       margin-bottom: 1.25rem;
     }
 
@@ -207,7 +206,7 @@
       text-decoration: underline;
     }
 
-    /* Form & Dashboard Elements */
+    /* Dashboard Elements */
     .dashboard-container {
       max-width: 800px;
       margin: 0 auto;
@@ -344,11 +343,12 @@
         </div>
       </div>
 
-      <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">Explore App Features & Toolkits</h2>
+      <h2 style="font-size: 1.4rem; margin-bottom: 1rem;">Explore App Features & Toolkits</h2>
       
       <div class="grid-cards">
         <div class="card">
           <div>
+            <div class="card-icon">🤖</div>
             <h3>AI Recovery Companion</h3>
             <p>Adaptive, non-judgmental support available 24/7. Flexibly matches 12-Step, SMART Recovery, or mindful frameworks.</p>
           </div>
@@ -357,6 +357,7 @@
 
         <div class="card">
           <div>
+            <div class="card-icon">📖</div>
             <h3>Recovery Journal</h3>
             <p>Private, reflective writing space with step prompts, thought records, and low-pressure daily tracking.</p>
           </div>
@@ -365,18 +366,56 @@
 
         <div class="card">
           <div>
-            <h3>Urge & Trigger Tracker</h3>
-            <p>Log intensity, identify patterns, and record coping strategies in real time using the DENTS framework.</p>
+            <div class="card-icon">⚡</div>
+            <h3>Trigger & Craving Log</h3>
+            <p>Log cravings in real time, review intensity patterns, and use the DENTS framework tools.</p>
           </div>
-          <a href="#" onclick="navigateTo('dashboardView'); return false;" class="card-link">Open Tracker &rarr;</a>
+          <a href="#" onclick="navigateTo('dashboardView'); return false;" class="card-link">Track Triggers &rarr;</a>
         </div>
 
         <div class="card">
           <div>
-            <h3>Community & Meetings</h3>
-            <p>Connect with shared time, local gatherings, peer support networks, and community events.</p>
+            <div class="card-icon">🎯</div>
+            <h3>Goals & Progress Tracker</h3>
+            <p>Celebrate clean time milestones, daily habit streaks, and personal growth step-by-step.</p>
           </div>
-          <a href="#" onclick="navigateTo('dashboardView'); return false;" class="card-link">Explore Community &rarr;</a>
+          <a href="#" onclick="navigateTo('dashboardView'); return false;" class="card-link">View Progress &rarr;</a>
+        </div>
+
+        <div class="card">
+          <div>
+            <div class="card-icon">🥗</div>
+            <h3>Nutrition & Wellness</h3>
+            <p>Support mental stability with balanced nutrition, GABA-boosting foods, and proper sleep hygiene.</p>
+          </div>
+          <a href="#" onclick="navigateTo('dashboardView'); return false;" class="card-link">Explore Wellness &rarr;</a>
+        </div>
+
+        <div class="card">
+          <div>
+            <div class="card-icon">💡</div>
+            <h3>Quotes & Inspiration</h3>
+            <p>Curated daily reflections, motivational mantras, and encouraging words from lived experiences.</p>
+          </div>
+          <a href="#" onclick="navigateTo('dashboardView'); return false;" class="card-link">Get Inspired &rarr;</a>
+        </div>
+
+        <div class="card">
+          <div>
+            <div class="card-icon">📚</div>
+            <h3>Blog & Educational Reads</h3>
+            <p>Articles on brain rewiring, post-acute withdrawal, coping mechanisms, and recovery science.</p>
+          </div>
+          <a href="#" onclick="navigateTo('dashboardView'); return false;" class="card-link">Read Library &rarr;</a>
+        </div>
+
+        <div class="card">
+          <div>
+            <div class="card-icon">🔗</div>
+            <h3>Useful Links & Hotlines</h3>
+            <p>Direct directories for support networks, 12-step groups, SMART recovery, and crisis resources.</p>
+          </div>
+          <a href="#" onclick="navigateTo('dashboardView'); return false;" class="card-link">Access Links &rarr;</a>
         </div>
       </div>
     </section>
@@ -617,7 +656,7 @@
             <span><strong>Intensity:</strong> ${log.intensity}/10</span>
             <span>${new Date(log.created_at).toLocaleDateString()} ${new Date(log.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
           </div>
-          <p><strong>Trigger:</strong> ${log.trigger || 'N/A'}</p>
+ <p><strong>Trigger:</strong> ${log.trigger || 'N/A'}</p>
           ${log.coping_strategy ? `<p style="margin-top: 0.25rem;"><strong>Coping Strategy:</strong> ${log.coping_strategy}</p>` : ''}
           ${log.notes ? `<p style="margin-top: 0.25rem; color: var(--text-muted); font-size: 0.9rem;">"${log.notes}"</p>` : ''}
         </div>
