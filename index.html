@@ -271,6 +271,30 @@
       color: var(--text-muted);
     }
 
+    /* Auth Guard Notice Box */
+    .auth-guard-box {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .auth-guard-box h3 {
+      font-size: 1.35rem;
+      margin-bottom: 0.75rem;
+      color: var(--text-main);
+    }
+
+    .auth-guard-box p {
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
     /* Milestone Tracker Styles */
     .pill-grid {
       display: flex;
@@ -572,42 +596,53 @@
     <section id="dashboardView" class="view">
       <div class="dashboard-container">
         <button class="btn btn-outline" onclick="navigateTo('landingView')" style="margin-bottom: 1.5rem;">&larr; Back to Home</button>
-        <h2 style="margin-bottom: 0.5rem;">⚡ Trigger & Craving Log</h2>
-        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Recognizing what causes cravings or emotional distress is one of the most important steps toward recovery. Addiction triggers are specific cues, emotional, social, or environmental, that reignite the urge to use substances. Learning to recognize and manage these triggers builds resilience and prevents relapse.</p>
-
-        <div class="card" style="margin-bottom: 2rem;">
-          <h3 style="margin-bottom: 1rem;">Log a New Urge</h3>
-          <form onsubmit="handleUrgeSubmit(event)">
-            <div class="form-group">
-              <div class="range-header">
-                <label>Urge Intensity (1-10)</label>
-                <span class="intensity-badge" id="intensityVal">5</span>
-              </div>
-              <input type="range" id="intensity" min="1" max="10" value="5" oninput="document.getElementById('intensityVal').innerText = this.value">
-            </div>
-
-            <div class="form-group">
-              <label>Trigger / Context</label>
-              <input type="text" id="trigger" placeholder="e.g., Stress, specific place, social situation" required>
-            </div>
-
-            <div class="form-group">
-              <label>Coping Strategy Used</label>
-              <input type="text" id="coping" placeholder="e.g., Deep breathing, walked away, called a friend">
-            </div>
-
-            <div class="form-group">
-              <label>Notes & Reflections</label>
-              <textarea id="notes" rows="3" placeholder="How did you navigate it? How do you feel now?"></textarea>
-            </div>
-
-            <button type="submit" class="btn btn-primary" style="width: 100%;">Save Urge Log</button>
-          </form>
+        
+        <!-- Logged Out Guard for Urge Tracker -->
+        <div id="urgeLoggedOutGuard" class="auth-guard-box" style="display: none;">
+          <h3>🔒 Sign In Required</h3>
+          <p>The Trigger & Craving Log is a private, secure tool designed to track your personal history. Please sign in or create an account to start logging.</p>
+          <button class="btn btn-primary" onclick="openAuthModal('signin')" style="margin-right: 0.5rem;">Sign In</button>
+          <button class="btn btn-outline" onclick="openAuthModal('signup')">Create Account</button>
         </div>
 
-        <h3>Recent History</h3>
-        <div id="logsFeed" style="margin-top: 1rem;">
-          <p style="color: var(--text-muted);">Sign in to save and view your urge history.</p>
+        <div id="urgeLoggedInContent" style="display: none;">
+          <h2 style="margin-bottom: 0.5rem;">⚡ Trigger & Craving Log</h2>
+          <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Recognizing what causes cravings or emotional distress is one of the most important steps toward recovery. Addiction triggers are specific cues, emotional, social, or environmental, that reignite the urge to use substances. Learning to recognize and manage these triggers builds resilience and prevents relapse.</p>
+
+          <div class="card" style="margin-bottom: 2rem;">
+            <h3 style="margin-bottom: 1rem;">Log a New Urge</h3>
+            <form onsubmit="handleUrgeSubmit(event)">
+              <div class="form-group">
+                <div class="range-header">
+                  <label>Urge Intensity (1-10)</label>
+                  <span class="intensity-badge" id="intensityVal">5</span>
+                </div>
+                <input type="range" id="intensity" min="1" max="10" value="5" oninput="document.getElementById('intensityVal').innerText = this.value">
+              </div>
+
+              <div class="form-group">
+                <label>Trigger / Context</label>
+                <input type="text" id="trigger" placeholder="e.g., Stress, specific place, social situation" required>
+              </div>
+
+              <div class="form-group">
+                <label>Coping Strategy Used</label>
+                <input type="text" id="coping" placeholder="e.g., Deep breathing, walked away, called a friend">
+              </div>
+
+              <div class="form-group">
+                <label>Notes & Reflections</label>
+                <textarea id="notes" rows="3" placeholder="How did you navigate it? How do you feel now?"></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-primary" style="width: 100%;">Save Urge Log</button>
+            </form>
+          </div>
+
+          <h3>Recent History</h3>
+          <div id="logsFeed" style="margin-top: 1rem;">
+            <p style="color: var(--text-muted);">No urge logs recorded yet.</p>
+          </div>
         </div>
       </div>
     </section>
@@ -616,39 +651,50 @@
     <section id="journalView" class="view">
       <div class="dashboard-container">
         <button class="btn btn-outline" onclick="navigateTo('landingView')" style="margin-bottom: 1.5rem;">&larr; Back to Home</button>
-        <h2 style="margin-bottom: 0.5rem;">📖 Recovery Journal</h2>
-        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Private, reflective writing space with step prompts and daily check-ins.</p>
-
-        <div class="card" style="margin-bottom: 2rem;">
-          <h3 style="margin-bottom: 1rem;">Create Journal Entry</h3>
-          <form onsubmit="handleJournalSubmit(event)">
-            <div class="form-group">
-              <label>Entry Prompt / Focus</label>
-              <select id="journalPrompt" onchange="applyJournalPrompt(this.value)">
-                <option value="Daily Reflection">Daily Reflection (Free Writing)</option>
-                <option value="Thought Record">CBT Thought Record (Situation vs Response)</option>
-                <option value="Gratitude Check">Gratitude & Grounding Check</option>
-                <option value="Step Work">Step Work & Self-Inventory</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label>Entry Title</label>
-              <input type="text" id="journalTitle" placeholder="e.g., Morning Mindset, Evening Check-in..." required>
-            </div>
-
-            <div class="form-group">
-              <label>Reflections & Notes</label>
-              <textarea id="journalContent" rows="6" placeholder="Write freely here..." required></textarea>
-            </div>
-
-            <button type="submit" class="btn btn-primary" style="width: 100%;">Save Entry to Journal</button>
-          </form>
+        
+        <!-- Logged Out Guard for Journal -->
+        <div id="journalLoggedOutGuard" class="auth-guard-box" style="display: none;">
+          <h3>🔒 Sign In Required</h3>
+          <p>Your Recovery Journal is completely private and securely encrypted for your eyes only. Please sign in to access your journal entries.</p>
+          <button class="btn btn-primary" onclick="openAuthModal('signin')" style="margin-right: 0.5rem;">Sign In</button>
+          <button class="btn btn-outline" onclick="openAuthModal('signup')">Create Account</button>
         </div>
 
-        <h3>Past Journal Entries</h3>
-        <div id="journalFeed" style="margin-top: 1rem;">
-          <p style="color: var(--text-muted);">Sign in to view your private journal entries.</p>
+        <div id="journalLoggedInContent" style="display: none;">
+          <h2 style="margin-bottom: 0.5rem;">📖 Recovery Journal</h2>
+          <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Private, reflective writing space with step prompts and daily check-ins.</p>
+
+          <div class="card" style="margin-bottom: 2rem;">
+            <h3 style="margin-bottom: 1rem;">Create Journal Entry</h3>
+            <form onsubmit="handleJournalSubmit(event)">
+              <div class="form-group">
+                <label>Entry Prompt / Focus</label>
+                <select id="journalPrompt" onchange="applyJournalPrompt(this.value)">
+                  <option value="Daily Reflection">Daily Reflection (Free Writing)</option>
+                  <option value="Thought Record">CBT Thought Record (Situation vs Response)</option>
+                  <option value="Gratitude Check">Gratitude & Grounding Check</option>
+                  <option value="Step Work">Step Work & Self-Inventory</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>Entry Title</label>
+                <input type="text" id="journalTitle" placeholder="e.g., Morning Mindset, Evening Check-in..." required>
+              </div>
+
+              <div class="form-group">
+                <label>Reflections & Notes</label>
+                <textarea id="journalContent" rows="6" placeholder="Write freely here..." required></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-primary" style="width: 100%;">Save Entry to Journal</button>
+            </form>
+          </div>
+
+          <h3>Past Journal Entries</h3>
+          <div id="journalFeed" style="margin-top: 1rem;">
+            <p style="color: var(--text-muted);">No journal entries saved yet.</p>
+          </div>
         </div>
       </div>
     </section>
@@ -671,72 +717,82 @@
       <div class="dashboard-container">
         <button class="btn btn-outline" onclick="navigateTo('landingView')" style="margin-bottom: 1.5rem;">&larr; Back to Home</button>
         
-        <!-- Setup Form View (Shown when no date is set or user clicks Edit) -->
-        <div id="trackerSetupCard" class="card" style="display: none; margin-bottom: 2rem;">
-          <h2 style="margin-bottom: 0.25rem;">Recovery journey</h2>
-          <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Sober from substance or behavior</p>
-          
-          <div class="pill-grid" id="setupSubstancePills">
-            <div class="substance-pill active" data-val="Alcohol">Alcohol</div>
-            <div class="substance-pill" data-val="Tobacco">Tobacco</div>
-            <div class="substance-pill" data-val="Cannabis">Cannabis</div>
-            <div class="substance-pill" data-val="Opioids">Opioids</div>
-            <div class="substance-pill" data-val="Meth">Meth</div>
-            <div class="substance-pill" data-val="Hallucinogens">Hallucinogens</div>
-            <div class="substance-pill" data-val="Amphetamines">Amphetamines</div>
-            <div class="substance-pill" data-val="Benzodiazepines">Benzodiazepines</div>
-            <div class="substance-pill" data-val="Inhalants">Inhalants</div>
-            <div class="substance-pill" data-val="Cocaine">Cocaine</div>
-            <div class="substance-pill" data-val="MDMA/Ecstasy">MDMA/Ecstasy</div>
-            <div class="substance-pill" data-val="Gambling">Gambling</div>
-            <div class="substance-pill" data-val="Sexual addiction">Sexual addiction</div>
-            <div class="substance-pill" data-val="Video gaming">Video gaming</div>
-            <div class="substance-pill" data-val="Disordered Eating">Disordered Eating</div>
-            <div class="substance-pill" data-val="Co-dependency">Co-dependency</div>
-            <div class="substance-pill" data-val="Other">Other</div>
-          </div>
-
-          <form onsubmit="handleSetupSubmit(event)">
-            <div class="form-group">
-              <label>Sober date</label>
-              <input type="date" id="setupDateInput" required>
-            </div>
-
-            <div class="form-group">
-              <label>Sober time</label>
-              <input type="time" id="setupTimeInput" value="00:00" required>
-            </div>
-
-            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Start Recovery Journey</button>
-          </form>
+        <!-- Logged Out Guard for Milestone Tracker -->
+        <div id="trackerLoggedOutGuard" class="auth-guard-box" style="display: none;">
+          <h3>🔒 Sign In Required</h3>
+          <p>Your Recovery Journey and milestone tracker are personal to you. Please sign in to set your clean date and track your progress securely.</p>
+          <button class="btn btn-primary" onclick="openAuthModal('signin')" style="margin-right: 0.5rem;">Sign In</button>
+          <button class="btn btn-outline" onclick="openAuthModal('signup')">Create Account</button>
         </div>
 
-        <!-- Progress Display Dashboard (Shown when date is set) -->
-        <div id="trackerDashboardCard" style="display: none;">
-          <h2 style="margin-bottom: 0.5rem;">🎯 Recovery Journey</h2>
-          <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Track your clean time milestones and personal growth step-by-step.</p>
-
-          <div class="progress-circle-card">
-            <div class="ring-container">
-              <svg viewBox="0 0 100 100">
-                <circle class="ring-bg" cx="50" cy="50" r="42"></circle>
-                <circle class="ring-progress" id="ringProgress" cx="50" cy="50" r="42" stroke-dasharray="263.89" stroke-dashoffset="60"></circle>
-              </svg>
-              <div class="ring-content">
-                <div class="ring-time-main" id="primaryTimeDisplay">--</div>
-                <div class="ring-time-sub" id="secondaryTimeDisplay">--</div>
-              </div>
+        <div id="trackerLoggedInContent" style="display: none;">
+          <!-- Setup Form View -->
+          <div id="trackerSetupCard" class="card" style="display: none; margin-bottom: 2rem;">
+            <h2 style="margin-bottom: 0.25rem;">Recovery journey</h2>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Sober from substance or behavior</p>
+            
+            <div class="pill-grid" id="setupSubstancePills">
+              <div class="substance-pill active" data-val="Alcohol">Alcohol</div>
+              <div class="substance-pill" data-val="Tobacco">Tobacco</div>
+              <div class="substance-pill" data-val="Cannabis">Cannabis</div>
+              <div class="substance-pill" data-val="Opioids">Opioids</div>
+              <div class="substance-pill" data-val="Meth">Meth</div>
+              <div class="substance-pill" data-val="Hallucinogens">Hallucinogens</div>
+              <div class="substance-pill" data-val="Amphetamines">Amphetamines</div>
+              <div class="substance-pill" data-val="Benzodiazepines">Benzodiazepines</div>
+              <div class="substance-pill" data-val="Inhalants">Inhalants</div>
+              <div class="substance-pill" data-val="Cocaine">Cocaine</div>
+              <div class="substance-pill" data-val="MDMA/Ecstasy">MDMA/Ecstasy</div>
+              <div class="substance-pill" data-val="Gambling">Gambling</div>
+              <div class="substance-pill" data-val="Sexual addiction">Sexual addiction</div>
+              <div class="substance-pill" data-val="Video gaming">Video gaming</div>
+              <div class="substance-pill" data-val="Disordered Eating">Disordered Eating</div>
+              <div class="substance-pill" data-val="Co-dependency">Co-dependency</div>
+              <div class="substance-pill" data-val="Other">Other</div>
             </div>
 
-            <p style="color: var(--text-main); font-weight: 600; margin-bottom: 0.25rem;">Rise in your recovery each day.</p>
-            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">You’ve got this!</p>
+            <form onsubmit="handleSetupSubmit(event)">
+              <div class="form-group">
+                <label>Sober date</label>
+                <input type="date" id="setupDateInput" required>
+              </div>
 
-            <p style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Recovery birthday</p>
-            <p id="birthdayDisplay" style="font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 1.5rem;">Sep 20, 2026</p>
+              <div class="form-group">
+                <label>Sober time</label>
+                <input type="time" id="setupTimeInput" value="00:00" required>
+              </div>
 
-            <div class="tracker-actions">
-              <button class="btn btn-outline" onclick="openSetupMode('date')">🔄 Edit Date</button>
-              <button class="btn btn-outline" onclick="openSetupMode('view')">✏️ Edit View</button>
+              <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Start Recovery Journey</button>
+            </form>
+          </div>
+
+          <!-- Progress Display Dashboard -->
+          <div id="trackerDashboardCard" style="display: none;">
+            <h2 style="margin-bottom: 0.5rem;">🎯 Recovery Journey</h2>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Track your clean time milestones and personal growth step-by-step.</p>
+
+            <div class="progress-circle-card">
+              <div class="ring-container">
+                <svg viewBox="0 0 100 100">
+                  <circle class="ring-bg" cx="50" cy="50" r="42"></circle>
+                  <circle class="ring-progress" id="ringProgress" cx="50" cy="50" r="42" stroke-dasharray="263.89" stroke-dashoffset="60"></circle>
+                </svg>
+                <div class="ring-content">
+                  <div class="ring-time-main" id="primaryTimeDisplay">--</div>
+                  <div class="ring-time-sub" id="secondaryTimeDisplay">--</div>
+                </div>
+              </div>
+
+              <p style="color: var(--text-main); font-weight: 600; margin-bottom: 0.25rem;">Rise in your recovery each day.</p>
+              <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">You’ve got this!</p>
+
+              <p style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Recovery birthday</p>
+              <p id="birthdayDisplay" style="font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 1.5rem;">Sep 20, 2026</p>
+
+              <div class="tracker-actions">
+                <button class="btn btn-outline" onclick="openSetupMode('date')">🔄 Edit Date</button>
+                <button class="btn btn-outline" onclick="openSetupMode('view')">✏️ Edit View</button>
+              </div>
             </div>
           </div>
         </div>
@@ -825,17 +881,26 @@
   </div>
 
   <script>
-    // Milestone State & Live Calculation
+    // Milestone State & Live Calculation (User Specific)
     let trackerState = {
       substance: 'Alcohol',
-      soberDateTime: null // Null by default so new users see the setup screen first!
+      soberDateTime: null
     };
 
-    // Load saved settings if any
-    try {
-      const saved = localStorage.getItem('recovery_tracker_state');
-      if (saved) trackerState = JSON.parse(saved);
-    } catch(e) {}
+    // Load per-user tracker state if saved in localStorage
+    function loadUserTrackerState() {
+      if (!window.currentUser) return;
+      try {
+        const saved = localStorage.getItem('recovery_tracker_' + window.currentUser.id);
+        if (saved) {
+          trackerState = JSON.parse(saved);
+        } else {
+          trackerState = { substance: 'Alcohol', soberDateTime: null };
+        }
+      } catch(e) {
+        trackerState = { substance: 'Alcohol', soberDateTime: null };
+      }
+    }
 
     // Initialize interactive pills for setup
     document.querySelectorAll('#setupSubstancePills .substance-pill').forEach(pill => {
@@ -851,11 +916,9 @@
       document.getElementById('trackerSetupCard').style.display = 'block';
 
       if (mode === 'date') {
-        // Hide substance pills or keep them visible
         document.querySelector('#trackerSetupCard h2').innerText = "Edit Sober Date";
       } else {
         document.querySelector('#trackerSetupCard h2').innerText = "Recovery journey";
-        // Highlight active pill
         document.querySelectorAll('#setupSubstancePills .substance-pill').forEach(p => {
           if (p.getAttribute('data-val') === trackerState.substance) {
             p.classList.add('active');
@@ -876,12 +939,18 @@
 
     window.handleSetupSubmit = function(e) {
       e.preventDefault();
+      if (!window.currentUser) {
+        alert("Please sign in first.");
+        openAuthModal('signin');
+        return;
+      }
+
       const dateVal = document.getElementById('setupDateInput').value;
       const timeVal = document.getElementById('setupTimeInput').value;
       
       trackerState.soberDateTime = `${dateVal}T${timeVal}:00`;
       try {
-        localStorage.setItem('recovery_tracker_state', JSON.stringify(trackerState));
+        localStorage.setItem('recovery_tracker_' + window.currentUser.id, JSON.stringify(trackerState));
       } catch(e) {}
 
       renderTrackerView();
@@ -889,11 +958,23 @@
     };
 
     function renderTrackerView() {
+      const guard = document.getElementById('trackerLoggedOutGuard');
+      const content = document.getElementById('trackerLoggedInContent');
       const setupCard = document.getElementById('trackerSetupCard');
       const dashboardCard = document.getElementById('trackerDashboardCard');
 
+      if (!window.currentUser) {
+        guard.style.display = 'block';
+        content.style.display = 'none';
+        return;
+      }
+
+      guard.style.display = 'none';
+      content.style.display = 'block';
+
+      loadUserTrackerState();
+
       if (!trackerState.soberDateTime) {
-        // Show setup screen if no date is set
         setupCard.style.display = 'block';
         dashboardCard.style.display = 'none';
         document.getElementById('setupDateInput').value = new Date().toISOString().split('T')[0];
@@ -940,7 +1021,6 @@
       ring.style.strokeDashoffset = offset;
     }
 
-    // Run ticker every second
     setInterval(updateMilestoneDisplay, 1000);
 
     // Quotes Dataset Categorized
@@ -1047,11 +1127,11 @@
       if (viewId === 'goalsView') {
         renderTrackerView();
       }
-      if (viewId === 'dashboardView' && window.currentUser && window.supabaseClient) {
-        fetchUrgeLogs();
+      if (viewId === 'dashboardView') {
+        renderUrgeView();
       }
-      if (viewId === 'journalView' && window.currentUser && window.supabaseClient) {
-        fetchJournalEntries();
+      if (viewId === 'journalView') {
+        renderJournalView();
       }
     };
 
@@ -1128,7 +1208,10 @@
         closeAuthModal();
         await checkSession();
         alert(isSignUp ? "Account created successfully!" : "Successfully signed in!");
-        navigateTo('dashboardView');
+        
+        // Refresh current active view if it requires auth
+        const activeView = document.querySelector('.view.active').id;
+        navigateTo(activeView);
       } catch (err) {
         console.error("Auth error:", err);
         alert("An unexpected authentication error occurred.");
@@ -1141,7 +1224,10 @@
       }
       window.currentUser = null;
       updateAuthUI();
-      navigateTo('landingView');
+      
+      // Refresh active view to show guards if needed
+      const activeView = document.querySelector('.view.active').id;
+      navigateTo(activeView);
       alert("Signed out successfully.");
     };
 
@@ -1151,12 +1237,6 @@
         const { data: { session } } = await window.supabaseClient.auth.getSession();
         window.currentUser = session ? session.user : null;
         updateAuthUI();
-        if (window.currentUser && document.getElementById('dashboardView').classList.contains('active')) {
-          fetchUrgeLogs();
-        }
-        if (window.currentUser && document.getElementById('journalView').classList.contains('active')) {
-          fetchJournalEntries();
-        }
       } catch (e) {
         console.error("Session check error:", e);
       }
@@ -1175,15 +1255,42 @@
         signOutBtn.style.display = 'inline-flex';
       } else {
         signInBtn.style.display = 'inline-flex';
-        signInBtn.style.display = 'inline-flex';
-        signInBtn.style.display = 'none';
+        signUpBtn.style.display = 'inline-flex';
+        signOutBtn.style.display = 'none';
+      }
+    }
+
+    // View Renders with Auth Guards
+    function renderUrgeView() {
+      const guard = document.getElementById('urgeLoggedOutGuard');
+      const content = document.getElementById('urgeLoggedInContent');
+      if (!window.currentUser) {
+        guard.style.display = 'block';
+        content.style.display = 'none';
+      } else {
+        guard.style.display = 'none';
+        content.style.display = 'block';
+        fetchUrgeLogs();
+      }
+    }
+
+    function renderJournalView() {
+      const guard = document.getElementById('journalLoggedOutGuard');
+      const content = document.getElementById('journalLoggedInContent');
+      if (!window.currentUser) {
+        guard.style.display = 'block';
+        content.style.display = 'none';
+      } else {
+        guard.style.display = 'none';
+        content.style.display = 'block';
+        fetchJournalEntries();
       }
     }
 
     window.handleUrgeSubmit = async function(e) {
       e.preventDefault();
       if (!window.currentUser || !window.supabaseClient) {
-        alert("Please sign in or create an account to save your urge logs.");
+        alert("Please sign in to save your urge logs.");
         openAuthModal('signin');
         return;
       }
@@ -1218,10 +1325,7 @@
 
     async function fetchUrgeLogs() {
       const feed = document.getElementById('logsFeed');
-      if (!window.currentUser || !window.supabaseClient) {
-        feed.innerHTML = '<p style="color: var(--text-muted);">Sign in to view your logged history.</p>';
-        return;
-      }
+      if (!window.currentUser || !window.supabaseClient) return;
 
       const { data, error } = await window.supabaseClient
         .from('urge_logs')
@@ -1268,7 +1372,7 @@
     window.handleJournalSubmit = async function(e) {
       e.preventDefault();
       if (!window.currentUser || !window.supabaseClient) {
-        alert("Please sign in or create an account to save your journal entries.");
+        alert("Please sign in to save your journal entries.");
         openAuthModal('signin');
         return;
       }
@@ -1298,10 +1402,7 @@
 
     async function fetchJournalEntries() {
       const feed = document.getElementById('journalFeed');
-      if (!window.currentUser || !window.supabaseClient) {
-        feed.innerHTML = '<p style="color: var(--text-muted);">Sign in to view your private journal entries.</p>';
-        return;
-      }
+      if (!window.currentUser || !window.supabaseClient) return;
 
       const { data, error } = await window.supabaseClient
         .from('journal_entries')
@@ -1331,11 +1432,13 @@
       `).join('');
     }
 
-    // Initial check on load
-    renderTrackerView();
-
+    // Initialize on page load
     if (window.supabaseClient) {
-      checkSession();
+      checkSession().then(() => {
+        renderTrackerView();
+        renderUrgeView();
+        renderJournalView();
+      });
     }
   </script>
 </body>
