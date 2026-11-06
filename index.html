@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Recovery Compass | Inclusive Wellness & Support</title>
   
+  <!-- Supabase JS Client Library -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
     :root {
       --bg-main: #0f172a;
@@ -312,7 +315,6 @@
       margin-right: auto;
     }
 
-    /* Sub-tabs for Wellness */
     .wellness-pills {
       display: flex;
       gap: 0.5rem;
@@ -370,7 +372,6 @@
       margin-bottom: 0.4rem;
     }
 
-    /* Milestone Tracker Styles */
     .pill-grid {
       display: flex;
       flex-wrap: wrap;
@@ -465,7 +466,6 @@
       margin-top: 1.5rem;
     }
 
-    /* Quotes Filter Pills */
     .quote-pills {
       display: flex;
       gap: 0.5rem;
@@ -516,7 +516,6 @@
       font-weight: 600;
     }
 
-    /* AI Chat UI Components */
     .chat-box {
       background: var(--bg-main);
       border: 1px solid var(--border);
@@ -736,25 +735,25 @@
 
         <div id="profileLoggedInContent" style="display: none;">
           <h2 style="margin-bottom: 0.5rem;">👤 User Profile & Data Rights</h2>
-          <p style="color: var(--text-muted); margin-bottom: 1.5rem;">You maintain 100% ownership and legal control over your recovery data.</p>
+          <p style="color: var(--text-muted); margin-bottom: 1.5rem;">You maintain 100% ownership and legal control over your recovery data via Supabase.</p>
 
           <div class="card" style="margin-bottom: 1.5rem;">
             <h3 style="margin-bottom: 1rem;">Account Summary</h3>
             <p style="margin-bottom: 0.5rem;"><strong>Email Address:</strong> <span id="profileEmailDisplay">--</span></p>
             <p style="margin-bottom: 0.5rem;"><strong>Account Created:</strong> <span id="profileCreatedDisplay">--</span></p>
-            <p style="margin-bottom: 0.5rem;"><strong>Data Ownership Guarantee:</strong> Your data is confidential and stored securely under your account.</p>
+            <p style="margin-bottom: 0.5rem;"><strong>Database Status:</strong> <span style="color: var(--accent);">Connected via supabaseClient</span></p>
           </div>
 
           <div class="card" style="margin-bottom: 1.5rem;">
             <h3 style="margin-bottom: 0.5rem;">📥 Export Your Data</h3>
-            <p style="color: var(--text-muted); margin-bottom: 1rem;">Download a complete JSON export of all your urge logs, journal entries, and milestone tracker records anytime.</p>
+            <p style="color: var(--text-muted); margin-bottom: 1.0rem;">Download a complete JSON export of all your Supabase urge logs and journal entries.</p>
             <button class="btn btn-primary" onclick="exportUserData()" style="width: 100%;">Download Data Export (.JSON)</button>
           </div>
 
           <div class="card" style="border-color: var(--danger);">
-            <h3 style="color: var(--danger); margin-bottom: 0.5rem;">🗑️ Delete Account & Data</h3>
-            <p style="color: var(--text-muted); margin-bottom: 1rem;">Permanently remove your account, urge history, journal entries, and tracker configurations. This action is immediate and cannot be undone.</p>
-            <button class="btn btn-danger" onclick="deleteUserAccount()" style="width: 100%;">Permanently Delete My Account & Data</button>
+            <h3 style="color: var(--danger); margin-bottom: 0.5rem;">🗑️ Sign Out / Delete Session</h3>
+            <p style="color: var(--text-muted); margin-bottom: 1rem;">End your active session securely.</p>
+            <button class="btn btn-danger" onclick="handleSignOut()" style="width: 100%;">Sign Out</button>
           </div>
         </div>
       </div>
@@ -767,7 +766,7 @@
         
         <div id="urgeLoggedOutGuard" class="auth-guard-box" style="display: none;">
           <h3>🔒 Sign In Required</h3>
-          <p>The Trigger & Craving Log is a private, secure tool designed to track your personal history. Please sign in or create an account to start logging.</p>
+          <p>The Trigger & Craving Log is a secure tool synced with Supabase. Please sign in or create an account to start logging.</p>
           <button class="btn btn-primary" onclick="openAuthModal('signin')" style="margin-right: 0.5rem;">Sign In</button>
           <button class="btn btn-outline" onclick="openAuthModal('signup')">Create Account</button>
         </div>
@@ -802,13 +801,13 @@
                 <textarea id="notes" rows="3" placeholder="How did you navigate it? How do you feel now?"></textarea>
               </div>
 
-              <button type="submit" class="btn btn-primary" style="width: 100%;">Save Urge Log</button>
+              <button type="submit" class="btn btn-primary" style="width: 100%;">Save Urge Log to Supabase</button>
             </form>
           </div>
 
           <h3>Recent History</h3>
           <div id="logsFeed" style="margin-top: 1rem;">
-            <p style="color: var(--text-muted);">No urge logs recorded yet.</p>
+            <p style="color: var(--text-muted);">Loading urge logs...</p>
           </div>
         </div>
       </div>
@@ -821,14 +820,14 @@
         
         <div id="journalLoggedOutGuard" class="auth-guard-box" style="display: none;">
           <h3>🔒 Sign In Required</h3>
-          <p>Your Recovery Journal is completely private and securely encrypted for your eyes only. Please sign in to access your journal entries.</p>
+          <p>Your Recovery Journal is safely stored in Supabase. Please sign in to access your journal entries.</p>
           <button class="btn btn-primary" onclick="openAuthModal('signin')" style="margin-right: 0.5rem;">Sign In</button>
           <button class="btn btn-outline" onclick="openAuthModal('signup')">Create Account</button>
         </div>
 
         <div id="journalLoggedInContent" style="display: none;">
           <h2 style="margin-bottom: 0.5rem;">📖 Recovery Journal</h2>
-          <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Private, reflective writing space with step prompts and daily check-ins.</p>
+          <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Private, reflective writing space synced with your Supabase account.</p>
 
           <div class="card" style="margin-bottom: 2rem;">
             <h3 style="margin-bottom: 1rem;">Create Journal Entry</h3>
@@ -853,13 +852,13 @@
                 <textarea id="journalContent" rows="6" placeholder="Write freely here..." required></textarea>
               </div>
 
-              <button type="submit" class="btn btn-primary" style="width: 100%;">Save Entry to Journal</button>
+              <button type="submit" class="btn btn-primary" style="width: 100%;">Save Entry to Supabase</button>
             </form>
           </div>
 
           <h3>Past Journal Entries</h3>
           <div id="journalFeed" style="margin-top: 1rem;">
-            <p style="color: var(--text-muted);">No journal entries saved yet.</p>
+            <p style="color: var(--text-muted);">Loading journal entries...</p>
           </div>
         </div>
       </div>
@@ -872,7 +871,6 @@
         <h2 style="margin-bottom: 0.5rem;">🤖 AI Recovery Companion</h2>
         <p style="color: var(--text-muted); margin-bottom: 1rem;">24/7 non-judgmental support grounded in evidence-based care.</p>
 
-        <!-- Framework Picker -->
         <div style="margin-bottom: 1rem;">
           <label style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.4rem; display: block;">Select Support Framework:</label>
           <div class="pill-grid" id="aiFrameworkPills">
@@ -905,7 +903,7 @@
         
         <div id="trackerLoggedOutGuard" class="auth-guard-box" style="display: none;">
           <h3>🔒 Sign In Required</h3>
-          <p>Your Recovery Journey and milestone tracker are personal to you. Please sign in to set your clean date and track your progress securely.</p>
+          <p>Your Recovery Journey and milestone tracker are stored in Supabase. Please sign in to set your clean date and track your progress securely.</p>
           <button class="btn btn-primary" onclick="openAuthModal('signin')" style="margin-right: 0.5rem;">Sign In</button>
           <button class="btn btn-outline" onclick="openAuthModal('signup')">Create Account</button>
         </div>
@@ -936,7 +934,7 @@
                 <input type="time" id="setupTimeInput" value="00:00" required>
               </div>
 
-              <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Start Recovery Journey</button>
+              <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Save Recovery Journey to Supabase</button>
             </form>
           </div>
 
@@ -960,7 +958,7 @@
               <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">You’ve got this!</p>
 
               <p style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Recovery birthday</p>
-              <p id="birthdayDisplay" style="font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 1.5rem;">Sep 20, 2026</p>
+              <p id="birthdayDisplay" style="font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 1.5rem;">--</p>
 
               <div class="tracker-actions">
                 <button class="btn btn-outline" onclick="openSetupMode('date')">🔄 Edit Date</button>
@@ -973,14 +971,13 @@
       </div>
     </section>
 
-    <!-- Nutrition & Wellness View (5 Categories + Interactive Templates + Recipe Book) -->
+    <!-- Nutrition & Wellness View -->
     <section id="wellnessView" class="view">
       <div class="dashboard-container">
         <button class="btn btn-outline" onclick="navigateTo('landingView')" style="margin-bottom: 1.5rem;">&larr; Back to Home</button>
         <h2 style="margin-bottom: 0.5rem;">🥗 Nutrition & Wellness Hub</h2>
         <p style="color: var(--text-muted); margin-bottom: 1.25rem;">Evidence-based guides, meal planning, recipe book, mindfulness practices, and light exercise routines to support your healing.</p>
 
-        <!-- Category Pills -->
         <div class="wellness-pills">
           <button class="wellness-pill active" onclick="switchWellnessTab('nutritionTab', this)">🥗 Nutrition & Recovery</button>
           <button class="wellness-pill" onclick="switchWellnessTab('recipesTab', this)">📖 Recipe Book</button>
@@ -990,7 +987,6 @@
           <button class="wellness-pill" onclick="switchWellnessTab('exerciseTab', this)">🚶 Light Exercise</button>
         </div>
 
-        <!-- TAB 1: Nutrition & Recovery -->
         <div id="nutritionTab" class="content-section active card">
           <h3>Nutrition & Wellness Guide for Recovery</h3>
           <p>Substance use depletes nutrients and disrupts blood sugar. Proper nutrition is a fundamental pillar of physical and emotional stability.</p>
@@ -1000,39 +996,12 @@
             <li><strong>Limit caffeine:</strong> Exacerbates anxiety and insomnia; stop by early afternoon.</li>
             <li><strong>Sleep & Body Care:</strong> Consistent wake times, morning daylight, and basic hygiene rebuild self-respect.</li>
           </ul>
-
-          <hr style="border: 0; border-top: 1px solid var(--border); margin: 1.5rem 0;">
-
-          <h3>📝 Active Daily Meal Check-in Template</h3>
-          <p style="font-size: 0.85rem; color: var(--text-muted);">Log your meals and consistency today to protect against fatigue and cravings.</p>
-          <form onsubmit="handleWellnessSubmit(event, 'nutrition')">
-            <div class="form-group">
-              <label>Did you eat every 3-4 hours today?</label>
-              <select id="nut_schedule">
-                <option value="Yes, consistently">Yes, consistently</option>
-                <option value="Somewhat">Somewhat</option>
-                <option value="Skipped meals">Skipped meals</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Protein intake at meals</label>
-              <input type="text" id="nut_protein" placeholder="e.g., Eggs at breakfast, chicken at lunch">
-            </div>
-            <div class="form-group">
-              <label>Hydration & Notes</label>
-              <textarea id="nut_notes" rows="2" placeholder="Water intake, caffeine cutoff time, sugar cravings managed..."></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary" style="width: 100%;">Save Daily Nutrition Log</button>
-          </form>
-          <div id="nutritionLogsFeed" style="margin-top: 1rem;"></div>
         </div>
 
-        <!-- TAB 2: Budget Recovery Recipe Book -->
         <div id="recipesTab" class="content-section card">
           <h3>📖 Budget Recovery Recipe Book</h3>
           <p style="color: var(--text-muted); margin-bottom: 1rem;">Simple, low-cost meals that steady blood sugar, feed the brain and body, and work with limited kitchens, limited money, and limited energy.</p>
 
-          <!-- Recipe Category Pills -->
           <div class="quote-pills" style="margin-bottom: 1rem;">
             <button class="quote-pill active" onclick="filterRecipes('all', this)">All Recipes</button>
             <button class="quote-pill" onclick="filterRecipes('breakfast', this)">Breakfast</button>
@@ -1042,165 +1011,44 @@
             <button class="quote-pill" onclick="filterRecipes('comfort', this)">Comfort & Drinks</button>
           </div>
 
-          <!-- Recipe Tag Filters -->
-          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.25rem;">
-            <button class="substance-pill" onclick="filterRecipeTag('Microwave OK')">Microwave OK</button>
-            <button class="substance-pill" onclick="filterRecipeTag('No cook')">No Cook</button>
-            <button class="substance-pill" onclick="filterRecipeTag('Freezes')">Freezes Well</button>
-            <button class="substance-pill" onclick="filterRecipeTag('reset')">Clear Filters</button>
-          </div>
-
           <div id="recipeBookContainer"></div>
         </div>
 
-        <!-- TAB 3: Foods That Support Recovery -->
         <div id="foodsTab" class="content-section card">
           <h3>Foods That Support Addiction Recovery</h3>
           <p>Repair brain chemistry and gut health with targeted nutritional groups:</p>
           <ul>
             <li><strong>Blood sugar stabilizers:</strong> Oats, brown rice, lentils, chickpeas, and whole fruit.</li>
-            <li><strong>Protein foods (Neurotransmitter precursors):</strong> Eggs, poultry, fish, Greek yogurt, and pumpkin seeds for dopamine and serotonin building blocks.</li>
+            <li><strong>Protein foods:</strong> Eggs, poultry, fish, Greek yogurt, and pumpkin seeds for dopamine and serotonin building blocks.</li>
             <li><strong>Omega-3 Fats:</strong> Salmon, sardines, walnuts, and chia seeds for brain cell membranes and mood.</li>
-            <li><strong>B-Vitamins & Magnesium:</strong> Thiamine-rich whole grains, leafy greens, and nuts to repair nerve function and ease withdrawal restlessness.</li>
           </ul>
-
-          <hr style="border: 0; border-top: 1px solid var(--border); margin: 1.5rem 0;">
-
-          <h3>🍲 Active Foods I Enjoy Log</h3>
-          <p style="font-size: 0.85rem; color: var(--text-muted);">Keep track of supportive recovery foods you have on hand.</p>
-          <form onsubmit="handleWellnessSubmit(event, 'foods')">
-            <div class="form-group">
-              <label>Category</label>
-              <select id="food_category">
-                <option value="Protein">Protein Source</option>
-                <option value="Slow Carb">Slow Carb / Stabilizer</option>
-                <option value="Omega-3 / Fat">Omega-3 / Healthy Fat</option>
-                <option value="Produce / Fruit">Produce / Fruit / Greens</option>
-                <option value="Comfort / Hydration">Hydration / Comfort Food</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Food Item / Meal Idea</label>
-              <input type="text" id="food_item" placeholder="e.g., Greek yogurt with berries & walnuts" required>
-            </div>
-            <button type="submit" class="btn btn-primary" style="width: 100%;">Save to Recovery Food List</button>
-          </form>
-          <div id="foodsLogsFeed" style="margin-top: 1rem;"></div>
         </div>
 
-        <!-- TAB 4: Budget Meal Plan -->
         <div id="budgetTab" class="content-section card">
           <h3>Budget Recovery Meal Plan & Staples</h3>
           <p>Eating regularly on a budget is entirely achievable with the right strategy:</p>
           <ul>
             <li><strong>The Daily Formula:</strong> Protein + slow carb + produce at every meal. Repeat 2 breakfasts, lunches, and dinners to save money.</li>
             <li><strong>Cheap Staples:</strong> Eggs, dried beans, peanut butter, canned tuna, frozen vegetables, oats, and rice.</li>
-            <li><strong>Savings Tactics:</strong> Batch cook once a week, buy dried beans in bulk, and utilize frozen produce that doesn't spoil.</li>
           </ul>
-
-          <hr style="border: 0; border-top: 1px solid var(--border); margin: 1.5rem 0;">
-
-          <h3>🛒 Active Weekly Meal & Shopping Planner</h3>
-          <form onsubmit="handleWellnessSubmit(event, 'budget')">
-            <div class="form-group">
-              <label>Day of the Week</label>
-              <select id="budget_day">
-                <option value="Monday">Monday</option>
-                <option value="Tuesday">Tuesday</option>
-                <option value="Wednesday">Wednesday</option>
-                <option value="Thursday">Thursday</option>
-                <option value="Friday">Friday</option>
-                <option value="Saturday">Saturday</option>
-                <option value="Sunday">Sunday</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Planned Breakfast & Lunch</label>
-              <input type="text" id="budget_meals_am" placeholder="e.g., Oatmeal with peanut butter / Bean & rice bowl">
-            </div>
-            <div class="form-group">
-              <label>Planned Dinner & Snack</label>
-              <input type="text" id="budget_meals_pm" placeholder="e.g., Baked chicken & frozen broccoli / Apple & yogurt">
-            </div>
-            <button type="submit" class="btn btn-primary" style="width: 100%;">Save Daily Meal Plan</button>
-          </form>
-          <div id="budgetLogsFeed" style="margin-top: 1rem;"></div>
         </div>
 
-        <!-- TAB 5: Mindfulness & Meditation -->
         <div id="mindfulnessTab" class="content-section card">
           <h3>Mindfulness & Meditation in Recovery</h3>
           <p>Mindfulness builds the gap between urge and action where choice lives.</p>
           <ul>
             <li><strong>STOP:</strong> Stop, Take a breath, Observe thoughts/body, Proceed with intention.</li>
             <li><strong>5-4-3-2-1 Grounding:</strong> Name 5 things seen, 4 felt, 3 heard, 2 smelled, 1 tasted.</li>
-            <li><strong>Urge Surfing:</strong> Cravings peak and fade within 15 to 30 minutes. Ride the wave without acting.</li>
           </ul>
-
-          <hr style="border: 0; border-top: 1px solid var(--border); margin: 1.5rem 0;">
-
-          <h3>🧘 Active Craving Surf & Practice Log</h3>
-          <form onsubmit="handleWellnessSubmit(event, 'mindfulness')">
-            <div class="form-group">
-              <label>Practice / Tool Used</label>
-              <select id="mind_tool">
-                <option value="Urge Surfing">Urge Surfing</option>
-                <option value="STOP Exercise">STOP Exercise</option>
-                <option value="5-4-3-2-1 Grounding">5-4-3-2-1 Grounding</option>
-                <option value="Breath Anchor (5 min)">Breath Anchor (5 min)</option>
-                <option value="Body Scan">Body Scan</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Peak Intensity (0-10)</label>
-              <input type="number" id="mind_intensity" min="0" max="10" value="5" required>
-            </div>
-            <div class="form-group">
-              <label>Outcome / Reflection</label>
-              <textarea id="mind_notes" rows="2" placeholder="How did you feel after riding the wave?"></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary" style="width: 100%;">Save Mindfulness Log</button>
-          </form>
-          <div id="mindfulnessLogsFeed" style="margin-top: 1rem;"></div>
         </div>
 
-        <!-- TAB 6: Light Exercise Techniques -->
         <div id="exerciseTab" class="content-section card">
           <h3>Light Exercise Techniques That Support Recovery</h3>
-          <p>Gentle, regular movement supports recovery by raising endorphins, lowering stress hormones, and improving sleep and self-trust. <strong>The goal is consistency, not intensity.</strong></p>
+          <p>Gentle, regular movement supports recovery by raising endorphins, lowering stress hormones, and improving sleep and self-trust.</p>
           <ul>
             <li><strong>Walking:</strong> The best starting point. Aim for 10 to 30 minutes daily in morning light or green space.</li>
             <li><strong>Stretching & Mobility:</strong> Neck rolls, cat-cow, hamstring stretches, and child's pose to relieve physical tension.</li>
-            <li><strong>Gentle Yoga & Tai Chi:</strong> Low injury risk, combining breath, body awareness, and stress relief.</li>
-            <li><strong>Bodyweight Strength:</strong> Wall push-ups, chair squats, and glute bridges (2-3 times a week) to rebuild muscle.</li>
-            <li><strong>Safety First:</strong> Use the talk test (speak in full sentences). Get medical clearance if coming out of acute withdrawal.</li>
           </ul>
-
-          <hr style="border: 0; border-top: 1px solid var(--border); margin: 1.5rem 0;">
-
-          <h3>🚶 Active Recovery Movement Log</h3>
-          <form onsubmit="handleWellnessSubmit(event, 'exercise')">
-            <div class="form-group">
-              <label>Activity Performed</label>
-              <select id="ex_activity">
-                <option value="15-20 Min Walk">15-20 Min Walk</option>
-                <option value="Stretching & Mobility">Stretching & Mobility (10 min)</option>
-                <option value="Gentle Yoga">Gentle Yoga</option>
-                <option value="Bodyweight Strength">Bodyweight Strength</option>
-                <option value="Balance & Breathing">Balance & Breathing</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Duration (Minutes)</label>
-              <input type="number" id="ex_duration" min="5" max="120" value="15" required>
-            </div>
-            <div class="form-group">
-              <label>Mood / Craving Shift Notes</label>
-              <textarea id="ex_notes" rows="2" placeholder="e.g., Craving dropped from 7 to 2 after walk..."></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary" style="width: 100%;">Save Movement Log</button>
-          </form>
-          <div id="exerciseLogsFeed" style="margin-top: 1rem;"></div>
         </div>
 
       </div>
@@ -1252,15 +1100,15 @@
     </section>
   </main>
 
-  <!-- Auth Modal with Legal Framework -->
+  <!-- Auth Modal with Supabase Auth -->
   <div id="authModal" class="modal-overlay">
     <div class="modal-card">
       <button class="modal-close" onclick="closeAuthModal()">&times;</button>
       <h3 id="authModalTitle">Welcome Back</h3>
-      <p id="authModalSubtitle" style="color: var(--text-muted); margin-bottom: 1rem;">Sign in to access your personal dashboard and recovery tools.</p>
+      <p id="authModalSubtitle" style="color: var(--text-muted); margin-bottom: 1rem;">Sign in to access your secure Supabase account.</p>
       
       <div class="legal-notice" id="legalNoticeBox" style="display: none;">
-        <strong>🛡️ Data Ownership Guarantee:</strong> You retain complete ownership of your data. Export or delete your data at any time from your Profile settings.
+        <strong>🛡️ Supabase Cloud Security:</strong> Your data is securely authenticated and stored in your Supabase project.
       </div>
 
       <form onsubmit="handleAuthSubmit(event)">
@@ -1278,10 +1126,6 @@
             <input type="checkbox" id="termsAgree" required>
             <label for="termsAgree">I agree to the <strong>Terms of Service</strong> and <strong>Privacy Policy</strong>.</label>
           </div>
-          <div class="checkbox-group">
-            <input type="checkbox" id="dataOwnershipAgree" required>
-            <label for="dataOwnershipAgree">I understand that I retain 100% control over my data and can export or delete it anytime.</label>
-          </div>
         </div>
 
         <button type="submit" id="authSubmitBtn" class="btn btn-primary" style="width: 100%;">Sign In</button>
@@ -1290,30 +1134,52 @@
   </div>
 
   <script>
+    // ==========================================
+    // CONSOLIDATED SUPABASE INITIALIZATION
+    // ==========================================
+    const SUPABASE_URL = 'https://oriymofshnevqgfqthxj.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_5gilGHkO39UWMaZdjxMCyw_Fm3_n92y';
+    
+    // Using 'supabaseClient' globally to prevent any redeclaration collisions
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
     window.currentUser = null;
 
-    try {
-      const savedUser = localStorage.getItem('recovery_current_user');
-      if (savedUser) {
-        window.currentUser = JSON.parse(savedUser);
+    // Check active Supabase session on load
+    async function initSupabaseAuth() {
+      try {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (session && session.user) {
+          window.currentUser = session.user;
+        }
+      } catch (err) {
+        console.error("Auth session check error:", err);
       }
-    } catch(e) {}
+      updateAuthUI();
+      renderTrackerView();
+      renderUrgeView();
+      renderJournalView();
+    }
+    initSupabaseAuth();
 
-    let trackerState = {
-      substance: 'Alcohol',
-      soberDateTime: null
-    };
+    // Tracker State
+    let trackerState = { substance: 'Alcohol', soberDateTime: null };
 
-    function loadUserTrackerState() {
+    async function loadUserTrackerState() {
       if (!window.currentUser) return;
       try {
-        const saved = localStorage.getItem('recovery_tracker_' + window.currentUser.email);
-        if (saved) {
-          trackerState = JSON.parse(saved);
+        const { data, error } = await supabaseClient
+          .from('recovery_trackers')
+          .select('*')
+          .eq('user_id', window.currentUser.id)
+          .single();
+        
+        if (data) {
+          trackerState = { substance: data.substance, soberDateTime: data.sober_datetime };
         } else {
           trackerState = { substance: 'Alcohol', soberDateTime: null };
         }
-      } catch(e) {
+      } catch (e) {
         trackerState = { substance: 'Alcohol', soberDateTime: null };
       }
     }
@@ -1334,13 +1200,6 @@
         document.querySelector('#trackerSetupCard h2').innerText = "Edit Sober Date";
       } else {
         document.querySelector('#trackerSetupCard h2').innerText = "Recovery journey";
-        document.querySelectorAll('#setupSubstancePills .substance-pill').forEach(p => {
-          if (p.getAttribute('data-val') === trackerState.substance) {
-            p.classList.add('active');
-          } else {
-            p.classList.remove('active');
-          }
-        });
       }
 
       if (trackerState.soberDateTime) {
@@ -1352,7 +1211,7 @@
       }
     };
 
-    window.handleSetupSubmit = function(e) {
+    window.handleSetupSubmit = async function(e) {
       e.preventDefault();
       if (!window.currentUser) {
         alert("Please sign in first.");
@@ -1362,17 +1221,21 @@
 
       const dateVal = document.getElementById('setupDateInput').value;
       const timeVal = document.getElementById('setupTimeInput').value;
-      
       trackerState.soberDateTime = `${dateVal}T${timeVal}:00`;
-      try {
-        localStorage.setItem('recovery_tracker_' + window.currentUser.email, JSON.stringify(trackerState));
-      } catch(e) {}
 
-      renderTrackerView();
-      alert("Recovery journey saved!");
+      const { error } = await supabaseClient
+        .from('recovery_trackers')
+        .upsert({ user_id: window.currentUser.id, substance: trackerState.substance, sober_datetime: trackerState.soberDateTime }, { onConflict: 'user_id' });
+
+      if (error) {
+        alert("Error saving milestone to Supabase: " + error.message);
+      } else {
+        renderTrackerView();
+        alert("Recovery journey saved to Supabase!");
+      }
     };
 
-    function renderTrackerView() {
+    async function renderTrackerView() {
       const guard = document.getElementById('trackerLoggedOutGuard');
       const content = document.getElementById('trackerLoggedInContent');
       const setupCard = document.getElementById('trackerSetupCard');
@@ -1387,7 +1250,7 @@
       guard.style.display = 'none';
       content.style.display = 'block';
 
-      loadUserTrackerState();
+      await loadUserTrackerState();
 
       if (!trackerState.soberDateTime) {
         setupCard.style.display = 'block';
@@ -1405,7 +1268,6 @@
       const start = new Date(trackerState.soberDateTime);
       const now = new Date();
       let diff = now - start;
-
       if (diff < 0) diff = 0;
 
       const seconds = Math.floor(diff / 1000) % 60;
@@ -1417,9 +1279,7 @@
       const days = Math.floor(daysTotal % 30.4375);
 
       let primaryStr = `${daysTotal} days`;
-      if (months > 0) {
-        primaryStr = `${months}m ${days}d`;
-      }
+      if (months > 0) primaryStr = `${months}m ${days}d`;
       
       const secondaryStr = `${hours}h ${minutes}m ${seconds}s`;
 
@@ -1440,7 +1300,6 @@
 
     // AI Companion Logic
     let activeFramework = 'Adaptive / Balanced';
-
     window.setAiFramework = function(framework, el) {
       activeFramework = framework;
       document.querySelectorAll('#aiFrameworkPills .substance-pill').forEach(p => p.classList.remove('active'));
@@ -1483,182 +1342,21 @@
 
     function generateRecoveryResponse(userMsg, framework) {
       const lower = userMsg.toLowerCase();
-
-      if (lower.includes('suicide') || lower.includes('kill myself') || lower.includes('end it all') || lower.includes('hurt myself')) {
-        return "I hear how much pain you're in, but please stay safe. You are not alone. Please reach out right now to the Crisis Support Line by calling or texting <strong>988</strong> (US), or contact emergency services immediately.";
+      if (lower.includes('suicide') || lower.includes('kill myself') || lower.includes('end it all')) {
+        return "I hear how much pain you're in. Please reach out right now to the Crisis Support Line by calling or texting <strong>988</strong> (US).";
       }
-
-      if (lower.includes('craving') || lower.includes('urge') || lower.includes('want to drink') || lower.includes('want to use')) {
-        return `I hear you. Cravings can feel intense, but remember they are waves that peak and subside within 15–30 minutes. Let's try <strong>Urge Surfing</strong>:<br><br>
-        1. <strong>Pause & Name it:</strong> Say 'I am experiencing a craving right now.'<br>
-        2. <strong>Breathe:</strong> Take 4 seconds in, exhale for 6 seconds.<br>
-        3. <strong>Locate it:</strong> Where do you feel it in your body?<br>
-        Would you like to try a quick grounding exercise?`;
+      if (lower.includes('craving') || lower.includes('urge')) {
+        return `Cravings peak and subside within 15–30 minutes. Let's try <strong>Urge Surfing</strong>: pause, take 4 seconds in and 6 seconds out, and notice where you feel it in your body.`;
       }
-
-      if (framework === 'CBT & Reframing') {
-        return `Under a CBT lens: What is the specific automatic thought behind feeling "${userMsg}"? Let's examine the evidence for and against it together.`;
-      } else if (framework === 'SMART Recovery') {
-        return `Using SMART Recovery tools: What are the immediate pros vs long-term cons of acting on this feeling?`;
-      } else if (framework === '12-Step Perspective') {
-        return `Taking things one day—or one hour—at a time. What is one small action you can take right now to practice acceptance?`;
-      } else if (framework === 'Mindful Grounding') {
-        return `Let's ground right now. Take a deep breath. Name 3 physical objects around you and press your feet firmly onto the floor.`;
-      }
-
-      return `Thank you for sharing that. Navigating recovery takes courage. What is one supportive, healthy step you can take in the next 10 minutes?`;
+      return `Thank you for sharing. Navigating recovery takes courage. What is one supportive, healthy step you can take in the next 10 minutes?`;
     }
 
     // Recipe Book Dataset
     const recipesData = [
-      {
-        id: 1, category: 'breakfast', title: '1. Peanut Butter Banana Oats', tags: ['Microwave OK', 'Stove'], meta: 'Serves 1 · 5 min · $',
-        ingredients: ['1/2 cup rolled oats', '1 cup water or milk', '1 tbsp peanut butter', '1/2 banana, sliced', 'Pinch of cinnamon and salt'],
-        steps: ['Microwave oats and liquid in a large bowl for 2-3 mins (stir halfway). Or simmer on stove for 5 mins.', 'Stir in peanut butter, top with banana and cinnamon.'],
-        why: 'Slow carbs plus protein and fat prevent mid-morning crashes. Banana adds potassium.', swaps: 'Apple or frozen berries for banana; sunflower seed butter if avoiding peanuts.'
-      },
-      {
-        id: 2, category: 'breakfast', title: '2. Veggie Scramble with Toast', tags: ['Microwave OK', 'Stove'], meta: 'Serves 1 · 8 min · $',
-        ingredients: ['2 eggs', '1/2 cup frozen spinach or chopped veg', '1 tsp oil or butter', 'Salt, pepper, hot sauce', '1-2 slices whole-grain toast'],
-        steps: ['Heat oil in a pan, add veg for 1-2 mins, pour in beaten eggs and stir gently.', 'Microwave version: whisk eggs with veg in greased mug, microwave 45s, stir, then another 30-45s.', 'Serve with toast and fruit.'],
-        why: 'Eggs supply choline, B12, and complete protein. Spinach adds folate and magnesium.'
-      },
-      {
-        id: 3, category: 'breakfast', title: '3. Overnight Oats', tags: ['No cook'], meta: 'Serves 1 · 3 min + overnight · $',
-        ingredients: ['1/2 cup rolled oats', '1/2 cup milk or water', '1/4 cup plain yogurt', '1 tbsp peanut butter or chia/flax', 'Fruit, fresh or frozen'],
-        steps: ['Stir ingredients in a jar. Cover and refrigerate overnight.', 'Top with fruit in the morning. Eat cold or microwave 1 min.'],
-        why: 'Zero morning effort when energy is low. Yogurt adds probiotics.'
-      },
-      {
-        id: 4, category: 'breakfast', title: '4. Egg and Bean Breakfast Burrito', tags: ['Microwave OK', 'Freezes'], meta: 'Serves 1 (batch of 4) · 10 min · $',
-        ingredients: ['1 tortilla', '2 eggs, scrambled', '1/4 cup black or pinto beans', '2 tbsp cheese or salsa'],
-        steps: ['Scramble eggs, warm beans, layer on tortilla with cheese/salsa. Roll up.', 'To freeze: wrap in foil/paper, then bag. Microwave from frozen 2-3 mins.'],
-        why: 'Grab-and-go meal with protein, fiber, and slow carbs.'
-      },
-      {
-        id: 5, category: 'breakfast', title: '5. Yogurt Berry Bowl', tags: ['No cook'], meta: 'Serves 1 · 2 min · $',
-        ingredients: ['3/4 cup plain yogurt', '1/2 cup frozen berries', '2 tbsp oats, nuts, or seeds', 'Cinnamon, honey drizzle'],
-        steps: ['Combine yogurt and berries. Top with nuts/seeds and cinnamon.'],
-        why: 'Satisfies sweet cravings with fiber and protein rather than a sugar spike.'
-      },
-      {
-        id: 6, category: 'lunch', title: '6. Bean and Rice Bowl', tags: ['Microwave OK', 'Freezes'], meta: 'Serves 2 · 15 min · $',
-        ingredients: ['2 cups cooked rice', '1 can black/pinto beans, rinsed', '1 cup frozen vegetables', '1/2 tsp cumin, garlic powder, salt', 'Salsa, hot sauce, or fried egg'],
-        steps: ['Heat beans with spices and a splash of water for 3-4 mins.', 'Microwave frozen veg for 2-3 mins.', 'Pile over rice and add toppings.'],
-        why: 'Rice and beans form a complete protein. High in fiber, folate, and magnesium.'
-      },
-      {
-        id: 7, category: 'lunch', title: '7. Tuna or Egg Salad', tags: ['No cook'], meta: 'Serves 2 · 5 min · $',
-        ingredients: ['1 can tuna (or 3 hard-boiled eggs)', '2 tbsp plain yogurt or mayo', '1 tsp mustard, lemon juice', 'Chopped onion/celery, salt, pepper'],
-        steps: ['Drain and mix ingredients. Serve on bread, crackers, or tortilla.'],
-        why: 'Fast protein with omega-3s (tuna) or choline (eggs).'
-      },
-      {
-        id: 8, category: 'lunch', title: '8. Everyday Lentil Soup', tags: ['Stove', 'Freezes'], meta: 'Serves 5-6 · 40 min · $',
-        ingredients: ['1.5 cups dry brown/green lentils', '1 onion, 2 carrots, 2 garlic cloves', '1 can diced tomatoes', '6 cups water or broth', '1 tsp cumin, salt, pepper, oil'],
-        steps: ['Soften onion/carrot in oil 5 mins. Add garlic and cumin 1 min.', 'Add lentils, tomatoes, liquid. Simmer 25-30 mins.', 'Season with salt and vinegar.'],
-        why: 'Lentils offer protein, folate, iron, and magnesium for pennies.'
-      },
-      {
-        id: 9, category: 'lunch', title: '9. Egg Fried Rice', tags: ['Stove'], meta: 'Serves 2 · 12 min · $',
-        ingredients: ['2 cups cooked cold rice', '2 eggs', '1 cup frozen mixed vegetables', '1 tbsp oil, 1-2 tbsp soy sauce, garlic'],
-        steps: ['Cook vegetables in oil 3 mins.', 'Scramble eggs in the pan, then mix together.', 'Add rice and soy sauce, stir-fry 3-4 mins.'],
-        why: 'Turns leftover rice into a complete, comforting meal in minutes.'
-      },
-      {
-        id: 10, category: 'lunch', title: '10. Chickpea Smash Sandwich', tags: ['No cook'], meta: 'Serves 2 · 7 min · $',
-        ingredients: ['1 can chickpeas, rinsed', '2 tbsp yogurt, mayo, or avocado', '1 tsp mustard, lemon juice, salt, pepper', 'Bread, lettuce, carrot'],
-        steps: ['Mash chickpeas with fork. Stir in remaining ingredients.', 'Spread on bread and top with greens.'],
-        why: 'Plant protein and fiber with no cooking.'
-      },
-      {
-        id: 11, category: 'dinner', title: '11. Sheet-Pan Chicken, Potatoes, & Broccoli', tags: ['Oven'], meta: 'Serves 4 · 45 min · $$',
-        ingredients: ['4-6 chicken thighs/drumsticks', '4 medium potatoes, cubed', '1 bag frozen broccoli', '2 tbsp oil, salt, garlic powder, paprika'],
-        steps: ['Heat oven to 425°F. Toss potatoes with oil/spices, roast 10 mins.', 'Add chicken, roast 20 mins, add broccoli for 10-15 mins.', 'Ensure chicken hits 165°F.'],
-        why: 'One pan, three food groups, and leftovers for days.'
-      },
-      {
-        id: 12, category: 'dinner', title: '12. Turkey and Bean Chili', tags: ['Stove', 'Freezes'], meta: 'Serves 6 · 35 min · $$',
-        ingredients: ['1 lb ground turkey', '1 onion, 2 garlic cloves', '1 large can diced tomatoes', '2 cans beans (kidney/black/pinto)', '1 tbsp chili powder, cumin, salt'],
-        steps: ['Brown turkey with onion 6-8 mins. Add garlic and spices 1 min.', 'Add tomatoes, beans, water. Simmer 20 mins.'],
-        why: 'High protein and fiber; one pot feeds you for days.'
-      },
-      {
-        id: 13, category: 'dinner', title: '13. Sweet Potato & Black Bean Tacos', tags: ['Microwave OK', 'Stove'], meta: 'Serves 3 · 20 min · $',
-        ingredients: ['2 sweet potatoes, cubed', '1 can black beans', '6 tortillas', '1 tsp cumin, chili powder, salt, salsa'],
-        steps: ['Microwave sweet potato cubes with 2 tbsp water 5-6 mins until soft.', 'Warm beans with spices.', 'Fill tortillas with potatoes, beans, and salsa.'],
-        why: 'Sweet potato offers vitamin A and potassium; satisfies sweet cravings.'
-      },
-      {
-        id: 14, category: 'dinner', title: '14. Cabbage, Potato, & Egg Skillet', tags: ['Stove'], meta: 'Serves 3 · 25 min · $',
-        ingredients: ['2 potatoes, diced', '1/4 head cabbage, sliced', '1 onion, sliced', '3-4 eggs', '2 tbsp oil, salt, pepper, paprika'],
-        steps: ['Cook potatoes in oil 10 mins covered.', 'Add onion and cabbage, cook 8-10 mins until soft.', 'Make wells, crack in eggs, cover and cook 3-5 mins.'],
-        why: 'Cabbage is budget-friendly and supports liver and gut health.'
-      },
-      {
-        id: 15, category: 'dinner', title: '15. One-Pot Chicken and Rice', tags: ['Stove'], meta: 'Serves 4 · 40 min · $$',
-        ingredients: ['4 chicken thighs', '1.5 cups rice', '3 cups water/broth', '1 onion, 2 carrots, 1 cup frozen peas', 'Oil, salt, garlic powder'],
-        steps: ['Brown chicken in oil 3-4 mins per side. Remove.', 'Cook onion/carrot 3 mins, add rice and liquid.', 'Nestle chicken on top, cover, simmer 20-25 mins until rice is tender.'],
-        why: 'Comforting, filling meal with one pot to wash.'
-      },
-      {
-        id: 16, category: 'dinner', title: '16. Tomato Lentil Pasta', tags: ['Stove', 'Freezes'], meta: 'Serves 4 · 30 min · $',
-        ingredients: ['8 oz pasta', '1 cup cooked lentils', '1 can crushed tomatoes', '1 onion, 2 garlic cloves, oil, oregano, spinach'],
-        steps: ['Cook onion/garlic 4 mins. Add tomatoes, seasoning, lentils. Simmer 10-15 mins.', 'Toss with cooked pasta and spinach.'],
-        why: 'Adds plant protein and iron to familiar comfort food.'
-      },
-      {
-        id: 17, category: 'dinner', title: '17. Microwave Baked Potato Meal', tags: ['Microwave OK'], meta: 'Serves 1 · 12 min · $',
-        ingredients: ['1 large potato', '1/2 cup canned chili or beans', '2 tbsp cheese or yogurt'],
-        steps: ['Pierce potato with fork. Microwave 5 mins, flip, microwave 3-5 mins until soft.', 'Split open and top with warm chili/beans and cheese.'],
-        why: 'Full meal from a microwave and can opener. Rich in potassium and B6.'
-      },
-      {
-        id: 18, category: 'comfort', title: '18. Simple Rice Porridge (Congee)', tags: ['Stove'], meta: 'Serves 2-3 · 35 min · $',
-        ingredients: ['1/2 cup rice', '4-5 cups water or broth', 'Salt, ginger, egg or shredded chicken'],
-        steps: ['Simmer rice in liquid on low 30 mins until creamy.', 'Stir in egg or chicken for protein, season to taste.'],
-        why: 'Gentle on a sensitive stomach and hydrating.'
-      },
-      {
-        id: 19, category: 'comfort', title: '19. Ginger Tea & Broth Mug', tags: ['Microwave OK'], meta: 'Serves 1 · 5 min · $',
-        ingredients: ['Ginger slices / tea bag or Bouillon cube', 'Hot water', 'Optional honey or egg'],
-        steps: ['Ginger tea: steep ginger in hot water 5-10 mins. Helps nausea.', 'Broth mug: dissolve bouillon in hot water. Replaces sodium and fluids.'],
-        why: 'Soothes nausea and restores electrolytes.'
-      },
-      {
-        id: 20, category: 'comfort', title: '20. Simple Rehydration Drink', tags: ['No cook'], meta: 'Makes 1 liter · 2 min · $',
-        ingredients: ['1 liter clean water', '6 level teaspoons sugar', '1/2 level teaspoon salt'],
-        steps: ['Stir until dissolved and sip through the day. Follows oral-rehydration ratio.'],
-        why: 'Rehydrates during mild fluid loss.'
-      },
-      {
-        id: 21, category: 'comfort', title: '21. Cozy Bedtime Snack', tags: ['Microwave OK'], meta: 'Serves 1 · 3 min · $',
-        ingredients: ['Warm milk with cinnamon OR Toast with peanut butter and banana'],
-        steps: ['Warm milk or prepare toast before bed.'],
-        why: 'Protein-plus-carb snack reduces night waking and cravings.'
-      }
+      { id: 1, category: 'breakfast', title: '1. Peanut Butter Banana Oats', tags: ['Microwave OK', 'Stove'], meta: 'Serves 1 · 5 min · $', ingredients: ['1/2 cup rolled oats', '1 cup water or milk', '1 tbsp peanut butter', '1/2 banana'], steps: ['Microwave oats and liquid 2-3 mins.', 'Stir in peanut butter, top with banana.'], why: 'Slow carbs and protein prevent mid-morning crashes.' },
+      { id: 6, category: 'lunch', title: '6. Bean and Rice Bowl', tags: ['Microwave OK', 'Freezes'], meta: 'Serves 2 · 15 min · $', ingredients: ['2 cups cooked rice', '1 can black/pinto beans', 'Frozen veg'], steps: ['Heat beans and veg, pile over rice.'], why: 'Rice and beans form a complete protein.' },
+      { id: 11, category: 'dinner', title: '11. Sheet-Pan Chicken & Potatoes', tags: ['Oven'], meta: 'Serves 4 · 45 min · $$', ingredients: ['Chicken thighs', 'Potatoes', 'Broccoli'], steps: ['Roast at 425°F until tender.'], why: 'One pan, multiple meals.' }
     ];
-
-    window.toggleFavoriteRecipe = function(recipeId) {
-      if (!window.currentUser) {
-        alert("Please sign in to save favorite recipes.");
-        openAuthModal('signin');
-        return;
-      }
-      const email = window.currentUser.email;
-      const key = 'recovery_fav_recipes_' + email;
-      let favs = JSON.parse(localStorage.getItem(key) || '[]');
-      
-      if (favs.includes(recipeId)) {
-        favs = favs.filter(id => id !== recipeId);
-        alert("Removed from favorites.");
-      } else {
-        favs.push(recipeId);
-        alert("Saved to your favorite recipes!");
-      }
-      localStorage.setItem(key, JSON.stringify(favs));
-      renderRecipeBook();
-    };
 
     window.filterRecipes = function(category, element) {
       if (element) {
@@ -1668,328 +1366,90 @@
       renderRecipeBook(category);
     };
 
-    window.filterRecipeTag = function(tag) {
-      if (tag === 'reset') renderRecipeBook('all');
-      else renderRecipeBook('all', tag);
-    };
-
-    function renderRecipeBook(filterCategory = 'all', filterTag = null) {
+    function renderRecipeBook(filterCategory = 'all') {
       const container = document.getElementById('recipeBookContainer');
       if (!container) return;
-
-      const email = window.currentUser ? window.currentUser.email : null;
-      const favs = email ? JSON.parse(localStorage.getItem('recovery_fav_recipes_' + email) || '[]') : [];
-
       let filtered = recipesData;
-      if (filterCategory !== 'all') {
-        filtered = filtered.filter(r => r.category === filterCategory);
-      }
-      if (filterTag) {
-        filtered = filtered.filter(r => r.tags.includes(filterTag));
-      }
-
-      if (filtered.length === 0) {
-        container.innerHTML = '<p style="color: var(--text-muted); padding: 1rem;">No recipes match the selected filter.</p>';
-        return;
-      }
-
-      container.innerHTML = filtered.map(r => {
-        const isFav = favs.includes(r.id);
-        return `
-          <div class="log-item" style="margin-bottom: 1.25rem; background: var(--bg-main);">
-            <div class="log-header">
-              <span style="font-weight:700; color:var(--accent); font-size:1.05rem;">${r.title}</span>
-              <span>${r.meta}</span>
-            </div>
-            <div style="margin: 0.4rem 0;">
-              ${r.tags.map(t => `<span class="substance-pill" style="font-size:0.75rem; padding: 0.2rem 0.6rem;">${t}</span>`).join(' ')}
-            </div>
-            <h4 style="margin-top:0.6rem; color: var(--text-muted);">Ingredients:</h4>
-            <ul style="padding-left:1.2rem; color:var(--text-main); font-size:0.9rem;">
-              ${r.ingredients.map(i => `<li>${i}</li>`).join('')}
-            </ul>
-            <h4 style="margin-top:0.6rem; color: var(--text-muted);">Preparation Steps:</h4>
-            <ol style="padding-left:1.2rem; color:var(--text-main); font-size:0.9rem;">
-              ${r.steps.map(s => `<li>${s}</li>`).join('')}
-            </ol>
-            <div style="background: rgba(13,148,136,0.1); border-left: 3px solid var(--accent); padding: 0.5rem 0.75rem; margin-top: 0.75rem; border-radius: 4px; font-size:0.85rem;">
-              <strong>Why it helps:</strong> ${r.why}
-              ${r.swaps ? `<br><strong>Swaps:</strong> ${r.swaps}` : ''}
-            </div>
-            <button class="btn ${isFav ? 'btn-primary' : 'btn-outline'}" onclick="toggleFavoriteRecipe(${r.id})" style="margin-top:0.8rem; font-size:0.8rem; height:32px; padding:0 0.75rem;">
-              ${isFav ? '❤️ Saved to Favorites' : '♡ Save to Favorites'}
-            </button>
-          </div>
-        `;
-      }).join('');
+      if (filterCategory !== 'all') filtered = filtered.filter(r => r.category === filterCategory);
+      container.innerHTML = filtered.map(r => `
+        <div class="log-item" style="background: var(--bg-main);">
+          <div class="log-header"><span style="font-weight:700; color:var(--accent);">${r.title}</span><span>${r.meta}</span></div>
+          <p><strong>Ingredients:</strong> ${r.ingredients.join(', ')}</p>
+          <p><strong>Why it helps:</strong> ${r.why}</p>
+        </div>
+      `).join('');
     }
+    renderRecipeBook();
 
     window.switchWellnessTab = function(tabId, element) {
       document.querySelectorAll('.wellness-pill').forEach(p => p.classList.remove('active'));
       document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-      
       if (element) element.classList.add('active');
-      const target = document.getElementById(tabId);
-      if (target) target.classList.add('active');
-
-      if (tabId === 'recipesTab') {
-        renderRecipeBook();
-      }
+      document.getElementById(tabId).classList.add('active');
     };
 
-    window.handleWellnessSubmit = function(e, category) {
-      e.preventDefault();
-      if (!window.currentUser) {
-        alert("Please sign in to save your entries.");
-        openAuthModal('signin');
-        return;
-      }
-
-      let newEntry = { id: Date.now(), created_at: new Date().toISOString() };
-      const email = window.currentUser.email;
-
-      if (category === 'nutrition') {
-        newEntry.schedule = document.getElementById('nut_schedule').value;
-        newEntry.protein = document.getElementById('nut_protein').value;
-        newEntry.notes = document.getElementById('nut_notes').value;
-      } else if (category === 'foods') {
-        newEntry.food_category = document.getElementById('food_category').value;
-        newEntry.item = document.getElementById('food_item').value;
-      } else if (category === 'budget') {
-        newEntry.day = document.getElementById('budget_day').value;
-        newEntry.meals_am = document.getElementById('budget_meals_am').value;
-        newEntry.meals_pm = document.getElementById('budget_meals_pm').value;
-      } else if (category === 'mindfulness') {
-        newEntry.tool = document.getElementById('mind_tool').value;
-        newEntry.intensity = document.getElementById('mind_intensity').value;
-        newEntry.notes = document.getElementById('mind_notes').value;
-      } else if (category === 'exercise') {
-        newEntry.activity = document.getElementById('ex_activity').value;
-        newEntry.duration = document.getElementById('ex_duration').value;
-        newEntry.notes = document.getElementById('ex_notes').value;
-      }
-
-      try {
-        const key = `recovery_${category}_${email}`;
-        let items = JSON.parse(localStorage.getItem(key) || '[]');
-        items.unshift(newEntry);
-        localStorage.setItem(key, JSON.stringify(items));
-
-        alert("Saved successfully!");
-        renderWellnessFeeds();
-      } catch(err) {
-        alert("Error saving entry.");
-      }
-    };
-
-    function renderWellnessFeeds() {
-      if (!window.currentUser) return;
-      const email = window.currentUser.email;
-
-      const nutFeed = document.getElementById('nutritionLogsFeed');
-      if (nutFeed) {
-        const items = JSON.parse(localStorage.getItem(`recovery_nutrition_${email}`) || '[]');
-        nutFeed.innerHTML = items.length === 0 ? '<p style="color: var(--text-muted); font-size:0.85rem;">No logs yet.</p>' : items.slice(0, 3).map(i => `
-          <div class="log-item" style="font-size:0.85rem;">
-            <div class="log-header"><span>${new Date(i.created_at).toLocaleDateString()}</span><span>${i.schedule}</span></div>
-            <p><strong>Protein:</strong> ${i.protein || 'N/A'}</p>
-            ${i.notes ? `<p style="color: var(--text-muted);">${i.notes}</p>` : ''}
-          </div>
-        `).join('');
-      }
-
-      const foodFeed = document.getElementById('foodsLogsFeed');
-      if (foodFeed) {
-        const items = JSON.parse(localStorage.getItem(`recovery_foods_${email}`) || '[]');
-        foodFeed.innerHTML = items.length === 0 ? '<p style="color: var(--text-muted); font-size:0.85rem;">No items saved yet.</p>' : items.slice(0, 3).map(i => `
-          <div class="log-item" style="font-size:0.85rem;">
-            <div class="log-header"><span><strong>${i.food_category}</strong></span><span>${new Date(i.created_at).toLocaleDateString()}</span></div>
-            <p>${i.item}</p>
-          </div>
-        `).join('');
-      }
-
-      const budgetFeed = document.getElementById('budgetLogsFeed');
-      if (budgetFeed) {
-        const items = JSON.parse(localStorage.getItem(`recovery_budget_${email}`) || '[]');
-        budgetFeed.innerHTML = items.length === 0 ? '<p style="color: var(--text-muted); font-size:0.85rem;">No plans saved yet.</p>' : items.slice(0, 3).map(i => `
-          <div class="log-item" style="font-size:0.85rem;">
-            <div class="log-header"><span><strong>${i.day}</strong></span><span>${new Date(i.created_at).toLocaleDateString()}</span></div>
-            <p><strong>AM:</strong> ${i.meals_am}</p>
-            <p><strong>PM:</strong> ${i.meals_pm}</p>
-          </div>
-        `).join('');
-      }
-
-      const mindFeed = document.getElementById('mindfulnessLogsFeed');
-      if (mindFeed) {
-        const items = JSON.parse(localStorage.getItem(`recovery_mindfulness_${email}`) || '[]');
-        mindFeed.innerHTML = items.length === 0 ? '<p style="color: var(--text-muted); font-size:0.85rem;">No logs yet.</p>' : items.slice(0, 3).map(i => `
-          <div class="log-item" style="font-size:0.85rem;">
-            <div class="log-header"><span><strong>${i.tool}</strong> (Intensity: ${i.intensity}/10)</span><span>${new Date(i.created_at).toLocaleDateString()}</span></div>
-            ${i.notes ? `<p style="color: var(--text-muted);">${i.notes}</p>` : ''}
-          </div>
-        `).join('');
-      }
-
-      const exFeed = document.getElementById('exerciseLogsFeed');
-      if (exFeed) {
-        const items = JSON.parse(localStorage.getItem(`recovery_exercise_${email}`) || '[]');
-        exFeed.innerHTML = items.length === 0 ? '<p style="color: var(--text-muted); font-size:0.85rem;">No logs yet.</p>' : items.slice(0, 3).map(i => `
-          <div class="log-item" style="font-size:0.85rem;">
-            <div class="log-header"><span><strong>${i.activity}</strong> (${i.duration} mins)</span><span>${new Date(i.created_at).toLocaleDateString()}</span></div>
-            ${i.notes ? `<p style="color: var(--text-muted);">${i.notes}</p>` : ''}
-          </div>
-        `).join('');
-      }
-    }
-
-    function renderProfileView() {
-      const guard = document.getElementById('profileLoggedOutGuard');
-      const content = document.getElementById('profileLoggedInContent');
-
-      if (!window.currentUser) {
-        guard.style.display = 'block';
-        content.style.display = 'none';
-      } else {
-        guard.style.display = 'none';
-        content.style.display = 'block';
-        document.getElementById('profileEmailDisplay').innerText = window.currentUser.email;
-        document.getElementById('profileCreatedDisplay').innerText = window.currentUser.createdAt ? new Date(window.currentUser.createdAt).toLocaleDateString() : 'Today';
-      }
-    }
-
-    window.exportUserData = function() {
-      if (!window.currentUser) return;
-      const email = window.currentUser.email;
-
-      const userData = {
-        user: window.currentUser,
-        tracker: JSON.parse(localStorage.getItem('recovery_tracker_' + email) || '{}'),
-        favoriteRecipes: JSON.parse(localStorage.getItem('recovery_fav_recipes_' + email) || '[]'),
-        urges: JSON.parse(localStorage.getItem('recovery_urges_' + email) || '[]'),
-        journal: JSON.parse(localStorage.getItem('recovery_journal_' + email) || '[]'),
-        nutrition: JSON.parse(localStorage.getItem('recovery_nutrition_' + email) || '[]'),
-        foods: JSON.parse(localStorage.getItem('recovery_foods_' + email) || '[]'),
-        budget: JSON.parse(localStorage.getItem('recovery_budget_' + email) || '[]'),
-        mindfulness: JSON.parse(localStorage.getItem('recovery_mindfulness_' + email) || '[]'),
-        exercise: JSON.parse(localStorage.getItem('recovery_exercise_' + email) || '[]'),
-        exportedAt: new Date().toISOString()
-      };
-
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(userData, null, 2));
-      const downloadAnchor = document.createElement('a');
-      downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", `recovery_compass_export_${email}.json`);
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
-    };
-
-    window.deleteUserAccount = function() {
-      if (!window.currentUser) return;
-      const email = window.currentUser.email;
-
-      if (confirm(`Are you sure you want to permanently delete your account (${email}) and all stored logs?`)) {
-        localStorage.removeItem('recovery_tracker_' + email);
-        localStorage.removeItem('recovery_fav_recipes_' + email);
-        localStorage.removeItem('recovery_urges_' + email);
-        localStorage.removeItem('recovery_journal_' + email);
-        localStorage.removeItem('recovery_nutrition_' + email);
-        localStorage.removeItem('recovery_foods_' + email);
-        localStorage.removeItem('recovery_budget_' + email);
-        localStorage.removeItem('recovery_mindfulness_' + email);
-        localStorage.removeItem('recovery_exercise_' + email);
-
-        let users = JSON.parse(localStorage.getItem('recovery_registered_users') || '[]');
-        users = users.filter(u => u.email !== email);
-        localStorage.setItem('recovery_registered_users', JSON.stringify(users));
-
-        handleSignOut();
-        alert("Your account and data have been deleted.");
-      }
-    };
-
+    // Supabase Auth Handling
     window.openAuthModal = function(mode) {
       const modal = document.getElementById('authModal');
       const title = document.getElementById('authModalTitle');
-      const subtitle = document.getElementById('authModalSubtitle');
       const submitBtn = document.getElementById('authSubmitBtn');
       const legalNotice = document.getElementById('legalNoticeBox');
       const legalCheckboxes = document.getElementById('signupLegalCheckboxes');
-      
-      if (!modal) return;
 
       if (mode === 'signup') {
-        title.innerText = "Create Your Account";
-        subtitle.innerText = "Start your recovery journey with complete data confidentiality.";
+        title.innerText = "Create Your Supabase Account";
         submitBtn.innerText = "Sign Up";
         legalNotice.style.display = 'block';
         legalCheckboxes.style.display = 'block';
-        document.getElementById('termsAgree').required = true;
-        document.getElementById('dataOwnershipAgree').required = true;
       } else {
-        title.innerText = "Welcome Back";
-        subtitle.innerText = "Sign in to access your personal dashboard and recovery tools.";
+        title.innerText = "Sign In to Supabase";
         submitBtn.innerText = "Sign In";
         legalNotice.style.display = 'none';
         legalCheckboxes.style.display = 'none';
-        document.getElementById('termsAgree').required = false;
-        document.getElementById('dataOwnershipAgree').required = false;
       }
       modal.classList.add('active');
     };
 
     window.closeAuthModal = function() {
-      const modal = document.getElementById('authModal');
-      if (modal) modal.classList.remove('active');
+      document.getElementById('authModal').classList.remove('active');
     };
 
-    window.handleAuthSubmit = function(e) {
+    window.handleAuthSubmit = async function(e) {
       e.preventDefault();
-      const email = document.getElementById('authEmail').value.trim().toLowerCase();
+      const email = document.getElementById('authEmail').value.trim();
       const password = document.getElementById('authPassword').value;
-      const submitBtn = document.getElementById('authSubmitBtn');
-      const isSignUp = submitBtn.innerText === "Sign Up";
+      const isSignUp = document.getElementById('authSubmitBtn').innerText === "Sign Up";
 
-      try {
-        let users = JSON.parse(localStorage.getItem('recovery_registered_users') || '[]');
-
-        if (isSignUp) {
-          const existing = users.find(u => u.email === email);
-          if (existing) {
-            alert("An account with this email already exists. Please sign in.");
-            return;
-          }
-          const newUser = { email, password, createdAt: new Date().toISOString() };
-          users.push(newUser);
-          localStorage.setItem('recovery_registered_users', JSON.stringify(users));
-          window.currentUser = newUser;
-          alert("Account created successfully!");
+      if (isSignUp) {
+        const { data, error } = await supabaseClient.auth.signUp({ email, password });
+        if (error) {
+          alert("Sign up error: " + error.message);
         } else {
-          const user = users.find(u => u.email === email && u.password === password);
-          if (!user) {
-            alert("Invalid email or password.");
-            return;
-          }
-          window.currentUser = user;
-          alert("Successfully signed in!");
+          window.currentUser = data.user;
+          alert("Account created successfully!");
+          closeAuthModal();
+          updateAuthUI();
+          navigateTo(document.querySelector('.view.active').id);
         }
-
-        localStorage.setItem('recovery_current_user', JSON.stringify(window.currentUser));
-        closeAuthModal();
-        updateAuthUI();
-        navigateTo(document.querySelector('.view.active').id);
-      } catch (err) {
-        alert("Authentication error occurred.");
+      } else {
+        const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+        if (error) {
+          alert("Sign in error: " + error.message);
+        } else {
+          window.currentUser = data.user;
+          alert("Signed in successfully!");
+          closeAuthModal();
+          updateAuthUI();
+          navigateTo(document.querySelector('.view.active').id);
+        }
       }
     };
 
-    window.handleSignOut = function() {
+    window.handleSignOut = async function() {
+      await supabaseClient.auth.signOut();
       window.currentUser = null;
-      localStorage.removeItem('recovery_current_user');
       updateAuthUI();
-      navigateTo(document.querySelector('.view.active').id);
+      navigateTo('landingView');
       alert("Signed out successfully.");
     };
 
@@ -2000,7 +1460,6 @@
       const signOutBtn = document.getElementById('signOutBtn');
 
       if (!signInBtn) return;
-
       if (window.currentUser) {
         signInBtn.style.display = 'none';
         signUpBtn.style.display = 'none';
@@ -2014,6 +1473,7 @@
       }
     }
 
+    // Urge Logs & Supabase
     function renderUrgeView() {
       const guard = document.getElementById('urgeLoggedOutGuard');
       const content = document.getElementById('urgeLoggedInContent');
@@ -2027,6 +1487,54 @@
       }
     }
 
+    window.handleUrgeSubmit = async function(e) {
+      e.preventDefault();
+      if (!window.currentUser) { openAuthModal('signin'); return; }
+
+      const intensity = parseInt(document.getElementById('intensity').value);
+      const trigger = document.getElementById('trigger').value;
+      const coping = document.getElementById('coping').value;
+      const notes = document.getElementById('notes').value;
+
+      const { error } = await supabaseClient.from('recovery_urges').insert([
+        { user_id: window.currentUser.id, intensity, trigger, coping_strategy: coping, notes }
+      ]);
+
+      if (error) {
+        alert("Error saving urge: " + error.message);
+      } else {
+        alert("Urge log saved to Supabase!");
+        document.getElementById('trigger').value = '';
+        document.getElementById('coping').value = '';
+        document.getElementById('notes').value = '';
+        fetchUrgeLogs();
+      }
+    };
+
+    async function fetchUrgeLogs() {
+      const feed = document.getElementById('logsFeed');
+      if (!window.currentUser) return;
+      const { data: logs, error } = await supabaseClient
+        .from('recovery_urges')
+        .select('*')
+        .eq('user_id', window.currentUser.id)
+        .order('created_at', { ascending: false });
+
+      if (error || !logs || logs.length === 0) {
+        feed.innerHTML = '<p style="color: var(--text-muted);">No urge logs recorded yet.</p>';
+        return;
+      }
+
+      feed.innerHTML = logs.map(log => `
+        <div class="log-item">
+          <div class="log-header"><span><strong>Intensity:</strong> ${log.intensity}/10</span><span>${new Date(log.created_at).toLocaleDateString()}</span></div>
+          <p><strong>Trigger:</strong> ${log.trigger}</p>
+          ${log.notes ? `<p style="color: var(--text-muted); font-size: 0.9rem;">"${log.notes}"</p>` : ''}
+        </div>
+      `).join('');
+    }
+
+    // Journal & Supabase
     function renderJournalView() {
       const guard = document.getElementById('journalLoggedOutGuard');
       const content = document.getElementById('journalLoggedInContent');
@@ -2040,165 +1548,80 @@
       }
     }
 
-    window.handleUrgeSubmit = function(e) {
-      e.preventDefault();
-      if (!window.currentUser) {
-        alert("Please sign in first.");
-        openAuthModal('signin');
-        return;
-      }
-      const intensity = parseInt(document.getElementById('intensity').value);
-      const trigger = document.getElementById('trigger').value;
-      const coping = document.getElementById('coping').value;
-      const notes = document.getElementById('notes').value;
-
-      const newLog = { id: Date.now(), intensity, trigger, coping_strategy: coping, notes, created_at: new Date().toISOString() };
-      try {
-        const key = 'recovery_urges_' + window.currentUser.email;
-        let logs = JSON.parse(localStorage.getItem(key) || '[]');
-        logs.unshift(newLog);
-        localStorage.setItem(key, JSON.stringify(logs));
-        alert("Urge log saved!");
-        document.getElementById('trigger').value = '';
-        document.getElementById('coping').value = '';
-        document.getElementById('notes').value = '';
-        fetchUrgeLogs();
-      } catch(e) { alert("Error saving log."); }
-    };
-
-    function fetchUrgeLogs() {
-      const feed = document.getElementById('logsFeed');
-      if (!window.currentUser) return;
-      try {
-        const logs = JSON.parse(localStorage.getItem('recovery_urges_' + window.currentUser.email) || '[]');
-        feed.innerHTML = logs.length === 0 ? '<p style="color: var(--text-muted);">No urge logs recorded yet.</p>' : logs.map(log => `
-          <div class="log-item">
-            <div class="log-header"><span><strong>Intensity:</strong> ${log.intensity}/10</span><span>${new Date(log.created_at).toLocaleDateString()}</span></div>
-            <p><strong>Trigger:</strong> ${log.trigger}</p>
-            ${log.notes ? `<p style="color: var(--text-muted); font-size: 0.9rem;">"${log.notes}"</p>` : ''}
-          </div>
-        `).join('');
-      } catch(e) {}
-    }
-
-    window.applyJournalPrompt = function(promptType) {
-      const textarea = document.getElementById('journalContent');
-      if (promptType === 'Thought Record') textarea.placeholder = "1. Situation:\n2. Automatic Thoughts:\n3. Alternative Thought:";
-      else textarea.placeholder = "Write freely here...";
-    };
-
-    window.handleJournalSubmit = function(e) {
+    window.handleJournalSubmit = async function(e) {
       e.preventDefault();
       if (!window.currentUser) { openAuthModal('signin'); return; }
-      const newEntry = { id: Date.now(), prompt_type: document.getElementById('journalPrompt').value, title: document.getElementById('journalTitle').value, content: document.getElementById('journalContent').value, created_at: new Date().toISOString() };
-      try {
-        const key = 'recovery_journal_' + window.currentUser.email;
-        let entries = JSON.parse(localStorage.getItem(key) || '[]');
-        entries.unshift(newEntry);
-        localStorage.setItem(key, JSON.stringify(entries));
-        alert("Journal entry saved!");
+
+      const prompt_type = document.getElementById('journalPrompt').value;
+      const title = document.getElementById('journalTitle').value;
+      const content = document.getElementById('journalContent').value;
+
+      const { error } = await supabaseClient.from('recovery_journals').insert([
+        { user_id: window.currentUser.id, prompt_type, title, content }
+      ]);
+
+      if (error) {
+        alert("Error saving journal: " + error.message);
+      } else {
+        alert("Journal entry saved to Supabase!");
         document.getElementById('journalTitle').value = '';
         document.getElementById('journalContent').value = '';
         fetchJournalEntries();
-      } catch(e) {}
+      }
     };
 
-    function fetchJournalEntries() {
+    async function fetchJournalEntries() {
       const feed = document.getElementById('journalFeed');
       if (!window.currentUser) return;
-      try {
-        const entries = JSON.parse(localStorage.getItem('recovery_journal_' + window.currentUser.email) || '[]');
-        feed.innerHTML = entries.length === 0 ? '<p style="color: var(--text-muted);">No journal entries saved yet.</p>' : entries.map(e => `
-          <div class="log-item">
-            <div class="log-header"><span><strong>${e.prompt_type}</strong></span><span>${new Date(e.created_at).toLocaleDateString()}</span></div>
-            <h4 style="color: var(--text-main);">${e.title}</h4>
-            <p style="color: var(--text-muted); font-size: 0.95rem;">${e.content}</p>
-          </div>
-        `).join('');
-      } catch(e) {}
+      const { data: entries, error } = await supabaseClient
+        .from('recovery_journals')
+        .select('*')
+        .eq('user_id', window.currentUser.id)
+        .order('created_at', { ascending: false });
+
+      if (error || !entries || entries.length === 0) {
+        feed.innerHTML = '<p style="color: var(--text-muted);">No journal entries saved yet.</p>';
+        return;
+      }
+
+      feed.innerHTML = entries.map(e => `
+        <div class="log-item">
+          <div class="log-header"><span><strong>${e.prompt_type}</strong></span><span>${new Date(e.created_at).toLocaleDateString()}</span></div>
+          <h4 style="color: var(--text-main);">${e.title}</h4>
+          <p style="color: var(--text-muted); font-size: 0.95rem;">${e.content}</p>
+        </div>
+      `).join('');
     }
 
-    // Restored Full Quotes Dataset
-    const quotesData = {
-      recovery: [
-        { text: "Addiction, at its worst, is akin to having Stockholm Syndrome. You’re like a hostage who has developed an irrational affection for your captor.", author: "Anne Clendening" },
-        { text: "An addict is someone who uses their body to tell society that something is wrong.", author: "Stella Adler" },
-        { text: "Asking for help is really the beginning of any sort of recovery process.", author: "Marc Maron" },
-        { text: "I live in negotiation with a shadow side that has to be respected... paradoxically, it is only by accepting it that we can progress.", author: "Russell Brand" },
-        { text: "Remember just because you hit bottom doesn’t mean you have to stay there.", author: "Robert Downey Jr." },
-        { text: "Recovery is something that you have to work on every single day and it’s something that doesn’t get a day off.", author: "Demi Lovato" },
-        { text: "Nobody stays recovered unless the life they have created is more rewarding and satisfying than the one they left behind.", author: "Anne Fletcher" },
-        { text: "The goal isn’t to be sober. The goal is to love yourself so much that you don’t need to drink.", author: "Unknown" },
-        { text: "Rock bottom became the solid foundation on which I rebuilt my life.", author: "J.K. Rowling" },
-        { text: "Recovery is not simple abstinence. It’s about healing the brain, learning how to make good decisions, and cultivating willingness.", author: "Debra Jay" }
-      ],
-      addiction: [
-        { text: "If you can quit for a day, you can quit for a lifetime.", author: "Benjamin Alire Saenz" },
-        { text: "All the suffering, stress, and addiction comes from not realizing you already are what you are looking for.", author: "Jon Kabat-Zinn" },
-        { text: "Addiction is an adaptation. It’s not you–it’s the cage you live in.", author: "Johann Hari" },
-        { text: "Job one is get out of that cave. Come through the crucible forged into a stronger metal.", author: "Robert Downey Jr." },
-        { text: "Don't pick up a drink or drug, one day at a time. It actually is simple, but it isn't easy.", author: "Russell Brand" },
-        { text: "When you break that cycle, the empowerment that comes out of it says, 'I'm actually strong.'", author: "Drew Barrymore" },
-        { text: "Getting help is a sign of courage, not weakness or failure.", author: "Ben Affleck" }
-      ],
-      celebrity: [
-        { text: "Getting sober was the single bravest thing I’ve ever done, and will ever do, in my life.", author: "Jamie Lee Curtis" },
-        { text: "The idea that the creative endeavor and mind-altering substances are entwined is one of the great pop-intellectual myths of our time.", author: "Stephen King" },
-        { text: "And then I said those words, ‘I’ll get help,’ and my life turned around.", author: "Elton John" },
-        { text: "I couldn’t believe that anybody could be naturally happy without being on something. So I would say, ‘It does get better.’", author: "Eminem" },
-        { text: "Sometimes you can only find Heaven by slowly backing away from Hell.", author: "Carrie Fisher" },
-        { text: "I realized I wasn't going to live up to my potential, and that scared the hell out of me.", author: "Bradley Cooper" },
-        { text: "I got sober... Slowly it dawned on me that it was maybe worth the risk.", author: "Craig Ferguson" }
-      ],
-      sobriety: [
-        { text: "Your best days are ahead of you. The movie starts when the guy gets sober and puts his life back together.", author: "Bucky Sinister" },
-        { text: "Somebody once asked me how I define sobriety, and my response was ‘liberation from dependence’.", author: "Leslie Jamison" },
-        { text: "Being in recovery has given me everything of value that I have in my life.", author: "Rob Lowe" },
-        { text: "When I got sober, I thought giving up was saying goodbye to all the fun... turned out to be just the opposite.", author: "Mary Karr" },
-        { text: "I chose sober because I wanted a better life. I stay sober because I got one.", author: "Unknown" },
-        { text: "Getting sober is a radically creative act.", author: "Meredith Bell" },
-        { text: "I think it’s important for me to show the world that sobriety hasn’t made me soft.", author: "Steve-O" }
-      ],
-      alcoholism: [
-        { text: "First you take a drink, then the drink takes a drink, then the drink takes you.", author: "F. Scott Fitzgerald" },
-        { text: "You can always bear the pain. It’ll hurt, but as long as you make yourself go on choosing pain over relief, you keep going.", author: "Lawrence Block" },
-        { text: "I have never regretted not drinking. Say this to yourself, and you’ll get through anything.", author: "Meredith Bell" },
-        { text: "What giving up booze does is allow you to look at yourself through an untainted mirror for the first time.", author: "Colin Farrell" },
-        { text: "Rehab isn’t what finally got me sober. It was nearly losing everything and seeing what it would cost me.", author: "Elizabeth Vargas" },
-        { text: "Alcoholism is a devastating disease. The primary symptom is telling everyone--including yourself—that you are not an alcoholic.", author: "Herbert L. Gravitz" }
-      ],
-      drugs: [
-        { text: "At first, addiction is maintained by pleasure, but gradually it is maintained by the avoidance of pain.", author: "Frank Tallis" },
-        { text: "Drugs are a waste of time. They destroy your memory and your self-respect.", author: "Kurt Cobain" },
-        { text: "A hurt is at the center of all addictive behaviors.", author: "Gabor Maté" },
-        { text: "Euphoria takes work. You can't buy it or inject it—you have to earn it.", author: "Anthony Kiedis" },
-        { text: "There’s not a drug on Earth that can make life meaningful.", author: "Sarah Kane" },
-        { text: "People always want to ask me about my drug problem—I never had a drug problem; I had a self-esteem problem!", author: "Gloria Gaynor" }
-      ],
-      mantras: [
-        { text: "You’re not responsible for your disease, but you are responsible for your behavior.", author: "Recovery Principle" },
-        { text: "Sobriety is a journey, not a destination.", author: "Daily Mantra" },
-        { text: "I refuse to give up on myself.", author: "Affirmation" },
-        { text: "What I do today creates a better tomorrow.", author: "Daily Mantra" },
-        { text: "One of the hardest things was learning that I was worth recovery.", author: "Demi Lovator" },
-        { text: "Caring for myself is not self-indulgent. Caring for myself is an act of survival.", author: "Audre Lorde" },
-        { text: "The real difficulty is to overcome how you think about yourself.", author: "Maya Angelou" },
-        { text: "Loving ourselves works miracles in our lives.", author: "Louise Hay" }
-      ]
+    function renderProfileView() {
+      if (!window.currentUser) return;
+      document.getElementById('profileEmailDisplay').innerText = window.currentUser.email;
+      document.getElementById('profileCreatedDisplay').innerText = new Date(window.currentUser.created_at).toLocaleDateString();
+    }
+
+    window.exportUserData = async function() {
+      if (!window.currentUser) return;
+      const { data: urges } = await supabaseClient.from('recovery_urges').select('*').eq('user_id', window.currentUser.id);
+      const { data: journals } = await supabaseClient.from('recovery_journals').select('*').eq('user_id', window.currentUser.id);
+
+      const exportObj = { user: window.currentUser, urges, journals, exportedAt: new Date().toISOString() };
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `supabase_export_${window.currentUser.email}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
     };
 
+    const quotesData = {
+      recovery: [{ text: "Recovery is something that you have to work on every single day.", author: "Demi Lovato" }, { text: "Rock bottom became the solid foundation on which I rebuilt my life.", author: "J.K. Rowling" }]
+    };
     window.filterQuotes = function(category, element) {
       document.querySelectorAll('.quote-pill').forEach(p => p.classList.remove('active'));
       if (element) element.classList.add('active');
-
-      const container = document.getElementById('quotesList');
-      const list = quotesData[category] || quotesData.recovery;
-
-      container.innerHTML = list.map(q => `
-        <div class="quote-card">
-          <p>“${q.text}”</p>
-          <span>— ${q.author}</span>
-        </div>
+      document.getElementById('quotesList').innerHTML = (quotesData[category] || quotesData.recovery).map(q => `
+        <div class="quote-card"><p>“${q.text}”</p><span>— ${q.author}</span></div>
       `).join('');
     };
 
@@ -2213,19 +1636,12 @@
       if (viewId === 'dashboardView') renderUrgeView();
       if (viewId === 'journalView') renderJournalView();
       if (viewId === 'profileView') renderProfileView();
-      if (viewId === 'wellnessView') { renderWellnessFeeds(); renderRecipeBook(); }
     };
 
     window.scrollToFeatures = function() {
       navigateTo('landingView');
       document.getElementById('featuresHeading').scrollIntoView({ behavior: 'smooth' });
     };
-
-    updateAuthUI();
-    renderTrackerView();
-    renderUrgeView();
-    renderJournalView();
-    renderWellnessFeeds();
   </script>
 </body>
 </html>
