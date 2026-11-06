@@ -17,6 +17,8 @@
       --border: #334155;
       --radius: 16px;
       --header-height: 64px;
+      --danger: #ef4444;
+      --danger-hover: #dc2626;
     }
 
     * {
@@ -74,6 +76,7 @@
     .nav-btns {
       display: flex;
       gap: 0.75rem;
+      align-items: center;
     }
 
     .btn {
@@ -107,6 +110,15 @@
 
     .btn-outline:hover {
       background-color: var(--bg-card-hover);
+    }
+
+    .btn-danger {
+      background-color: var(--danger);
+      color: #ffffff;
+    }
+
+    .btn-danger:hover {
+      background-color: var(--danger-hover);
     }
 
     main {
@@ -240,6 +252,21 @@
       border-color: var(--accent);
     }
 
+    .checkbox-group {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: auto;
+      margin-top: 0.25rem;
+      accent-color: var(--accent);
+    }
+
     .range-header {
       display: flex;
       justify-content: space-between;
@@ -270,7 +297,6 @@
       color: var(--text-muted);
     }
 
-    /* Auth Guard Notice Box */
     .auth-guard-box {
       background-color: var(--bg-card);
       border: 1px solid var(--border);
@@ -389,7 +415,7 @@
       margin-top: 1.5rem;
     }
 
-    /* Category Filter Pills for Quotes */
+    /* Quotes Filter Pills */
     .quote-pills {
       display: flex;
       gap: 0.5rem;
@@ -464,7 +490,7 @@
       border: 1px solid var(--border);
       border-radius: var(--radius);
       width: 100%;
-      max-width: 400px;
+      max-width: 440px;
       padding: 2rem;
       position: relative;
     }
@@ -478,6 +504,16 @@
       color: var(--text-muted);
       font-size: 1.5rem;
       cursor: pointer;
+    }
+
+    .legal-notice {
+      background: rgba(13, 148, 136, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      padding: 0.75rem;
+      font-size: 0.825rem;
+      color: var(--text-main);
+      margin-bottom: 1rem;
     }
   </style>
 </head>
@@ -497,6 +533,9 @@
     <div class="nav-btns" id="navAuth">
       <button class="btn btn-outline" id="signInBtn" onclick="openAuthModal('signin')">Sign In</button>
       <button class="btn btn-primary" id="signUpBtn" onclick="openAuthModal('signup')">Get Started</button>
+      
+      <!-- User Profile & Sign Out Buttons -->
+      <button class="btn btn-outline" id="profileBtn" onclick="navigateTo('profileView')" style="display: none;">👤 My Profile</button>
       <button class="btn btn-outline" id="signOutBtn" onclick="handleSignOut()" style="display: none;">Sign Out</button>
     </div>
   </header>
@@ -587,6 +626,43 @@
             <p>Direct directories for support networks, 12-step groups, SMART recovery, and crisis resources.</p>
           </div>
           <button class="card-action-btn" onclick="navigateTo('linksView')">Access Links &rarr;</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- User Profile & Data Rights View -->
+    <section id="profileView" class="view">
+      <div class="dashboard-container">
+        <button class="btn btn-outline" onclick="navigateTo('landingView')" style="margin-bottom: 1.5rem;">&larr; Back to Home</button>
+        
+        <div id="profileLoggedOutGuard" class="auth-guard-box" style="display: none;">
+          <h3>🔒 Sign In Required</h3>
+          <p>Please sign in to view your account profile and data ownership options.</p>
+          <button class="btn btn-primary" onclick="openAuthModal('signin')">Sign In</button>
+        </div>
+
+        <div id="profileLoggedInContent" style="display: none;">
+          <h2 style="margin-bottom: 0.5rem;">👤 User Profile & Data Rights</h2>
+          <p style="color: var(--text-muted); margin-bottom: 1.5rem;">You maintain 100% ownership and legal control over your recovery data.</p>
+
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <h3 style="margin-bottom: 1rem;">Account Summary</h3>
+            <p style="margin-bottom: 0.5rem;"><strong>Email Address:</strong> <span id="profileEmailDisplay">--</span></p>
+            <p style="margin-bottom: 0.5rem;"><strong>Account Created:</strong> <span id="profileCreatedDisplay">--</span></p>
+            <p style="margin-bottom: 0.5rem;"><strong>Data Ownership Guarantee:</strong> Your data is confidential and stored securely under your account.</p>
+          </div>
+
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <h3 style="margin-bottom: 0.5rem;">📥 Export Your Data</h3>
+            <p style="color: var(--text-muted); margin-bottom: 1rem;">Download a complete JSON export of all your urge logs, journal entries, and milestone tracker records anytime.</p>
+            <button class="btn btn-primary" onclick="exportUserData()" style="width: 100%;">Download Data Export (.JSON)</button>
+          </div>
+
+          <div class="card" style="border-color: var(--danger);">
+            <h3 style="color: var(--danger); margin-bottom: 0.5rem;">🗑️ Delete Account & Data</h3>
+            <p style="color: var(--text-muted); margin-bottom: 1rem;">Permanently remove your account, urge history, journal entries, and tracker configurations. This action is immediate and cannot be undone.</p>
+            <button class="btn btn-danger" onclick="deleteUserAccount()" style="width: 100%;">Permanently Delete My Account & Data</button>
+          </div>
         </div>
       </div>
     </section>
@@ -853,13 +929,17 @@
     </section>
   </main>
 
-  <!-- Auth Modal -->
+  <!-- Auth Modal with Legal Framework -->
   <div id="authModal" class="modal-overlay">
     <div class="modal-card">
       <button class="modal-close" onclick="closeAuthModal()">&times;</button>
       <h3 id="authModalTitle">Welcome Back</h3>
-      <p id="authModalSubtitle">Sign in to access your personal dashboard and recovery tools.</p>
+      <p id="authModalSubtitle" style="color: var(--text-muted); margin-bottom: 1rem;">Sign in to access your personal dashboard and recovery tools.</p>
       
+      <div class="legal-notice" id="legalNoticeBox" style="display: none;">
+        <strong>🛡️ Data Ownership Guarantee:</strong> You retain complete ownership of your data. Export or delete your data at any time from your Profile settings.
+      </div>
+
       <form onsubmit="handleAuthSubmit(event)">
         <div class="form-group">
           <label>Email Address</label>
@@ -869,13 +949,24 @@
           <label>Password</label>
           <input type="password" id="authPassword" required placeholder="••••••••">
         </div>
+
+        <div id="signupLegalCheckboxes" style="display: none;">
+          <div class="checkbox-group">
+            <input type="checkbox" id="termsAgree" required>
+            <label for="termsAgree">I agree to the <strong>Terms of Service</strong> and <strong>Privacy Policy</strong>.</label>
+          </div>
+          <div class="checkbox-group">
+            <input type="checkbox" id="dataOwnershipAgree" required>
+            <label for="dataOwnershipAgree">I understand that I retain 100% control over my data and can export or delete it anytime.</label>
+          </div>
+        </div>
+
         <button type="submit" id="authSubmitBtn" class="btn btn-primary" style="width: 100%;">Sign In</button>
       </form>
     </div>
   </div>
 
   <script>
-    // Local Session & Auth Management
     window.currentUser = null;
 
     try {
@@ -904,7 +995,6 @@
       }
     }
 
-    // Initialize interactive pills for setup
     document.querySelectorAll('#setupSubstancePills .substance-pill').forEach(pill => {
       pill.addEventListener('click', function() {
         document.querySelectorAll('#setupSubstancePills .substance-pill').forEach(p => p.classList.remove('active'));
@@ -1025,23 +1115,93 @@
 
     setInterval(updateMilestoneDisplay, 1000);
 
+    // Profile & Data Management Functions
+    function renderProfileView() {
+      const guard = document.getElementById('profileLoggedOutGuard');
+      const content = document.getElementById('profileLoggedInContent');
+
+      if (!window.currentUser) {
+        guard.style.display = 'block';
+        content.style.display = 'none';
+      } else {
+        guard.style.display = 'none';
+        content.style.display = 'block';
+        
+        document.getElementById('profileEmailDisplay').innerText = window.currentUser.email;
+        const createdDate = window.currentUser.createdAt ? new Date(window.currentUser.createdAt).toLocaleDateString() : 'Today';
+        document.getElementById('profileCreatedDisplay').innerText = createdDate;
+      }
+    }
+
+    window.exportUserData = function() {
+      if (!window.currentUser) return;
+      const email = window.currentUser.email;
+
+      const userData = {
+        user: window.currentUser,
+        tracker: JSON.parse(localStorage.getItem('recovery_tracker_' + email) || '{}'),
+        urges: JSON.parse(localStorage.getItem('recovery_urges_' + email) || '[]'),
+        journal: JSON.parse(localStorage.getItem('recovery_journal_' + email) || '[]'),
+        exportedAt: new Date().toISOString()
+      };
+
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(userData, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `recovery_compass_export_${email}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    };
+
+    window.deleteUserAccount = function() {
+      if (!window.currentUser) return;
+      const email = window.currentUser.email;
+
+      if (confirm(`Are you sure you want to permanently delete your account (${email}) and all stored logs? This action CANNOT be undone.`)) {
+        // Remove user data keys
+        localStorage.removeItem('recovery_tracker_' + email);
+        localStorage.removeItem('recovery_urges_' + email);
+        localStorage.removeItem('recovery_journal_' + email);
+
+        // Remove from registered list
+        let users = JSON.parse(localStorage.getItem('recovery_registered_users') || '[]');
+        users = users.filter(u => u.email !== email);
+        localStorage.setItem('recovery_registered_users', JSON.stringify(users));
+
+        // Sign out
+        handleSignOut();
+        alert("Your account and all associated data have been permanently deleted.");
+      }
+    };
+
     // Authentication Handlers
     window.openAuthModal = function(mode) {
       const modal = document.getElementById('authModal');
       const title = document.getElementById('authModalTitle');
       const subtitle = document.getElementById('authModalSubtitle');
       const submitBtn = document.getElementById('authSubmitBtn');
+      const legalNotice = document.getElementById('legalNoticeBox');
+      const legalCheckboxes = document.getElementById('signupLegalCheckboxes');
       
       if (!modal) return;
 
       if (mode === 'signup') {
         title.innerText = "Create Your Account";
-        subtitle.innerText = "Start your recovery and wellness journey with Recovery Compass.";
+        subtitle.innerText = "Start your recovery journey with complete data confidentiality.";
         submitBtn.innerText = "Sign Up";
+        legalNotice.style.display = 'block';
+        legalCheckboxes.style.display = 'block';
+        document.getElementById('termsAgree').required = true;
+        document.getElementById('dataOwnershipAgree').required = true;
       } else {
         title.innerText = "Welcome Back";
         subtitle.innerText = "Sign in to access your personal dashboard and recovery tools.";
         submitBtn.innerText = "Sign In";
+        legalNotice.style.display = 'none';
+        legalCheckboxes.style.display = 'none';
+        document.getElementById('termsAgree').required = false;
+        document.getElementById('dataOwnershipAgree').required = false;
       }
       
       modal.classList.add('active');
@@ -1068,8 +1228,10 @@
             alert("An account with this email already exists. Please sign in.");
             return;
           }
-          users.push({ email, password });
+          const newUser = { email, password, createdAt: new Date().toISOString() };
+          users.push(newUser);
           localStorage.setItem('recovery_registered_users', JSON.stringify(users));
+          window.currentUser = newUser;
           alert("Account created successfully!");
         } else {
           const user = users.find(u => u.email === email && u.password === password);
@@ -1077,16 +1239,15 @@
             alert("Invalid email or password. Please check your credentials or sign up.");
             return;
           }
+          window.currentUser = user;
           alert("Successfully signed in!");
         }
 
-        window.currentUser = { email };
         localStorage.setItem('recovery_current_user', JSON.stringify(window.currentUser));
 
         closeAuthModal();
         updateAuthUI();
 
-        // Refresh current active view
         const activeView = document.querySelector('.view.active').id;
         navigateTo(activeView);
       } catch (err) {
@@ -1108,6 +1269,7 @@
     function updateAuthUI() {
       const signInBtn = document.getElementById('signInBtn');
       const signUpBtn = document.getElementById('signUpBtn');
+      const profileBtn = document.getElementById('profileBtn');
       const signOutBtn = document.getElementById('signOutBtn');
 
       if (!signInBtn || !signUpBtn || !signOutBtn) return;
@@ -1115,15 +1277,17 @@
       if (window.currentUser) {
         signInBtn.style.display = 'none';
         signUpBtn.style.display = 'none';
+        profileBtn.style.display = 'inline-flex';
         signOutBtn.style.display = 'inline-flex';
       } else {
         signInBtn.style.display = 'inline-flex';
-        signInBtn.style.display = 'inline-flex';
+        signUpBtn.style.display = 'inline-flex';
+        profileBtn.style.display = 'none';
         signOutBtn.style.display = 'none';
       }
     }
 
-    // View Renders with Auth Guards
+    // View Navigation & Renders
     function renderUrgeView() {
       const guard = document.getElementById('urgeLoggedOutGuard');
       const content = document.getElementById('urgeLoggedInContent');
@@ -1404,6 +1568,9 @@
       }
       if (viewId === 'journalView') {
         renderJournalView();
+      }
+      if (viewId === 'profileView') {
+        renderProfileView();
       }
     };
 
