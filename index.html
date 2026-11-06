@@ -222,7 +222,7 @@
     }
 
     .dashboard-container {
-      max-width: 800px;
+      max-width: 850px;
       margin: 0 auto;
     }
 
@@ -318,6 +318,64 @@
       max-width: 500px;
       margin-left: auto;
       margin-right: auto;
+    }
+
+    /* Sub-tabs for Wellness */
+    .wellness-pills {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.5rem;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .wellness-pill {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .wellness-pill.active, .wellness-pill:hover {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+
+    .content-section {
+      display: none;
+    }
+
+    .content-section.active {
+      display: block;
+    }
+
+    .content-section h3 {
+      font-size: 1.25rem;
+      margin-top: 1.25rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-main);
+    }
+
+    .content-section p, .content-section ul {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 1rem;
+    }
+
+    .content-section ul {
+      padding-left: 1.25rem;
+    }
+
+    .content-section li {
+      margin-bottom: 0.4rem;
     }
 
     /* Milestone Tracker Styles */
@@ -533,8 +591,6 @@
     <div class="nav-btns" id="navAuth">
       <button class="btn btn-outline" id="signInBtn" onclick="openAuthModal('signin')">Sign In</button>
       <button class="btn btn-primary" id="signUpBtn" onclick="openAuthModal('signup')">Get Started</button>
-      
-      <!-- User Profile & Sign Out Buttons -->
       <button class="btn btn-outline" id="profileBtn" onclick="navigateTo('profileView')" style="display: none;">👤 My Profile</button>
       <button class="btn btn-outline" id="signOutBtn" onclick="handleSignOut()" style="display: none;">Sign Out</button>
     </div>
@@ -596,7 +652,7 @@
           <div>
             <div class="card-icon">🥗</div>
             <h3>Nutrition & Wellness</h3>
-            <p>Support mental stability with balanced nutrition, GABA-boosting foods, and proper sleep hygiene.</p>
+            <p>Support mental stability with balanced nutrition, GABA-boosting foods, mindfulness, and light exercise.</p>
           </div>
           <button class="card-action-btn" onclick="navigateTo('wellnessView')">Explore Wellness &rarr;</button>
         </div>
@@ -630,7 +686,7 @@
       </div>
     </section>
 
-    <!-- User Profile & Data Rights View -->
+    <!-- User Profile View -->
     <section id="profileView" class="view">
       <div class="dashboard-container">
         <button class="btn btn-outline" onclick="navigateTo('landingView')" style="margin-bottom: 1.5rem;">&larr; Back to Home</button>
@@ -681,7 +737,7 @@
 
         <div id="urgeLoggedInContent" style="display: none;">
           <h2 style="margin-bottom: 0.5rem;">⚡ Trigger & Craving Log</h2>
-          <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Recognizing what causes cravings or emotional distress is one of the most important steps toward recovery. Addiction triggers are specific cues, emotional, social, or environmental, that reignite the urge to use substances. Learning to recognize and manage these triggers builds resilience and prevents relapse.</p>
+          <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Recognizing what causes cravings or emotional distress is one of the most important steps toward recovery.</p>
 
           <div class="card" style="margin-bottom: 2rem;">
             <h3 style="margin-bottom: 1rem;">Log a New Urge</h3>
@@ -808,17 +864,7 @@
               <div class="substance-pill" data-val="Cannabis">Cannabis</div>
               <div class="substance-pill" data-val="Opioids">Opioids</div>
               <div class="substance-pill" data-val="Meth">Meth</div>
-              <div class="substance-pill" data-val="Hallucinogens">Hallucinogens</div>
-              <div class="substance-pill" data-val="Amphetamines">Amphetamines</div>
-              <div class="substance-pill" data-val="Benzodiazepines">Benzodiazepines</div>
-              <div class="substance-pill" data-val="Inhalants">Inhalants</div>
-              <div class="substance-pill" data-val="Cocaine">Cocaine</div>
-              <div class="substance-pill" data-val="MDMA/Ecstasy">MDMA/Ecstasy</div>
               <div class="substance-pill" data-val="Gambling">Gambling</div>
-              <div class="substance-pill" data-val="Sexual addiction">Sexual addiction</div>
-              <div class="substance-pill" data-val="Video gaming">Video gaming</div>
-              <div class="substance-pill" data-val="Disordered Eating">Disordered Eating</div>
-              <div class="substance-pill" data-val="Co-dependency">Co-dependency</div>
               <div class="substance-pill" data-val="Other">Other</div>
             </div>
 
@@ -870,15 +916,209 @@
       </div>
     </section>
 
-    <!-- Wellness View -->
+    <!-- Nutrition & Wellness View (5 Categories + Interactive Templates) -->
     <section id="wellnessView" class="view">
       <div class="dashboard-container">
         <button class="btn btn-outline" onclick="navigateTo('landingView')" style="margin-bottom: 1.5rem;">&larr; Back to Home</button>
-        <h2 style="margin-bottom: 0.5rem;">🥗 Nutrition & Wellness</h2>
-        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Support mental stability with balanced nutrition and sleep hygiene.</p>
-        <div class="card">
-          <h3>Wellness Guide Active</h3>
+        <h2 style="margin-bottom: 0.5rem;">🥗 Nutrition & Wellness Hub</h2>
+        <p style="color: var(--text-muted); margin-bottom: 1.25rem;">Evidence-based guides, meal planning, mindfulness practices, and light exercise routines to support your healing.</p>
+
+        <!-- Category Pills -->
+        <div class="wellness-pills">
+          <button class="wellness-pill active" onclick="switchWellnessTab('nutritionTab', this)">🥗 Nutrition & Recovery</button>
+          <button class="wellness-pill" onclick="switchWellnessTab('foodsTab', this)">🍲 Recovery Foods</button>
+          <button class="wellness-pill" onclick="switchWellnessTab('budgetTab', this)">🛒 Budget Meal Plan</button>
+          <button class="wellness-pill" onclick="switchWellnessTab('mindfulnessTab', this)">🧘 Mindfulness & Meditation</button>
+          <button class="wellness-pill" onclick="switchWellnessTab('exerciseTab', this)">🚶 Light Exercise</button>
         </div>
+
+        <!-- TAB 1: Nutrition & Recovery -->
+        <div id="nutritionTab" class="content-section active card">
+          <h3>Nutrition & Wellness Guide for Recovery</h3>
+          <p>Substance use depletes nutrients and disrupts blood sugar. Proper nutrition is a fundamental pillar of physical and emotional stability.</p>
+          <ul>
+            <li><strong>Eat on a schedule:</strong> Every 3 to 4 hours with protein at each meal to avoid blood sugar crashes and HALT triggers (Hungry, Angry, Lonely, Tired).</li>
+            <li><strong>Hydrate:</strong> Aim for pale-yellow urine. Use electrolyte drinks or broth if sweating or vomiting.</li>
+            <li><strong>Limit caffeine:</strong> Exacerbates anxiety and insomnia; stop by early afternoon.</li>
+            <li><strong>Sleep & Body Care:</strong> Consistent wake times, morning daylight, and basic hygiene rebuild self-respect.</li>
+          </ul>
+
+          <hr style="border: 0; border-top: 1px solid var(--border); margin: 1.5rem 0;">
+
+          <h3>📝 Active Daily Meal Check-in Template</h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted);">Log your meals and consistency today to protect against fatigue and cravings.</p>
+          <form onsubmit="handleWellnessSubmit(event, 'nutrition')">
+            <div class="form-group">
+              <label>Did you eat every 3-4 hours today?</label>
+              <select id="nut_schedule">
+                <option value="Yes, consistently">Yes, consistently</option>
+                <option value="Somewhat">Somewhat</option>
+                <option value="Skipped meals">Skipped meals</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Protein intake at meals</label>
+              <input type="text" id="nut_protein" placeholder="e.g., Eggs at breakfast, chicken at lunch">
+            </div>
+            <div class="form-group">
+              <label>Hydration & Notes</label>
+              <textarea id="nut_notes" rows="2" placeholder="Water intake, caffeine cutoff time, sugar cravings managed..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Save Daily Nutrition Log</button>
+          </form>
+          <div id="nutritionLogsFeed" style="margin-top: 1rem;"></div>
+        </div>
+
+        <!-- TAB 2: Foods That Support Recovery -->
+        <div id="foodsTab" class="content-section card">
+          <h3>Foods That Support Addiction Recovery</h3>
+          <p>Repair brain chemistry and gut health with targeted nutritional groups:</p>
+          <ul>
+            <li><strong>Blood sugar stabilizers:</strong> Oats, brown rice, lentils, chickpeas, and whole fruit.</li>
+            <li><strong>Protein foods (Neurotransmitter precursors):</strong> Eggs, poultry, fish, Greek yogurt, and pumpkin seeds for dopamine and serotonin building blocks.</li>
+            <li><strong>Omega-3 Fats:</strong> Salmon, sardines, walnuts, and chia seeds for brain cell membranes and mood.</li>
+            <li><strong>B-Vitamins & Magnesium:</strong> Thiamine-rich whole grains, leafy greens, and nuts to repair nerve function and ease withdrawal restlessness.</li>
+          </ul>
+
+          <hr style="border: 0; border-top: 1px solid var(--border); margin: 1.5rem 0;">
+
+          <h3>🍲 Active Foods I Enjoy Log</h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted);">Keep track of supportive recovery foods you have on hand.</p>
+          <form onsubmit="handleWellnessSubmit(event, 'foods')">
+            <div class="form-group">
+              <label>Category</label>
+              <select id="food_category">
+                <option value="Protein">Protein Source</option>
+                <option value="Slow Carb">Slow Carb / Stabilizer</option>
+                <option value="Omega-3 / Fat">Omega-3 / Healthy Fat</option>
+                <option value="Produce / Fruit">Produce / Fruit / Greens</option>
+                <option value="Comfort / Hydration">Hydration / Comfort Food</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Food Item / Meal Idea</label>
+              <input type="text" id="food_item" placeholder="e.g., Greek yogurt with berries & walnuts" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Save to Recovery Food List</button>
+          </form>
+          <div id="foodsLogsFeed" style="margin-top: 1rem;"></div>
+        </div>
+
+        <!-- TAB 3: Budget Meal Plan -->
+        <div id="budgetTab" class="content-section card">
+          <h3>Budget Recovery Meal Plan & Staples</h3>
+          <p>Eating regularly on a budget is entirely achievable with the right strategy:</p>
+          <ul>
+            <li><strong>The Daily Formula:</strong> Protein + slow carb + produce at every meal. Repeat 2 breakfasts, lunches, and dinners to save money.</li>
+            <li><strong>Cheap Staples:</strong> Eggs, dried beans, peanut butter, canned tuna, frozen vegetables, oats, and rice.</li>
+            <li><strong>Savings Tactics:</strong> Batch cook once a week, buy dried beans in bulk, and utilize frozen produce that doesn't spoil.</li>
+          </ul>
+
+          <hr style="border: 0; border-top: 1px solid var(--border); margin: 1.5rem 0;">
+
+          <h3>🛒 Active Weekly Meal & Shopping Planner</h3>
+          <form onsubmit="handleWellnessSubmit(event, 'budget')">
+            <div class="form-group">
+              <label>Day of the Week</label>
+              <select id="budget_day">
+                <option value="Monday">Monday</option>
+                <option value="Tuesday">Tuesday</option>
+                <option value="Wednesday">Wednesday</option>
+                <option value="Thursday">Thursday</option>
+                <option value="Friday">Friday</option>
+                <option value="Saturday">Saturday</option>
+                <option value="Sunday">Sunday</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Planned Breakfast & Lunch</label>
+              <input type="text" id="budget_meals_am" placeholder="e.g., Oatmeal with peanut butter / Bean & rice bowl">
+            </div>
+            <div class="form-group">
+              <label>Planned Dinner & Snack</label>
+              <input type="text" id="budget_meals_pm" placeholder="e.g., Baked chicken & frozen broccoli / Apple & yogurt">
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Save Daily Meal Plan</button>
+          </form>
+          <div id="budgetLogsFeed" style="margin-top: 1rem;"></div>
+        </div>
+
+        <!-- TAB 4: Mindfulness & Meditation -->
+        <div id="mindfulnessTab" class="content-section card">
+          <h3>Mindfulness & Meditation in Recovery</h3>
+          <p>Mindfulness builds the gap between urge and action where choice lives.</p>
+          <ul>
+            <li><strong>STOP:</strong> Stop, Take a breath, Observe thoughts/body, Proceed with intention.</li>
+            <li><strong>5-4-3-2-1 Grounding:</strong> Name 5 things seen, 4 felt, 3 heard, 2 smelled, 1 tasted.</li>
+            <li><strong>Urge Surfing:</strong> Cravings peak and fade within 15 to 30 minutes. Ride the wave without acting.</li>
+          </ul>
+
+          <hr style="border: 0; border-top: 1px solid var(--border); margin: 1.5rem 0;">
+
+          <h3>🧘 Active Craving Surf & Practice Log</h3>
+          <form onsubmit="handleWellnessSubmit(event, 'mindfulness')">
+            <div class="form-group">
+              <label>Practice / Tool Used</label>
+              <select id="mind_tool">
+                <option value="Urge Surfing">Urge Surfing</option>
+                <option value="STOP Exercise">STOP Exercise</option>
+                <option value="5-4-3-2-1 Grounding">5-4-3-2-1 Grounding</option>
+                <option value="Breath Anchor (5 min)">Breath Anchor (5 min)</option>
+                <option value="Body Scan">Body Scan</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Peak Intensity (0-10)</label>
+              <input type="number" id="mind_intensity" min="0" max="10" value="5" required>
+            </div>
+            <div class="form-group">
+              <label>Outcome / Reflection</label>
+              <textarea id="mind_notes" rows="2" placeholder="How did you feel after riding the wave?"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Save Mindfulness Log</button>
+          </form>
+          <div id="mindfulnessLogsFeed" style="margin-top: 1rem;"></div>
+        </div>
+
+        <!-- TAB 5: Light Exercise Techniques -->
+        <div id="exerciseTab" class="content-section card">
+          <h3>Light Exercise Techniques That Support Recovery</h3>
+          <p>Gentle, regular movement supports recovery by raising endorphins, lowering stress hormones, and improving sleep and self-trust. <strong>The goal is consistency, not intensity.</strong></p>
+          <ul>
+            <li><strong>Walking:</strong> The best starting point. Aim for 10 to 30 minutes daily in morning light or green space.</li>
+            <li><strong>Stretching & Mobility:</strong> Neck rolls, cat-cow, hamstring stretches, and child's pose to relieve physical tension.</li>
+            <li><strong>Gentle Yoga & Tai Chi:</strong> Low injury risk, combining breath, body awareness, and stress relief.</li>
+            <li><strong>Bodyweight Strength:</strong> Wall push-ups, chair squats, and glute bridges (2-3 times a week) to rebuild muscle.</li>
+            <li><strong>Safety First:</strong> Use the talk test (speak in full sentences). Get medical clearance if coming out of acute withdrawal.</li>
+          </ul>
+
+          <hr style="border: 0; border-top: 1px solid var(--border); margin: 1.5rem 0;">
+
+          <h3>🚶 Active Recovery Movement Log</h3>
+          <form onsubmit="handleWellnessSubmit(event, 'exercise')">
+            <div class="form-group">
+              <label>Activity Performed</label>
+              <select id="ex_activity">
+                <option value="15-20 Min Walk">15-20 Min Walk</option>
+                <option value="Stretching & Mobility">Stretching & Mobility (10 min)</option>
+                <option value="Gentle Yoga">Gentle Yoga</option>
+                <option value="Bodyweight Strength">Bodyweight Strength</option>
+                <option value="Balance & Breathing">Balance & Breathing</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Duration (Minutes)</label>
+              <input type="number" id="ex_duration" min="5" max="120" value="15" required>
+            </div>
+            <div class="form-group">
+              <label>Mood / Craving Shift Notes</label>
+              <textarea id="ex_notes" rows="2" placeholder="e.g., Craving dropped from 7 to 2 after walk..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Save Movement Log</button>
+          </form>
+          <div id="exerciseLogsFeed" style="margin-top: 1rem;"></div>
+        </div>
+
       </div>
     </section>
 
@@ -887,9 +1127,8 @@
       <div class="dashboard-container">
         <button class="btn btn-outline" onclick="navigateTo('landingView')" style="margin-bottom: 1.5rem;">&larr; Back to Home</button>
         <h2 style="margin-bottom: 0.5rem;">💡 Quotes & Inspiration</h2>
-        <p style="color: var(--text-muted); margin-bottom: 1.25rem;">These quotes can help you understand why you turn to substances, galvanize you to confront abuse, and inspire you toward lasting recovery.</p>
+        <p style="color: var(--text-muted); margin-bottom: 1.25rem;">Curated reflections and motivational quotes to inspire your recovery journey.</p>
 
-        <!-- Category Filter Pills -->
         <div class="quote-pills">
           <button class="quote-pill active" onclick="filterQuotes('recovery', this)">Recovery</button>
           <button class="quote-pill" onclick="filterQuotes('addiction', this)">Addiction</button>
@@ -1115,6 +1354,128 @@
 
     setInterval(updateMilestoneDisplay, 1000);
 
+    // Wellness Hub Sub-tabs & Interactive Template Handlers
+    window.switchWellnessTab = function(tabId, element) {
+      document.querySelectorAll('.wellness-pill').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+      
+      if (element) element.classList.add('active');
+      const target = document.getElementById(tabId);
+      if (target) target.classList.add('active');
+    };
+
+    window.handleWellnessSubmit = function(e, category) {
+      e.preventDefault();
+      if (!window.currentUser) {
+        alert("Please sign in to save your entries.");
+        openAuthModal('signin');
+        return;
+      }
+
+      let newEntry = { id: Date.now(), created_at: new Date().toISOString() };
+      const email = window.currentUser.email;
+
+      if (category === 'nutrition') {
+        newEntry.schedule = document.getElementById('nut_schedule').value;
+        newEntry.protein = document.getElementById('nut_protein').value;
+        newEntry.notes = document.getElementById('nut_notes').value;
+      } else if (category === 'foods') {
+        newEntry.food_category = document.getElementById('food_category').value;
+        newEntry.item = document.getElementById('food_item').value;
+      } else if (category === 'budget') {
+        newEntry.day = document.getElementById('budget_day').value;
+        newEntry.meals_am = document.getElementById('budget_meals_am').value;
+        newEntry.meals_pm = document.getElementById('budget_meals_pm').value;
+      } else if (category === 'mindfulness') {
+        newEntry.tool = document.getElementById('mind_tool').value;
+        newEntry.intensity = document.getElementById('mind_intensity').value;
+        newEntry.notes = document.getElementById('mind_notes').value;
+      } else if (category === 'exercise') {
+        newEntry.activity = document.getElementById('ex_activity').value;
+        newEntry.duration = document.getElementById('ex_duration').value;
+        newEntry.notes = document.getElementById('ex_notes').value;
+      }
+
+      try {
+        const key = `recovery_${category}_${email}`;
+        let items = JSON.parse(localStorage.getItem(key) || '[]');
+        items.unshift(newEntry);
+        localStorage.setItem(key, JSON.stringify(items));
+
+        alert("Saved successfully!");
+        renderWellnessFeeds();
+      } catch(err) {
+        alert("Error saving entry.");
+      }
+    };
+
+    function renderWellnessFeeds() {
+      if (!window.currentUser) return;
+      const email = window.currentUser.email;
+
+      // Nutrition Feed
+      const nutFeed = document.getElementById('nutritionLogsFeed');
+      if (nutFeed) {
+        const items = JSON.parse(localStorage.getItem(`recovery_nutrition_${email}`) || '[]');
+        nutFeed.innerHTML = items.length === 0 ? '<p style="color: var(--text-muted); font-size:0.85rem;">No logs yet.</p>' : items.slice(0, 3).map(i => `
+          <div class="log-item" style="font-size:0.85rem;">
+            <div class="log-header"><span>${new Date(i.created_at).toLocaleDateString()}</span><span>${i.schedule}</span></div>
+            <p><strong>Protein:</strong> ${i.protein || 'N/A'}</p>
+            ${i.notes ? `<p style="color: var(--text-muted);">${i.notes}</p>` : ''}
+          </div>
+        `).join('');
+      }
+
+      // Foods Feed
+      const foodFeed = document.getElementById('foodsLogsFeed');
+      if (foodFeed) {
+        const items = JSON.parse(localStorage.getItem(`recovery_foods_${email}`) || '[]');
+        foodFeed.innerHTML = items.length === 0 ? '<p style="color: var(--text-muted); font-size:0.85rem;">No items saved yet.</p>' : items.slice(0, 3).map(i => `
+          <div class="log-item" style="font-size:0.85rem;">
+            <div class="log-header"><span><strong>${i.food_category}</strong></span><span>${new Date(i.created_at).toLocaleDateString()}</span></div>
+            <p>${i.item}</p>
+          </div>
+        `).join('');
+      }
+
+      // Budget Feed
+      const budgetFeed = document.getElementById('budgetLogsFeed');
+      if (budgetFeed) {
+        const items = JSON.parse(localStorage.getItem(`recovery_budget_${email}`) || '[]');
+        budgetFeed.innerHTML = items.length === 0 ? '<p style="color: var(--text-muted); font-size:0.85rem;">No plans saved yet.</p>' : items.slice(0, 3).map(i => `
+          <div class="log-item" style="font-size:0.85rem;">
+            <div class="log-header"><span><strong>${i.day}</strong></span><span>${new Date(i.created_at).toLocaleDateString()}</span></div>
+            <p><strong>AM:</strong> ${i.meals_am}</p>
+            <p><strong>PM:</strong> ${i.meals_pm}</p>
+          </div>
+        `).join('');
+      }
+
+      // Mindfulness Feed
+      const mindFeed = document.getElementById('mindfulnessLogsFeed');
+      if (mindFeed) {
+        const items = JSON.parse(localStorage.getItem(`recovery_mindfulness_${email}`) || '[]');
+        mindFeed.innerHTML = items.length === 0 ? '<p style="color: var(--text-muted); font-size:0.85rem;">No logs yet.</p>' : items.slice(0, 3).map(i => `
+          <div class="log-item" style="font-size:0.85rem;">
+            <div class="log-header"><span><strong>${i.tool}</strong> (Intensity: ${i.intensity}/10)</span><span>${new Date(i.created_at).toLocaleDateString()}</span></div>
+            ${i.notes ? `<p style="color: var(--text-muted);">${i.notes}</p>` : ''}
+          </div>
+        `).join('');
+      }
+
+      // Exercise Feed
+      const exFeed = document.getElementById('exerciseLogsFeed');
+      if (exFeed) {
+        const items = JSON.parse(localStorage.getItem(`recovery_exercise_${email}`) || '[]');
+        exFeed.innerHTML = items.length === 0 ? '<p style="color: var(--text-muted); font-size:0.85rem;">No logs yet.</p>' : items.slice(0, 3).map(i => `
+          <div class="log-item" style="font-size:0.85rem;">
+            <div class="log-header"><span><strong>${i.activity}</strong> (${i.duration} mins)</span><span>${new Date(i.created_at).toLocaleDateString()}</span></div>
+            ${i.notes ? `<p style="color: var(--text-muted);">${i.notes}</p>` : ''}
+          </div>
+        `).join('');
+      }
+    }
+
     // Profile & Data Management Functions
     function renderProfileView() {
       const guard = document.getElementById('profileLoggedOutGuard');
@@ -1142,6 +1503,11 @@
         tracker: JSON.parse(localStorage.getItem('recovery_tracker_' + email) || '{}'),
         urges: JSON.parse(localStorage.getItem('recovery_urges_' + email) || '[]'),
         journal: JSON.parse(localStorage.getItem('recovery_journal_' + email) || '[]'),
+        nutrition: JSON.parse(localStorage.getItem('recovery_nutrition_' + email) || '[]'),
+        foods: JSON.parse(localStorage.getItem('recovery_foods_' + email) || '[]'),
+        budget: JSON.parse(localStorage.getItem('recovery_budget_' + email) || '[]'),
+        mindfulness: JSON.parse(localStorage.getItem('recovery_mindfulness_' + email) || '[]'),
+        exercise: JSON.parse(localStorage.getItem('recovery_exercise_' + email) || '[]'),
         exportedAt: new Date().toISOString()
       };
 
@@ -1159,17 +1525,19 @@
       const email = window.currentUser.email;
 
       if (confirm(`Are you sure you want to permanently delete your account (${email}) and all stored logs? This action CANNOT be undone.`)) {
-        // Remove user data keys
         localStorage.removeItem('recovery_tracker_' + email);
         localStorage.removeItem('recovery_urges_' + email);
         localStorage.removeItem('recovery_journal_' + email);
+        localStorage.removeItem('recovery_nutrition_' + email);
+        localStorage.removeItem('recovery_foods_' + email);
+        localStorage.removeItem('recovery_budget_' + email);
+        localStorage.removeItem('recovery_mindfulness_' + email);
+        localStorage.removeItem('recovery_exercise_' + email);
 
-        // Remove from registered list
         let users = JSON.parse(localStorage.getItem('recovery_registered_users') || '[]');
         users = users.filter(u => u.email !== email);
         localStorage.setItem('recovery_registered_users', JSON.stringify(users));
 
-        // Sign out
         handleSignOut();
         alert("Your account and all associated data have been permanently deleted.");
       }
@@ -1544,7 +1912,6 @@
     };
 
     window.navigateTo = function(viewId) {
-      console.log("Navigating to view:", viewId);
       const views = document.querySelectorAll('.view');
       views.forEach(function(v) {
         v.classList.remove('active');
@@ -1572,6 +1939,9 @@
       if (viewId === 'profileView') {
         renderProfileView();
       }
+      if (viewId === 'wellnessView') {
+        renderWellnessFeeds();
+      }
     };
 
     window.scrollToFeatures = function() {
@@ -1587,6 +1957,7 @@
     renderTrackerView();
     renderUrgeView();
     renderJournalView();
+    renderWellnessFeeds();
   </script>
 </body>
 </html>
