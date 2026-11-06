@@ -271,6 +271,101 @@
       color: var(--text-muted);
     }
 
+    /* Milestone Tracker Specific Styles */
+    .pill-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .substance-pill {
+      background: var(--bg-main);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .substance-pill.active, .substance-pill:hover {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+
+    .progress-circle-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .ring-container {
+      position: relative;
+      width: 220px;
+      height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .ring-container svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+
+    .ring-bg {
+      fill: none;
+      stroke: var(--border);
+      stroke-width: 12;
+    }
+
+    .ring-progress {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 12;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 0.5s ease;
+    }
+
+    .ring-content {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ring-time-main {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .ring-time-sub {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    .tracker-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 1.5rem;
+    }
+
     /* Category Filter Pills for Quotes */
     .quote-pills {
       display: flex;
@@ -571,14 +666,36 @@
       </div>
     </section>
 
-    <!-- Goals View -->
+    <!-- Goals & Progress Tracker View -->
     <section id="goalsView" class="view">
       <div class="dashboard-container">
         <button class="btn btn-outline" onclick="navigateTo('landingView')" style="margin-bottom: 1.5rem;">&larr; Back to Home</button>
-        <h2 style="margin-bottom: 0.5rem;">🎯 Goals & Progress Tracker</h2>
-        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Celebrate clean time milestones and daily habit streaks.</p>
-        <div class="card">
-          <h3>Milestone Counter Active</h3>
+        <h2 style="margin-bottom: 0.5rem;">🎯 Recovery Journey</h2>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Track your clean time milestones and personal growth step-by-step.</p>
+
+        <!-- Progress Display Card -->
+        <div class="progress-circle-card">
+          <div class="ring-container">
+            <svg viewBox="0 0 100 100">
+              <circle class="ring-bg" cx="50" cy="50" r="42"></circle>
+              <circle class="ring-progress" id="ringProgress" cx="50" cy="50" r="42" stroke-dasharray="263.89" stroke-dashoffset="60"></circle>
+            </svg>
+            <div class="ring-content">
+              <div class="ring-time-main" id="primaryTimeDisplay">--</div>
+              <div class="ring-time-sub" id="secondaryTimeDisplay">--</div>
+            </div>
+          </div>
+
+          <p style="color: var(--text-main); font-weight: 600; margin-bottom: 0.25rem;">Rise in your recovery each day.</p>
+          <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">You’ve got this!</p>
+
+          <p style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Recovery birthday</p>
+          <p id="birthdayDisplay" style="font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 1.5rem;">Sep 20, 2026</p>
+
+          <div class="tracker-actions">
+            <button class="btn btn-outline" onclick="openMilestoneModal('date')">🔄 Edit Date</button>
+            <button class="btn btn-outline" onclick="openMilestoneModal('view')">✏️ Edit View</button>
+          </div>
         </div>
       </div>
     </section>
@@ -663,7 +780,162 @@
     </div>
   </div>
 
+  <!-- Milestone Edit Modal -->
+  <div id="milestoneModal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 480px;">
+      <button class="modal-close" onclick="closeMilestoneModal()">&times;</button>
+      <h3 id="milestoneModalTitle" style="margin-bottom: 1rem;">Edit Recovery Journey</h3>
+      
+      <form onsubmit="handleMilestoneSave(event)">
+        <div id="editViewSection">
+          <label style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text-muted);">Sober from substance or behavior</label>
+          <div class="pill-grid" id="substancePills">
+            <div class="substance-pill active" data-val="Alcohol">Alcohol</div>
+            <div class="substance-pill" data-val="Tobacco">Tobacco</div>
+            <div class="substance-pill" data-val="Cannabis">Cannabis</div>
+            <div class="substance-pill" data-val="Opioids">Opioids</div>
+            <div class="substance-pill" data-val="Meth">Meth</div>
+            <div class="substance-pill" data-val="Hallucinogens">Hallucinogens</div>
+            <div class="substance-pill" data-val="Amphetamines">Amphetamines</div>
+            <div class="substance-pill" data-val="Benzodiazepines">Benzodiazepines</div>
+            <div class="substance-pill" data-val="Inhalants">Inhalants</div>
+            <div class="substance-pill" data-val="Cocaine">Cocaine</div>
+            <div class="substance-pill" data-val="MDMA/Ecstasy">MDMA/Ecstasy</div>
+            <div class="substance-pill" data-val="Gambling">Gambling</div>
+            <div class="substance-pill" data-val="Sexual addiction">Sexual addiction</div>
+            <div class="substance-pill" data-val="Video gaming">Video gaming</div>
+            <div class="substance-pill" data-val="Disordered Eating">Disordered Eating</div>
+            <div class="substance-pill" data-val="Co-dependency">Co-dependency</div>
+            <div class="substance-pill" data-val="Other">Other</div>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 1rem;">
+          <label>Sober Date</label>
+          <input type="date" id="soberDateInput" required>
+        </div>
+
+        <div class="form-group">
+          <label>Sober Time</label>
+          <input type="time" id="soberTimeInput" value="00:00" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Save Changes</button>
+      </form>
+    </div>
+  </div>
+
   <script>
+    // Milestone State & Live Calculation
+    let trackerState = {
+      substance: 'Alcohol',
+      soberDateTime: '2026-09-20T00:00:00'
+    };
+
+    // Load saved settings if any
+    try {
+      const saved = localStorage.getItem('recovery_tracker_state');
+      if (saved) trackerState = JSON.parse(saved);
+    } catch(e) {}
+
+    // Initialize interactive pills
+    document.querySelectorAll('.substance-pill').forEach(pill => {
+      pill.addEventListener('click', function() {
+        document.querySelectorAll('.substance-pill').forEach(p => p.classList.remove('active'));
+        this.classList.add('active');
+        trackerState.substance = this.getAttribute('data-val');
+      });
+    });
+
+    window.openMilestoneModal = function(mode) {
+      const modal = document.getElementById('milestoneModal');
+      const viewSection = document.getElementById('editViewSection');
+      const title = document.getElementById('milestoneModalTitle');
+      
+      if (mode === 'date') {
+        viewSection.style.display = 'none';
+        title.innerText = "Edit Sober Date & Time";
+      } else {
+        viewSection.style.display = 'block';
+        title.innerText = "Edit Recovery Journey";
+        // Highlight active pill
+        document.querySelectorAll('.substance-pill').forEach(p => {
+          if (p.getAttribute('data-val') === trackerState.substance) {
+            p.classList.add('active');
+          } else {
+            p.classList.remove('active');
+          }
+        });
+      }
+
+      // Pre-fill datetime inputs
+      const dt = new Date(trackerState.soberDateTime);
+      document.getElementById('soberDateInput').value = dt.toISOString().split('T')[0];
+      document.getElementById('soberTimeInput.value') = ('0' + dt.getHours()).slice(-2) + ':' + ('0' + dt.getMinutes()).slice(-2);
+      
+      modal.classList.add('active');
+    };
+
+    window.closeMilestoneModal = function() {
+      document.getElementById('milestoneModal').classList.remove('active');
+    };
+
+    window.handleMilestoneSave = function(e) {
+      e.preventDefault();
+      const dateVal = document.getElementById('soberDateInput').value;
+      const timeVal = document.getElementById('soberTimeInput').value;
+      
+      trackerState.soberDateTime = `${dateVal}T${timeVal}:00`;
+      try {
+        localStorage.setItem('recovery_tracker_state', JSON.stringify(trackerState));
+      } catch(e) {}
+
+      closeMilestoneModal();
+      updateMilestoneDisplay();
+      alert("Recovery journey updated successfully!");
+    };
+
+    function updateMilestoneDisplay() {
+      const start = new Date(trackerState.soberDateTime);
+      const now = new Date();
+      let diff = now - start;
+
+      if (diff < 0) diff = 0;
+
+      const seconds = Math.floor(diff / 1000) % 60;
+      const minutes = Math.floor(diff / (1000 * 60)) % 60;
+      const hours = Math.floor(diff / (1000 * 60 * 60)) % 24;
+      const daysTotal = Math.floor(diff / (1000 * 60 * 60 * 24));
+      
+      const months = Math.floor(daysTotal / 30.4375);
+      const days = Math.floor(daysTotal % 30.4375);
+
+      // Main text display (e.g. 1m 15d or 45 days)
+      let primaryStr = `${daysTotal} days`;
+      if (months > 0) {
+        primaryStr = `${months}m ${days}d`;
+      }
+      
+      const secondaryStr = `${hours}h ${minutes}m ${seconds}s`;
+
+      document.getElementById('primaryTimeDisplay').innerText = primaryStr;
+      document.getElementById('secondaryTimeDisplay').innerText = secondaryStr;
+
+      // Format Birthday Display
+      const options = { year: 'numeric', month: 'short', day: 'numeric' };
+      document.getElementById('birthdayDisplay').innerText = `${trackerState.substance} • ${start.toLocaleDateString('en-US', options)}`;
+
+      // Update Ring progress (progress towards next day or milestone)
+      const dayFraction = (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60 * 24);
+      const ring = document.getElementById('ringProgress');
+      const circumference = 263.89; // 2 * PI * 42
+      const offset = circumference - (dayFraction * circumference);
+      ring.style.strokeDashoffset = offset;
+    }
+
+    // Run ticker every second
+    setInterval(updateMilestoneDisplay, 1000);
+
     // Quotes Dataset Categorized
     const quotesData = {
       recovery: [
@@ -764,6 +1036,9 @@
       if (viewId === 'quotesView') {
         const firstPill = document.querySelector('.quote-pill');
         filterQuotes('recovery', firstPill);
+      }
+      if (viewId === 'goalsView') {
+        updateMilestoneDisplay();
       }
       if (viewId === 'dashboardView' && window.currentUser && window.supabaseClient) {
         fetchUrgeLogs();
@@ -1048,6 +1323,9 @@
         </div>
       `).join('');
     }
+
+    // Initial call on load
+    updateMilestoneDisplay();
 
     if (window.supabaseClient) {
       checkSession();
