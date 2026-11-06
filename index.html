@@ -271,6 +271,57 @@
       color: var(--text-muted);
     }
 
+    /* Category Filter Pills for Quotes */
+    .quote-pills {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.5rem;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .quote-pill {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .quote-pill.active, .quote-pill:hover {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+
+    .quote-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .quote-card p {
+      font-size: 1rem;
+      color: var(--text-main);
+      margin-bottom: 0.5rem;
+      font-style: italic;
+    }
+
+    .quote-card span {
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -544,15 +595,25 @@
       </div>
     </section>
 
-    <!-- Quotes View -->
+    <!-- Quotes & Inspiration View -->
     <section id="quotesView" class="view">
       <div class="dashboard-container">
         <button class="btn btn-outline" onclick="navigateTo('landingView')" style="margin-bottom: 1.5rem;">&larr; Back to Home</button>
         <h2 style="margin-bottom: 0.5rem;">💡 Quotes & Inspiration</h2>
-        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Daily reflections and motivational mantras.</p>
-        <div class="card">
-          <h3>Inspiration Active</h3>
+        <p style="color: var(--text-muted); margin-bottom: 1.25rem;">These quotes can help you understand why you turn to substances, galvanize you to confront abuse, and inspire you toward lasting recovery.</p>
+
+        <!-- Category Filter Pills -->
+        <div class="quote-pills">
+          <button class="quote-pill active" onclick="filterQuotes('recovery', this)">Recovery</button>
+          <button class="quote-pill" onclick="filterQuotes('addiction', this)">Addiction</button>
+          <button class="quote-pill" onclick="filterQuotes('celebrity', this)">Celebrity</button>
+          <button class="quote-pill" onclick="filterQuotes('sobriety', this)">Sobriety</button>
+          <button class="quote-pill" onclick="filterQuotes('alcoholism', this)">Alcoholism</button>
+          <button class="quote-pill" onclick="filterQuotes('drugs', this)">Drug Abuse</button>
+          <button class="quote-pill" onclick="filterQuotes('mantras', this)">Mantras & Self-Love</button>
         </div>
+
+        <div id="quotesList"></div>
       </div>
     </section>
 
@@ -603,6 +664,90 @@
   </div>
 
   <script>
+    // Quotes Dataset Categorized
+    const quotesData = {
+      recovery: [
+        { text: "Addiction, at its worst, is akin to having Stockholm Syndrome. You’re like a hostage who has developed an irrational affection for your captor.", author: "Anne Clendening" },
+        { text: "An addict is someone who uses their body to tell society that something is wrong.", author: "Stella Adler" },
+        { text: "Asking for help is really the beginning of any sort of recovery process.", author: "Marc Maron" },
+        { text: "I live in negotiation with a shadow side that has to be respected... paradoxically, it is only by accepting it that we can progress.", author: "Russell Brand" },
+        { text: "Remember just because you hit bottom doesn’t mean you have to stay there.", author: "Robert Downey Jr." },
+        { text: "Recovery is something that you have to work on every single day and it’s something that doesn’t get a day off.", author: "Demi Lovato" },
+        { text: "Nobody stays recovered unless the life they have created is more rewarding and satisfying than the one they left behind.", author: "Anne Fletcher" },
+        { text: "The goal isn’t to be sober. The goal is to love yourself so much that you don’t need to drink.", author: "Unknown" },
+        { text: "Rock bottom became the solid foundation on which I rebuilt my life.", author: "J.K. Rowling" },
+        { text: "Recovery is not simple abstinence. It’s about healing the brain, learning how to make good decisions, and cultivating willingness.", author: "Debra Jay" }
+      ],
+      addiction: [
+        { text: "If you can quit for a day, you can quit for a lifetime.", author: "Benjamin Alire Saenz" },
+        { text: "All the suffering, stress, and addiction comes from not realizing you already are what you are looking for.", author: "Jon Kabat-Zinn" },
+        { text: "Addiction is an adaptation. It’s not you–it’s the cage you live in.", author: "Johann Hari" },
+        { text: "Job one is get out of that cave. Come through the crucible forged into a stronger metal.", author: "Robert Downey Jr." },
+        { text: "Don't pick up a drink or drug, one day at a time. It actually is simple, but it isn't easy.", author: "Russell Brand" },
+        { text: "When you break that cycle, the empowerment that comes out of it says, 'I'm actually strong.'", author: "Drew Barrymore" },
+        { text: "Getting help is a sign of courage, not weakness or failure.", author: "Ben Affleck" }
+      ],
+      celebrity: [
+        { text: "Getting sober was the single bravest thing I’ve ever done, and will ever do, in my life.", author: "Jamie Lee Curtis" },
+        { text: "The idea that the creative endeavor and mind-altering substances are entwined is one of the great pop-intellectual myths of our time.", author: "Stephen King" },
+        { text: "And then I said those words, ‘I’ll get help,’ and my life turned around.", author: "Elton John" },
+        { text: "I couldn’t believe that anybody could be naturally happy without being on something. So I would say, ‘It does get better.’", author: "Eminem" },
+        { text: "Sometimes you can only find Heaven by slowly backing away from Hell.", author: "Carrie Fisher" },
+        { text: "I realized I wasn't going to live up to my potential, and that scared the hell out of me.", author: "Bradley Cooper" },
+        { text: "I got sober... Slowly it dawned on me that it was maybe worth the risk.", author: "Craig Ferguson" }
+      ],
+      sobriety: [
+        { text: "Your best days are ahead of you. The movie starts when the guy gets sober and puts his life back together.", author: "Bucky Sinister" },
+        { text: "Somebody once asked me how I define sobriety, and my response was ‘liberation from dependence’.", author: "Leslie Jamison" },
+        { text: "Being in recovery has given me everything of value that I have in my life.", author: "Rob Lowe" },
+        { text: "When I got sober, I thought giving up was saying goodbye to all the fun... turned out to be just the opposite.", author: "Mary Karr" },
+        { text: "I chose sober because I wanted a better life. I stay sober because I got one.", author: "Unknown" },
+        { text: "Getting sober is a radically creative act.", author: "Meredith Bell" },
+        { text: "I think it’s important for me to show the world that sobriety hasn’t made me soft.", author: "Steve-O" }
+      ],
+      alcoholism: [
+        { text: "First you take a drink, then the drink takes a drink, then the drink takes you.", author: "F. Scott Fitzgerald" },
+        { text: "You can always bear the pain. It’ll hurt, but as long as you make yourself go on choosing pain over relief, you keep going.", author: "Lawrence Block" },
+        { text: "I have never regretted not drinking. Say this to yourself, and you’ll get through anything.", author: "Meredith Bell" },
+        { text: "What giving up booze does is allow you to look at yourself through an untainted mirror for the first time.", author: "Colin Farrell" },
+        { text: "Rehab isn’t what finally got me sober. It was nearly losing everything and seeing what it would cost me.", author: "Elizabeth Vargas" },
+        { text: "Alcoholism is a devastating disease. The primary symptom is telling everyone--including yourself—that you are not an alcoholic.", author: "Herbert L. Gravitz" }
+      ],
+      drugs: [
+        { text: "At first, addiction is maintained by pleasure, but gradually it is maintained by the avoidance of pain.", author: "Frank Tallis" },
+        { text: "Drugs are a waste of time. They destroy your memory and your self-respect.", author: "Kurt Cobain" },
+        { text: "A hurt is at the center of all addictive behaviors.", author: "Gabor Maté" },
+        { text: "Euphoria takes work. You can't buy it or inject it—you have to earn it.", author: "Anthony Kiedis" },
+        { text: "There’s not a drug on Earth that can make life meaningful.", author: "Sarah Kane" },
+        { text: "People always want to ask me about my drug problem—I never had a drug problem; I had a self-esteem problem!", author: "Gloria Gaynor" }
+      ],
+      mantras: [
+        { text: "You’re not responsible for your disease, but you are responsible for your behavior.", author: "Recovery Principle" },
+        { text: "Sobriety is a journey, not a destination.", author: "Daily Mantra" },
+        { text: "I refuse to give up on myself.", author: "Affirmation" },
+        { text: "What I do today creates a better tomorrow.", author: "Daily Mantra" },
+        { text: "One of the hardest things was learning that I was worth recovery.", author: "Demi Lovato" },
+        { text: "Caring for myself is not self-indulgent. Caring for myself is an act of survival.", author: "Audre Lorde" },
+        { text: "The real difficulty is to overcome how you think about yourself.", author: "Maya Angelou" },
+        { text: "Loving ourselves works miracles in our lives.", author: "Louise Hay" }
+      ]
+    };
+
+    window.filterQuotes = function(category, element) {
+      document.querySelectorAll('.quote-pill').forEach(p => p.classList.remove('active'));
+      if (element) element.classList.add('active');
+
+      const container = document.getElementById('quotesList');
+      const list = quotesData[category] || quotesData.recovery;
+
+      container.innerHTML = list.map(q => `
+        <div class="quote-card">
+          <p>“${q.text}”</p>
+          <span>— ${q.author}</span>
+        </div>
+      `).join('');
+    };
+
     window.navigateTo = function(viewId) {
       console.log("Navigating to view:", viewId);
       const views = document.querySelectorAll('.view');
@@ -616,6 +761,10 @@
       }
       window.scrollTo(0, 0);
 
+      if (viewId === 'quotesView') {
+        const firstPill = document.querySelector('.quote-pill');
+        filterQuotes('recovery', firstPill);
+      }
       if (viewId === 'dashboardView' && window.currentUser && window.supabaseClient) {
         fetchUrgeLogs();
       }
@@ -745,7 +894,7 @@
       } else {
         signInBtn.style.display = 'inline-flex';
         signInBtn.style.display = 'inline-flex';
-        signInBtn.style.display = 'none';
+        signOutBtn.style.display = 'none';
       }
     }
 
