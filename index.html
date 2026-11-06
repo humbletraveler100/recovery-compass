@@ -271,12 +271,12 @@
       color: var(--text-muted);
     }
 
-    /* Milestone Tracker Specific Styles */
+    /* Milestone Tracker Styles */
     .pill-grid {
       display: flex;
       flex-wrap: wrap;
       gap: 0.5rem;
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
     }
 
     .substance-pill {
@@ -670,33 +670,77 @@
     <section id="goalsView" class="view">
       <div class="dashboard-container">
         <button class="btn btn-outline" onclick="navigateTo('landingView')" style="margin-bottom: 1.5rem;">&larr; Back to Home</button>
-        <h2 style="margin-bottom: 0.5rem;">🎯 Recovery Journey</h2>
-        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Track your clean time milestones and personal growth step-by-step.</p>
+        
+        <!-- Setup Form View (Shown when no date is set or user clicks Edit) -->
+        <div id="trackerSetupCard" class="card" style="display: none; margin-bottom: 2rem;">
+          <h2 style="margin-bottom: 0.25rem;">Recovery journey</h2>
+          <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Sober from substance or behavior</p>
+          
+          <div class="pill-grid" id="setupSubstancePills">
+            <div class="substance-pill active" data-val="Alcohol">Alcohol</div>
+            <div class="substance-pill" data-val="Tobacco">Tobacco</div>
+            <div class="substance-pill" data-val="Cannabis">Cannabis</div>
+            <div class="substance-pill" data-val="Opioids">Opioids</div>
+            <div class="substance-pill" data-val="Meth">Meth</div>
+            <div class="substance-pill" data-val="Hallucinogens">Hallucinogens</div>
+            <div class="substance-pill" data-val="Amphetamines">Amphetamines</div>
+            <div class="substance-pill" data-val="Benzodiazepines">Benzodiazepines</div>
+            <div class="substance-pill" data-val="Inhalants">Inhalants</div>
+            <div class="substance-pill" data-val="Cocaine">Cocaine</div>
+            <div class="substance-pill" data-val="MDMA/Ecstasy">MDMA/Ecstasy</div>
+            <div class="substance-pill" data-val="Gambling">Gambling</div>
+            <div class="substance-pill" data-val="Sexual addiction">Sexual addiction</div>
+            <div class="substance-pill" data-val="Video gaming">Video gaming</div>
+            <div class="substance-pill" data-val="Disordered Eating">Disordered Eating</div>
+            <div class="substance-pill" data-val="Co-dependency">Co-dependency</div>
+            <div class="substance-pill" data-val="Other">Other</div>
+          </div>
 
-        <!-- Progress Display Card -->
-        <div class="progress-circle-card">
-          <div class="ring-container">
-            <svg viewBox="0 0 100 100">
-              <circle class="ring-bg" cx="50" cy="50" r="42"></circle>
-              <circle class="ring-progress" id="ringProgress" cx="50" cy="50" r="42" stroke-dasharray="263.89" stroke-dashoffset="60"></circle>
-            </svg>
-            <div class="ring-content">
-              <div class="ring-time-main" id="primaryTimeDisplay">--</div>
-              <div class="ring-time-sub" id="secondaryTimeDisplay">--</div>
+          <form onsubmit="handleSetupSubmit(event)">
+            <div class="form-group">
+              <label>Sober date</label>
+              <input type="date" id="setupDateInput" required>
+            </div>
+
+            <div class="form-group">
+              <label>Sober time</label>
+              <input type="time" id="setupTimeInput" value="00:00" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Start Recovery Journey</button>
+          </form>
+        </div>
+
+        <!-- Progress Display Dashboard (Shown when date is set) -->
+        <div id="trackerDashboardCard" style="display: none;">
+          <h2 style="margin-bottom: 0.5rem;">🎯 Recovery Journey</h2>
+          <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Track your clean time milestones and personal growth step-by-step.</p>
+
+          <div class="progress-circle-card">
+            <div class="ring-container">
+              <svg viewBox="0 0 100 100">
+                <circle class="ring-bg" cx="50" cy="50" r="42"></circle>
+                <circle class="ring-progress" id="ringProgress" cx="50" cy="50" r="42" stroke-dasharray="263.89" stroke-dashoffset="60"></circle>
+              </svg>
+              <div class="ring-content">
+                <div class="ring-time-main" id="primaryTimeDisplay">--</div>
+                <div class="ring-time-sub" id="secondaryTimeDisplay">--</div>
+              </div>
+            </div>
+
+            <p style="color: var(--text-main); font-weight: 600; margin-bottom: 0.25rem;">Rise in your recovery each day.</p>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">You’ve got this!</p>
+
+            <p style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Recovery birthday</p>
+            <p id="birthdayDisplay" style="font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 1.5rem;">Sep 20, 2026</p>
+
+            <div class="tracker-actions">
+              <button class="btn btn-outline" onclick="openSetupMode('date')">🔄 Edit Date</button>
+              <button class="btn btn-outline" onclick="openSetupMode('view')">✏️ Edit View</button>
             </div>
           </div>
-
-          <p style="color: var(--text-main); font-weight: 600; margin-bottom: 0.25rem;">Rise in your recovery each day.</p>
-          <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">You’ve got this!</p>
-
-          <p style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Recovery birthday</p>
-          <p id="birthdayDisplay" style="font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 1.5rem;">Sep 20, 2026</p>
-
-          <div class="tracker-actions">
-            <button class="btn btn-outline" onclick="openMilestoneModal('date')">🔄 Edit Date</button>
-            <button class="btn btn-outline" onclick="openMilestoneModal('view')">✏️ Edit View</button>
-          </div>
         </div>
+
       </div>
     </section>
 
@@ -780,56 +824,11 @@
     </div>
   </div>
 
-  <!-- Milestone Edit Modal -->
-  <div id="milestoneModal" class="modal-overlay">
-    <div class="modal-card" style="max-width: 480px;">
-      <button class="modal-close" onclick="closeMilestoneModal()">&times;</button>
-      <h3 id="milestoneModalTitle" style="margin-bottom: 1rem;">Edit Recovery Journey</h3>
-      
-      <form onsubmit="handleMilestoneSave(event)">
-        <div id="editViewSection">
-          <label style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text-muted);">Sober from substance or behavior</label>
-          <div class="pill-grid" id="substancePills">
-            <div class="substance-pill active" data-val="Alcohol">Alcohol</div>
-            <div class="substance-pill" data-val="Tobacco">Tobacco</div>
-            <div class="substance-pill" data-val="Cannabis">Cannabis</div>
-            <div class="substance-pill" data-val="Opioids">Opioids</div>
-            <div class="substance-pill" data-val="Meth">Meth</div>
-            <div class="substance-pill" data-val="Hallucinogens">Hallucinogens</div>
-            <div class="substance-pill" data-val="Amphetamines">Amphetamines</div>
-            <div class="substance-pill" data-val="Benzodiazepines">Benzodiazepines</div>
-            <div class="substance-pill" data-val="Inhalants">Inhalants</div>
-            <div class="substance-pill" data-val="Cocaine">Cocaine</div>
-            <div class="substance-pill" data-val="MDMA/Ecstasy">MDMA/Ecstasy</div>
-            <div class="substance-pill" data-val="Gambling">Gambling</div>
-            <div class="substance-pill" data-val="Sexual addiction">Sexual addiction</div>
-            <div class="substance-pill" data-val="Video gaming">Video gaming</div>
-            <div class="substance-pill" data-val="Disordered Eating">Disordered Eating</div>
-            <div class="substance-pill" data-val="Co-dependency">Co-dependency</div>
-            <div class="substance-pill" data-val="Other">Other</div>
-          </div>
-        </div>
-
-        <div class="form-group" style="margin-top: 1rem;">
-          <label>Sober Date</label>
-          <input type="date" id="soberDateInput" required>
-        </div>
-
-        <div class="form-group">
-          <label>Sober Time</label>
-          <input type="time" id="soberTimeInput" value="00:00" required>
-        </div>
-
-        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Save Changes</button>
-      </form>
-    </div>
-  </div>
-
   <script>
     // Milestone State & Live Calculation
     let trackerState = {
       substance: 'Alcohol',
-      soberDateTime: '2026-09-20T00:00:00'
+      soberDateTime: null // Null by default so new users see the setup screen first!
     };
 
     // Load saved settings if any
@@ -838,28 +837,26 @@
       if (saved) trackerState = JSON.parse(saved);
     } catch(e) {}
 
-    // Initialize interactive pills
-    document.querySelectorAll('.substance-pill').forEach(pill => {
+    // Initialize interactive pills for setup
+    document.querySelectorAll('#setupSubstancePills .substance-pill').forEach(pill => {
       pill.addEventListener('click', function() {
-        document.querySelectorAll('.substance-pill').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('#setupSubstancePills .substance-pill').forEach(p => p.classList.remove('active'));
         this.classList.add('active');
         trackerState.substance = this.getAttribute('data-val');
       });
     });
 
-    window.openMilestoneModal = function(mode) {
-      const modal = document.getElementById('milestoneModal');
-      const viewSection = document.getElementById('editViewSection');
-      const title = document.getElementById('milestoneModalTitle');
-      
+    window.openSetupMode = function(mode) {
+      document.getElementById('trackerDashboardCard').style.display = 'none';
+      document.getElementById('trackerSetupCard').style.display = 'block';
+
       if (mode === 'date') {
-        viewSection.style.display = 'none';
-        title.innerText = "Edit Sober Date & Time";
+        // Hide substance pills or keep them visible
+        document.querySelector('#trackerSetupCard h2').innerText = "Edit Sober Date";
       } else {
-        viewSection.style.display = 'block';
-        title.innerText = "Edit Recovery Journey";
+        document.querySelector('#trackerSetupCard h2').innerText = "Recovery journey";
         // Highlight active pill
-        document.querySelectorAll('.substance-pill').forEach(p => {
+        document.querySelectorAll('#setupSubstancePills .substance-pill').forEach(p => {
           if (p.getAttribute('data-val') === trackerState.substance) {
             p.classList.add('active');
           } else {
@@ -868,34 +865,47 @@
         });
       }
 
-      // Pre-fill datetime inputs
-      const dt = new Date(trackerState.soberDateTime);
-      document.getElementById('soberDateInput').value = dt.toISOString().split('T')[0];
-      document.getElementById('soberTimeInput.value') = ('0' + dt.getHours()).slice(-2) + ':' + ('0' + dt.getMinutes()).slice(-2);
-      
-      modal.classList.add('active');
+      if (trackerState.soberDateTime) {
+        const dt = new Date(trackerState.soberDateTime);
+        document.getElementById('setupDateInput').value = dt.toISOString().split('T')[0];
+        document.getElementById('setupTimeInput').value = ('0' + dt.getHours()).slice(-2) + ':' + ('0' + dt.getMinutes()).slice(-2);
+      } else {
+        document.getElementById('setupDateInput').value = new Date().toISOString().split('T')[0];
+      }
     };
 
-    window.closeMilestoneModal = function() {
-      document.getElementById('milestoneModal').classList.remove('active');
-    };
-
-    window.handleMilestoneSave = function(e) {
+    window.handleSetupSubmit = function(e) {
       e.preventDefault();
-      const dateVal = document.getElementById('soberDateInput').value;
-      const timeVal = document.getElementById('soberTimeInput').value;
+      const dateVal = document.getElementById('setupDateInput').value;
+      const timeVal = document.getElementById('setupTimeInput').value;
       
       trackerState.soberDateTime = `${dateVal}T${timeVal}:00`;
       try {
         localStorage.setItem('recovery_tracker_state', JSON.stringify(trackerState));
       } catch(e) {}
 
-      closeMilestoneModal();
-      updateMilestoneDisplay();
-      alert("Recovery journey updated successfully!");
+      renderTrackerView();
+      alert("Recovery journey saved!");
     };
 
+    function renderTrackerView() {
+      const setupCard = document.getElementById('trackerSetupCard');
+      const dashboardCard = document.getElementById('trackerDashboardCard');
+
+      if (!trackerState.soberDateTime) {
+        // Show setup screen if no date is set
+        setupCard.style.display = 'block';
+        dashboardCard.style.display = 'none';
+        document.getElementById('setupDateInput').value = new Date().toISOString().split('T')[0];
+      } else {
+        setupCard.style.display = 'none';
+        dashboardCard.style.display = 'block';
+        updateMilestoneDisplay();
+      }
+    }
+
     function updateMilestoneDisplay() {
+      if (!trackerState.soberDateTime) return;
       const start = new Date(trackerState.soberDateTime);
       const now = new Date();
       let diff = now - start;
@@ -910,7 +920,6 @@
       const months = Math.floor(daysTotal / 30.4375);
       const days = Math.floor(daysTotal % 30.4375);
 
-      // Main text display (e.g. 1m 15d or 45 days)
       let primaryStr = `${daysTotal} days`;
       if (months > 0) {
         primaryStr = `${months}m ${days}d`;
@@ -921,14 +930,12 @@
       document.getElementById('primaryTimeDisplay').innerText = primaryStr;
       document.getElementById('secondaryTimeDisplay').innerText = secondaryStr;
 
-      // Format Birthday Display
       const options = { year: 'numeric', month: 'short', day: 'numeric' };
       document.getElementById('birthdayDisplay').innerText = `${trackerState.substance} • ${start.toLocaleDateString('en-US', options)}`;
 
-      // Update Ring progress (progress towards next day or milestone)
       const dayFraction = (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60 * 24);
       const ring = document.getElementById('ringProgress');
-      const circumference = 263.89; // 2 * PI * 42
+      const circumference = 263.89;
       const offset = circumference - (dayFraction * circumference);
       ring.style.strokeDashoffset = offset;
     }
@@ -1038,7 +1045,7 @@
         filterQuotes('recovery', firstPill);
       }
       if (viewId === 'goalsView') {
-        updateMilestoneDisplay();
+        renderTrackerView();
       }
       if (viewId === 'dashboardView' && window.currentUser && window.supabaseClient) {
         fetchUrgeLogs();
@@ -1169,7 +1176,7 @@
       } else {
         signInBtn.style.display = 'inline-flex';
         signInBtn.style.display = 'inline-flex';
-        signOutBtn.style.display = 'none';
+        signInBtn.style.display = 'none';
       }
     }
 
@@ -1324,8 +1331,8 @@
       `).join('');
     }
 
-    // Initial call on load
-    updateMilestoneDisplay();
+    // Initial check on load
+    renderTrackerView();
 
     if (window.supabaseClient) {
       checkSession();
