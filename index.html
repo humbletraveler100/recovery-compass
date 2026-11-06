@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Recovery Compass | Inclusive Wellness & Support</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   
   <style>
     :root {
@@ -597,7 +596,6 @@
       <div class="dashboard-container">
         <button class="btn btn-outline" onclick="navigateTo('landingView')" style="margin-bottom: 1.5rem;">&larr; Back to Home</button>
         
-        <!-- Logged Out Guard for Urge Tracker -->
         <div id="urgeLoggedOutGuard" class="auth-guard-box" style="display: none;">
           <h3>🔒 Sign In Required</h3>
           <p>The Trigger & Craving Log is a private, secure tool designed to track your personal history. Please sign in or create an account to start logging.</p>
@@ -652,7 +650,6 @@
       <div class="dashboard-container">
         <button class="btn btn-outline" onclick="navigateTo('landingView')" style="margin-bottom: 1.5rem;">&larr; Back to Home</button>
         
-        <!-- Logged Out Guard for Journal -->
         <div id="journalLoggedOutGuard" class="auth-guard-box" style="display: none;">
           <h3>🔒 Sign In Required</h3>
           <p>Your Recovery Journal is completely private and securely encrypted for your eyes only. Please sign in to access your journal entries.</p>
@@ -717,7 +714,6 @@
       <div class="dashboard-container">
         <button class="btn btn-outline" onclick="navigateTo('landingView')" style="margin-bottom: 1.5rem;">&larr; Back to Home</button>
         
-        <!-- Logged Out Guard for Milestone Tracker -->
         <div id="trackerLoggedOutGuard" class="auth-guard-box" style="display: none;">
           <h3>🔒 Sign In Required</h3>
           <p>Your Recovery Journey and milestone tracker are personal to you. Please sign in to set your clean date and track your progress securely.</p>
@@ -726,7 +722,6 @@
         </div>
 
         <div id="trackerLoggedInContent" style="display: none;">
-          <!-- Setup Form View -->
           <div id="trackerSetupCard" class="card" style="display: none; margin-bottom: 2rem;">
             <h2 style="margin-bottom: 0.25rem;">Recovery journey</h2>
             <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Sober from substance or behavior</p>
@@ -766,7 +761,6 @@
             </form>
           </div>
 
-          <!-- Progress Display Dashboard -->
           <div id="trackerDashboardCard" style="display: none;">
             <h2 style="margin-bottom: 0.5rem;">🎯 Recovery Journey</h2>
             <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Track your clean time milestones and personal growth step-by-step.</p>
@@ -881,17 +875,25 @@
   </div>
 
   <script>
-    // Milestone State & Live Calculation (User Specific)
+    // Local Session & Auth Management
+    window.currentUser = null;
+
+    try {
+      const savedUser = localStorage.getItem('recovery_current_user');
+      if (savedUser) {
+        window.currentUser = JSON.parse(savedUser);
+      }
+    } catch(e) {}
+
     let trackerState = {
       substance: 'Alcohol',
       soberDateTime: null
     };
 
-    // Load per-user tracker state if saved in localStorage
     function loadUserTrackerState() {
       if (!window.currentUser) return;
       try {
-        const saved = localStorage.getItem('recovery_tracker_' + window.currentUser.id);
+        const saved = localStorage.getItem('recovery_tracker_' + window.currentUser.email);
         if (saved) {
           trackerState = JSON.parse(saved);
         } else {
@@ -950,7 +952,7 @@
       
       trackerState.soberDateTime = `${dateVal}T${timeVal}:00`;
       try {
-        localStorage.setItem('recovery_tracker_' + window.currentUser.id, JSON.stringify(trackerState));
+        localStorage.setItem('recovery_tracker_' + window.currentUser.email, JSON.stringify(trackerState));
       } catch(e) {}
 
       renderTrackerView();
@@ -1022,6 +1024,276 @@
     }
 
     setInterval(updateMilestoneDisplay, 1000);
+
+    // Authentication Handlers
+    window.openAuthModal = function(mode) {
+      const modal = document.getElementById('authModal');
+      const title = document.getElementById('authModalTitle');
+      const subtitle = document.getElementById('authModalSubtitle');
+      const submitBtn = document.getElementById('authSubmitBtn');
+      
+      if (!modal) return;
+
+      if (mode === 'signup') {
+        title.innerText = "Create Your Account";
+        subtitle.innerText = "Start your recovery and wellness journey with Recovery Compass.";
+        submitBtn.innerText = "Sign Up";
+      } else {
+        title.innerText = "Welcome Back";
+        subtitle.innerText = "Sign in to access your personal dashboard and recovery tools.";
+        submitBtn.innerText = "Sign In";
+      }
+      
+      modal.classList.add('active');
+    };
+
+    window.closeAuthModal = function() {
+      const modal = document.getElementById('authModal');
+      if (modal) modal.classList.remove('active');
+    };
+
+    window.handleAuthSubmit = function(e) {
+      e.preventDefault();
+      const email = document.getElementById('authEmail').value.trim().toLowerCase();
+      const password = document.getElementById('authPassword').value;
+      const submitBtn = document.getElementById('authSubmitBtn');
+      const isSignUp = submitBtn.innerText === "Sign Up";
+
+      try {
+        let users = JSON.parse(localStorage.getItem('recovery_registered_users') || '[]');
+
+        if (isSignUp) {
+          const existing = users.find(u => u.email === email);
+          if (existing) {
+            alert("An account with this email already exists. Please sign in.");
+            return;
+          }
+          users.push({ email, password });
+          localStorage.setItem('recovery_registered_users', JSON.stringify(users));
+          alert("Account created successfully!");
+        } else {
+          const user = users.find(u => u.email === email && u.password === password);
+          if (!user) {
+            alert("Invalid email or password. Please check your credentials or sign up.");
+            return;
+          }
+          alert("Successfully signed in!");
+        }
+
+        window.currentUser = { email };
+        localStorage.setItem('recovery_current_user', JSON.stringify(window.currentUser));
+
+        closeAuthModal();
+        updateAuthUI();
+
+        // Refresh current active view
+        const activeView = document.querySelector('.view.active').id;
+        navigateTo(activeView);
+      } catch (err) {
+        console.error("Auth error:", err);
+        alert("An unexpected authentication error occurred.");
+      }
+    };
+
+    window.handleSignOut = function() {
+      window.currentUser = null;
+      localStorage.removeItem('recovery_current_user');
+      updateAuthUI();
+
+      const activeView = document.querySelector('.view.active').id;
+      navigateTo(activeView);
+      alert("Signed out successfully.");
+    };
+
+    function updateAuthUI() {
+      const signInBtn = document.getElementById('signInBtn');
+      const signUpBtn = document.getElementById('signUpBtn');
+      const signOutBtn = document.getElementById('signOutBtn');
+
+      if (!signInBtn || !signUpBtn || !signOutBtn) return;
+
+      if (window.currentUser) {
+        signInBtn.style.display = 'none';
+        signUpBtn.style.display = 'none';
+        signOutBtn.style.display = 'inline-flex';
+      } else {
+        signInBtn.style.display = 'inline-flex';
+        signInBtn.style.display = 'inline-flex';
+        signOutBtn.style.display = 'none';
+      }
+    }
+
+    // View Renders with Auth Guards
+    function renderUrgeView() {
+      const guard = document.getElementById('urgeLoggedOutGuard');
+      const content = document.getElementById('urgeLoggedInContent');
+      if (!window.currentUser) {
+        guard.style.display = 'block';
+        content.style.display = 'none';
+      } else {
+        guard.style.display = 'none';
+        content.style.display = 'block';
+        fetchUrgeLogs();
+      }
+    }
+
+    function renderJournalView() {
+      const guard = document.getElementById('journalLoggedOutGuard');
+      const content = document.getElementById('journalLoggedInContent');
+      if (!window.currentUser) {
+        guard.style.display = 'block';
+        content.style.display = 'none';
+      } else {
+        guard.style.display = 'none';
+        content.style.display = 'block';
+        fetchJournalEntries();
+      }
+    }
+
+    window.handleUrgeSubmit = function(e) {
+      e.preventDefault();
+      if (!window.currentUser) {
+        alert("Please sign in to save your urge logs.");
+        openAuthModal('signin');
+        return;
+      }
+
+      const intensity = parseInt(document.getElementById('intensity').value);
+      const trigger = document.getElementById('trigger').value;
+      const coping = document.getElementById('coping').value;
+      const notes = document.getElementById('notes').value;
+
+      const newLog = {
+        id: Date.now(),
+        intensity,
+        trigger,
+        coping_strategy: coping,
+        notes,
+        created_at: new Date().toISOString()
+      };
+
+      try {
+        const key = 'recovery_urges_' + window.currentUser.email;
+        let logs = JSON.parse(localStorage.getItem(key) || '[]');
+        logs.unshift(newLog);
+        localStorage.setItem(key, JSON.stringify(logs));
+
+        alert("Urge log saved successfully!");
+        document.getElementById('trigger').value = '';
+        document.getElementById('coping').value = '';
+        document.getElementById('notes').value = '';
+        document.getElementById('intensity').value = 5;
+        document.getElementById('intensityVal').innerText = 5;
+        fetchUrgeLogs();
+      } catch(err) {
+        alert("Error saving urge log.");
+      }
+    };
+
+    function fetchUrgeLogs() {
+      const feed = document.getElementById('logsFeed');
+      if (!window.currentUser) return;
+
+      try {
+        const key = 'recovery_urges_' + window.currentUser.email;
+        const logs = JSON.parse(localStorage.getItem(key) || '[]');
+
+        if (logs.length === 0) {
+          feed.innerHTML = '<p style="color: var(--text-muted);">No urge logs recorded yet.</p>';
+          return;
+        }
+
+        feed.innerHTML = logs.map(log => `
+          <div class="log-item">
+            <div class="log-header">
+              <span><strong>Intensity:</strong> ${log.intensity}/10</span>
+              <span>${new Date(log.created_at).toLocaleDateString()} ${new Date(log.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+            </div>
+            <p><strong>Trigger:</strong> ${log.trigger || 'N/A'}</p>
+            ${log.coping_strategy ? `<p style="margin-top: 0.25rem;"><strong>Coping Strategy:</strong> ${log.coping_strategy}</p>` : ''}
+            ${log.notes ? `<p style="margin-top: 0.25rem; color: var(--text-muted); font-size: 0.9rem;">"${log.notes}"</p>` : ''}
+          </div>
+        `).join('');
+      } catch(e) {
+        feed.innerHTML = '<p style="color: #ef4444;">Failed to load logs.</p>';
+      }
+    }
+
+    window.applyJournalPrompt = function(promptType) {
+      const textarea = document.getElementById('journalContent');
+      if (promptType === 'Thought Record') {
+        textarea.placeholder = "1. Triggering Situation:\n2. Automatic Thoughts:\n3. Emotional Response:\n4. Balanced Alternative Thought:";
+      } else if (promptType === 'Gratitude Check') {
+        textarea.placeholder = "1. Three things I am grateful for today:\n2. One healthy choice I made today:\n3. How I supported my well-being:";
+      } else if (promptType === 'Step Work') {
+        textarea.placeholder = "1. What situation tested my acceptance today?\n2. Where did I act out of habit vs intention?\n3. What step can I take tomorrow?";
+      } else {
+        textarea.placeholder = "Write freely here...";
+      }
+    };
+
+    window.handleJournalSubmit = function(e) {
+      e.preventDefault();
+      if (!window.currentUser) {
+        alert("Please sign in to save your journal entries.");
+        openAuthModal('signin');
+        return;
+      }
+
+      const prompt_type = document.getElementById('journalPrompt').value;
+      const title = document.getElementById('journalTitle').value;
+      const content = document.getElementById('journalContent').value;
+
+      const newEntry = {
+        id: Date.now(),
+        prompt_type,
+        title,
+        content,
+        created_at: new Date().toISOString()
+      };
+
+      try {
+        const key = 'recovery_journal_' + window.currentUser.email;
+        let entries = JSON.parse(localStorage.getItem(key) || '[]');
+        entries.unshift(newEntry);
+        localStorage.setItem(key, JSON.stringify(entries));
+
+        alert("Journal entry saved successfully!");
+        document.getElementById('journalTitle').value = '';
+        document.getElementById('journalContent').value = '';
+        fetchJournalEntries();
+      } catch(err) {
+        alert("Error saving journal entry.");
+      }
+    };
+
+    function fetchJournalEntries() {
+      const feed = document.getElementById('journalFeed');
+      if (!window.currentUser) return;
+
+      try {
+        const key = 'recovery_journal_' + window.currentUser.email;
+        const entries = JSON.parse(localStorage.getItem(key) || '[]');
+
+        if (entries.length === 0) {
+          feed.innerHTML = '<p style="color: var(--text-muted);">No journal entries saved yet.</p>';
+          return;
+        }
+
+        feed.innerHTML = entries.map(entry => `
+          <div class="log-item">
+            <div class="log-header">
+              <span><strong>${entry.prompt_type || 'Journal Entry'}</strong></span>
+              <span>${new Date(entry.created_at).toLocaleDateString()} ${new Date(entry.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+            </div>
+            <h4 style="color: var(--text-main); margin-bottom: 0.4rem;">${entry.title}</h4>
+            <p style="color: var(--text-muted); font-size: 0.95rem; white-space: pre-wrap;">${entry.content}</p>
+          </div>
+        `).join('');
+      } catch(e) {
+        feed.innerHTML = '<p style="color: #ef4444;">Failed to load journal entries.</p>';
+      }
+    }
 
     // Quotes Dataset Categorized
     const quotesData = {
@@ -1143,303 +1415,11 @@
       }
     };
 
-    window.openAuthModal = function(mode) {
-      const modal = document.getElementById('authModal');
-      const title = document.getElementById('authModalTitle');
-      const subtitle = document.getElementById('authModalSubtitle');
-      const submitBtn = document.getElementById('authSubmitBtn');
-      
-      if (!modal) return;
-
-      if (mode === 'signup') {
-        title.innerText = "Create Your Account";
-        subtitle.innerText = "Start your recovery and wellness journey with Recovery Compass.";
-        submitBtn.innerText = "Sign Up";
-      } else {
-        title.innerText = "Welcome Back";
-        subtitle.innerText = "Sign in to access your personal dashboard and recovery tools.";
-        submitBtn.innerText = "Sign In";
-      }
-      
-      modal.classList.add('active');
-    };
-
-    window.closeAuthModal = function() {
-      const modal = document.getElementById('authModal');
-      if (modal) modal.classList.remove('active');
-    };
-
-    window.supabaseClient = null;
-    window.currentUser = null;
-    try {
-      const SUPABASE_URL = 'https://oriymofshnevqgfqthxj.supabase.co';
-      const SUPABASE_ANON_KEY = 'sb_publishable_5gilGHK039UwMAZdjxMCyw_F3_n92y';
-      if (window.supabase && window.supabase.createClient) {
-        window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-      }
-    } catch (err) {
-      console.error("Supabase init error:", err);
-    }
-
-    window.handleAuthSubmit = async function(e) {
-      e.preventDefault();
-      if (!window.supabaseClient) {
-        alert("Database connection not initialized.");
-        return;
-      }
-      const email = document.getElementById('authEmail').value;
-      const password = document.getElementById('authPassword').value;
-      const submitBtn = document.getElementById('authSubmitBtn');
-      const isSignUp = submitBtn.innerText === "Sign Up";
-
-      try {
-        let response;
-        if (isSignUp) {
-          response = await window.supabaseClient.auth.signUp({ email, password });
-        } else {
-          response = await window.supabaseClient.auth.signInWithPassword({ email, password });
-        }
-
-        if (response.error) {
-          alert(response.error.message);
-          return;
-        }
-
-        closeAuthModal();
-        await checkSession();
-        alert(isSignUp ? "Account created successfully!" : "Successfully signed in!");
-        
-        // Refresh current active view if it requires auth
-        const activeView = document.querySelector('.view.active').id;
-        navigateTo(activeView);
-      } catch (err) {
-        console.error("Auth error:", err);
-        alert("An unexpected authentication error occurred.");
-      }
-    };
-
-    window.handleSignOut = async function() {
-      if (window.supabaseClient) {
-        await window.supabaseClient.auth.signOut();
-      }
-      window.currentUser = null;
-      updateAuthUI();
-      
-      // Refresh active view to show guards if needed
-      const activeView = document.querySelector('.view.active').id;
-      navigateTo(activeView);
-      alert("Signed out successfully.");
-    };
-
-    async function checkSession() {
-      if (!window.supabaseClient) return;
-      try {
-        const { data: { session } } = await window.supabaseClient.auth.getSession();
-        window.currentUser = session ? session.user : null;
-        updateAuthUI();
-      } catch (e) {
-        console.error("Session check error:", e);
-      }
-    }
-
-    function updateAuthUI() {
-      const signInBtn = document.getElementById('signInBtn');
-      const signUpBtn = document.getElementById('signUpBtn');
-      const signOutBtn = document.getElementById('signOutBtn');
-
-      if (!signInBtn || !signUpBtn || !signOutBtn) return;
-
-      if (window.currentUser) {
-        signInBtn.style.display = 'none';
-        signUpBtn.style.display = 'none';
-        signOutBtn.style.display = 'inline-flex';
-      } else {
-        signInBtn.style.display = 'inline-flex';
-        signUpBtn.style.display = 'inline-flex';
-        signOutBtn.style.display = 'none';
-      }
-    }
-
-    // View Renders with Auth Guards
-    function renderUrgeView() {
-      const guard = document.getElementById('urgeLoggedOutGuard');
-      const content = document.getElementById('urgeLoggedInContent');
-      if (!window.currentUser) {
-        guard.style.display = 'block';
-        content.style.display = 'none';
-      } else {
-        guard.style.display = 'none';
-        content.style.display = 'block';
-        fetchUrgeLogs();
-      }
-    }
-
-    function renderJournalView() {
-      const guard = document.getElementById('journalLoggedOutGuard');
-      const content = document.getElementById('journalLoggedInContent');
-      if (!window.currentUser) {
-        guard.style.display = 'block';
-        content.style.display = 'none';
-      } else {
-        guard.style.display = 'none';
-        content.style.display = 'block';
-        fetchJournalEntries();
-      }
-    }
-
-    window.handleUrgeSubmit = async function(e) {
-      e.preventDefault();
-      if (!window.currentUser || !window.supabaseClient) {
-        alert("Please sign in to save your urge logs.");
-        openAuthModal('signin');
-        return;
-      }
-
-      const intensity = parseInt(document.getElementById('intensity').value);
-      const trigger = document.getElementById('trigger').value;
-      const coping = document.getElementById('coping').value;
-      const notes = document.getElementById('notes').value;
-
-      const { error } = await window.supabaseClient
-        .from('urge_logs')
-        .insert([{
-          user_id: window.currentUser.id,
-          intensity: intensity,
-          trigger: trigger,
-          coping_strategy: coping,
-          notes: notes
-        }]);
-
-      if (error) {
-        alert("Error saving urge log: " + error.message);
-      } else {
-        alert("Urge log saved successfully!");
-        document.getElementById('trigger').value = '';
-        document.getElementById('coping').value = '';
-        document.getElementById('notes').value = '';
-        document.getElementById('intensity').value = 5;
-        document.getElementById('intensityVal').innerText = 5;
-        fetchUrgeLogs();
-      }
-    };
-
-    async function fetchUrgeLogs() {
-      const feed = document.getElementById('logsFeed');
-      if (!window.currentUser || !window.supabaseClient) return;
-
-      const { data, error } = await window.supabaseClient
-        .from('urge_logs')
-        .select('*')
-        .eq('user_id', window.currentUser.id)
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        feed.innerHTML = `<p style="color: #ef4444;">Failed to load logs: ${error.message}</p>`;
-        return;
-      }
-
-      if (!data || data.length === 0) {
-        feed.innerHTML = '<p style="color: var(--text-muted);">No urge logs recorded yet.</p>';
-        return;
-      }
-
-      feed.innerHTML = data.map(log => `
-        <div class="log-item">
-          <div class="log-header">
-            <span><strong>Intensity:</strong> ${log.intensity}/10</span>
-            <span>${new Date(log.created_at).toLocaleDateString()} ${new Date(log.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-          </div>
-          <p><strong>Trigger:</strong> ${log.trigger || 'N/A'}</p>
-          ${log.coping_strategy ? `<p style="margin-top: 0.25rem;"><strong>Coping Strategy:</strong> ${log.coping_strategy}</p>` : ''}
-          ${log.notes ? `<p style="margin-top: 0.25rem; color: var(--text-muted); font-size: 0.9rem;">"${log.notes}"</p>` : ''}
-        </div>
-      `).join('');
-    }
-
-    window.applyJournalPrompt = function(promptType) {
-      const textarea = document.getElementById('journalContent');
-      if (promptType === 'Thought Record') {
-        textarea.placeholder = "1. Triggering Situation:\n2. Automatic Thoughts:\n3. Emotional Response:\n4. Balanced Alternative Thought:";
-      } else if (promptType === 'Gratitude Check') {
-        textarea.placeholder = "1. Three things I am grateful for today:\n2. One healthy choice I made today:\n3. How I supported my well-being:";
-      } else if (promptType === 'Step Work') {
-        textarea.placeholder = "1. What situation tested my acceptance today?\n2. Where did I act out of habit vs intention?\n3. What step can I take tomorrow?";
-      } else {
-        textarea.placeholder = "Write freely here...";
-      }
-    };
-
-    window.handleJournalSubmit = async function(e) {
-      e.preventDefault();
-      if (!window.currentUser || !window.supabaseClient) {
-        alert("Please sign in to save your journal entries.");
-        openAuthModal('signin');
-        return;
-      }
-
-      const prompt_type = document.getElementById('journalPrompt').value;
-      const title = document.getElementById('journalTitle').value;
-      const content = document.getElementById('journalContent').value;
-
-      const { error } = await window.supabaseClient
-        .from('journal_entries')
-        .insert([{
-          user_id: window.currentUser.id,
-          prompt_type: prompt_type,
-          title: title,
-          content: content
-        }]);
-
-      if (error) {
-        alert("Error saving journal entry: " + error.message);
-      } else {
-        alert("Journal entry saved successfully!");
-        document.getElementById('journalTitle').value = '';
-        document.getElementById('journalContent').value = '';
-        fetchJournalEntries();
-      }
-    };
-
-    async function fetchJournalEntries() {
-      const feed = document.getElementById('journalFeed');
-      if (!window.currentUser || !window.supabaseClient) return;
-
-      const { data, error } = await window.supabaseClient
-        .from('journal_entries')
-        .select('*')
-        .eq('user_id', window.currentUser.id)
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        feed.innerHTML = `<p style="color: #ef4444;">Failed to load journal: ${error.message}</p>`;
-        return;
-      }
-
-      if (!data || data.length === 0) {
-        feed.innerHTML = '<p style="color: var(--text-muted);">No journal entries saved yet.</p>';
-        return;
-      }
-
-      feed.innerHTML = data.map(entry => `
-        <div class="log-item">
-          <div class="log-header">
-            <span><strong>${entry.prompt_type || 'Journal Entry'}</strong></span>
-            <span>${new Date(entry.created_at).toLocaleDateString()} ${new Date(entry.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-          </div>
-          <h4 style="color: var(--text-main); margin-bottom: 0.4rem;">${entry.title}</h4>
-          <p style="color: var(--text-muted); font-size: 0.95rem; white-space: pre-wrap;">${entry.content}</p>
-        </div>
-      `).join('');
-    }
-
-    // Initialize on page load
-    if (window.supabaseClient) {
-      checkSession().then(() => {
-        renderTrackerView();
-        renderUrgeView();
-        renderJournalView();
-      });
-    }
+    // Initialize UI on load
+    updateAuthUI();
+    renderTrackerView();
+    renderUrgeView();
+    renderJournalView();
   </script>
 </body>
 </html>
